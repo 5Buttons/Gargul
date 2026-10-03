@@ -229,8 +229,9 @@ GL.IsMasterLooter = function ()
         return false;
     end
 
-    if (GetNumRaidMembers() > 0) then
-        return raidMaster ~= nil and UnitIsUnit("raid" .. raidMaster, "player") and true or false;
+    -- In raids, comparing names is the only reliable way across subgroups
+    if (raidMaster) then
+        return nativeGetRaidRosterInfo(raidMaster) == UnitName("player");
     end
 
     return partyMaster == 0;

@@ -1923,13 +1923,20 @@ function SoftRes:exportSession()
     local checksum = ("%08x"):format(LibDeflate:Adler32(table.concat(CanonicalRows, "\n")));
     local PlayerMap = DB:get("SoftRes.MetaData.playerMap", {});
 
+    -- 3.3.5a: no C_EncodingUtil, use our own JSON, LibDeflate and Base64 implementations instead
     local serializeSucceeded, json = pcall(function ()
-        return C_EncodingUtil.SerializeJSON({
+        local Payload = {
             ID = softresID,
             data = not GL:empty(Data) and Data or emptyArray,
             checksum = checksum,
             playerMap = not GL:empty(PlayerMap) and PlayerMap or emptyObject,
-        });
+        };
+
+        if (GL.isLegacy) then
+            return GL.JSON:encode(Payload);
+        end
+
+        return C_EncodingUtil.SerializeJSON(Payload);
     end);
 
     if (not serializeSucceeded or GL:empty(json)) then
@@ -1939,13 +1946,15 @@ function SoftRes:exportSession()
 
     json = json:gsub(('"%s"'):format(emptyArray), "[]"):gsub(('"%s"'):format(emptyObject), "{}");
 
-    local compressed = C_EncodingUtil.CompressString(json, Enum.CompressionMethod.Zlib);
+    local compressed = GL.isLegacy and LibDeflate:CompressZlib(json)
+        or C_EncodingUtil.CompressString(json, Enum.CompressionMethod.Zlib);
     if (not compressed) then
         GL:error(L["Unable to zlib compress the data. Contact support via https://discord.gg/D3mDhYPVzf"]);
         return;
     end
 
-    local encoded = C_EncodingUtil.EncodeBase64(compressed, Enum.Base64Variant.Standard);
+    local encoded = GL.isLegacy and GL.Base64.encode(compressed)
+        or C_EncodingUtil.EncodeBase64(compressed, Enum.Base64Variant.Standard);
     if (not encoded) then
         GL:error(L["Something went wrong!"]);
         return;
