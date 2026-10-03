@@ -1,7 +1,7 @@
 local L = Gargul_L;
 
 local ERR_TRADE_COMPLETE = _G.ERR_TRADE_COMPLETE;
-local MAX_TRADABLE_ITEMS = _G.MAX_TRADABLE_ITEMS;
+local MAX_TRADABLE_ITEMS = _G.MAX_TRADABLE_ITEMS or 6;
 local TRADE_ENCHANT_SLOT = _G.TRADE_ENCHANT_SLOT;
 
 local GetTime = _G.GetTime;
@@ -685,6 +685,26 @@ function TradeWindow:processItemsToAdd()
             itemLink = itemLink,
             timestamp = GetTime(),
         };
+    end
+
+    -- 3.3.5a: "using" a (loot-tradable) soulbound item puts it in the "will not be traded" slot,
+    -- so put it in the first free tradable slot ourselves
+    if (GL.isLegacy) then
+        -- Don't mess with whatever the user is holding
+        if (CursorHasItem()) then
+            return;
+        end
+
+        for tradeSlot = 1, MAX_TRADABLE_ITEMS do
+            if (not GetTradePlayerItemLink(tradeSlot)) then
+                PickupContainerItem(bag, slot);
+                ClickTradeButton(tradeSlot);
+
+                return;
+            end
+        end
+
+        return;
     end
 
     -- Everything went well, put the item in the trade window!
