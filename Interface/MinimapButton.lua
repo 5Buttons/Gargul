@@ -80,7 +80,7 @@ function MinimapButton:_init()
     local GLDataBroker = LibDataBroker:NewDataObject("Gargul", {
         type = "data source",
         text = L["Gargul"],
-        icon = "Interface/AddOns/Gargul/Assets/Buttons/minimap",
+        icon = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\minimap",
         OnClick = function (_, mouseButtonPressed)
             local ButtonActions = GL.Settings:get("MinimapButton.Actions");
             local clickCombination = GL.Events:getClickCombination(mouseButtonPressed);
