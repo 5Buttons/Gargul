@@ -840,6 +840,8 @@ end
 --- (LibDD:UIDropDownMenu_SetWidth(...) etc.) by forwarding to the native UIDropDownMenu functions
 GL.LibDD = setmetatable({
     Create_UIDropDownMenu = function (_, name, parent)
+        -- The 3.3.5a dropdown functions concatenate the frame name, it must have one
+        name = name or GL.uniqueFrameName("DropDown");
         local DropDown = CreateFrame("Frame", name, parent, "UIDropDownMenuTemplate");
 
         -- 3.3.5a's template only names its children ($parentText etc.), modern code expects parentKeys

@@ -1149,7 +1149,7 @@ function Interface:createDropdown(Parent, name, value, Options, sorter, callback
 
     Parent = Parent.Parent;
 
-    local Dropdown = CreateFrame("Frame", name, Parent, "UIDropDownMenuTemplate");
+    local Dropdown = LibDD:Create_UIDropDownMenu(name, Parent);
     Dropdown.value = value;
     Dropdown.Options = Options;
 

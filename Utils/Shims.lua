@@ -161,15 +161,23 @@ GL.createMaximizeMinimizeButton = function (name, Parent)
     return Container;
 end;
 
-local scrollFrameCount = 0;
+local frameNameCount = 0;
 
---- 3.3.5a's UIPanelScrollFrameTemplate builds its children from the frame name ($parentScrollBar etc.),
---- creating one without a name errors in its OnLoad. Give it a unique name and expose the modern parentKey
+--- 3.3.5a templates build their children from the frame name ($parentScrollBar, $parentMiddle etc.)
+--- and error when the frame has none. Use this to give such frames a unique name
+---@param prefix string
+---@return string
+GL.uniqueFrameName = function (prefix)
+    frameNameCount = frameNameCount + 1;
+    return ("Gargul%s%d"):format(prefix, frameNameCount);
+end;
+
+--- 3.3.5a's UIPanelScrollFrameTemplate errors in its OnLoad without a frame name.
+--- Give it a unique name and expose the modern parentKey
 ---@param Parent table
 ---@return table
 GL.createScrollFrame = function (Parent)
-    scrollFrameCount = scrollFrameCount + 1;
-    local name = "GargulScrollFrame" .. scrollFrameCount;
+    local name = GL.uniqueFrameName("ScrollFrame");
 
     local ScrollFrame = CreateFrame("ScrollFrame", name, Parent, "UIPanelScrollFrameTemplate");
     ScrollFrame.ScrollBar = ScrollFrame.ScrollBar or _G[name .. "ScrollBar"];
