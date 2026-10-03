@@ -229,6 +229,33 @@ function DroppedLoot:hookClickEvents()
         return "default";
     end)();
 
+    --- 3.3.5a: ElvUI's loot frame calls a local copy of HandleModifiedItemClick, taken before Gargul loaded.
+    --- Our HandleModifiedItemClick hook (bootstrap.lua) never sees those clicks, so hook ElvUI's slots directly.
+    --- ElvUI creates slots on demand and shows all of them, hence no 4 button limit here
+    if (buttonProvider == "ElvUI" and GL.isLegacy) then
+        self.ButtonsHooked.ElvUI = self.ButtonsHooked.ElvUI or {};
+
+        local buttonIndex = 1;
+        local Slot = getglobal("ElvLootSlot1");
+        while (Slot) do
+            if (not self.ButtonsHooked.ElvUI[buttonIndex]) then
+                local HookedSlot = Slot;
+                HookedSlot:HookScript("OnClick", function (_, mouseButton)
+                    if (IsModifiedClick()) then
+                        GL:handleItemClick(GetLootSlotLink(HookedSlot:GetID()), mouseButton);
+                    end
+                end);
+
+                self.ButtonsHooked.ElvUI[buttonIndex] = true;
+            end
+
+            buttonIndex = buttonIndex + 1;
+            Slot = getglobal("ElvLootSlot" .. buttonIndex);
+        end
+
+        return;
+    end
+
     --- Note: the default UI only supports 4 actionable buttons.
     --- Even though Add-ons like XLoot show more than 4 at a time, you can only interact with the first 4
     for buttonIndex = 1, LOOTFRAME_NUMBUTTONS do
