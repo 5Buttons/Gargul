@@ -121,6 +121,12 @@ end
 ---
 ---@return nil
 function ItemDataManager:promptSetup()
+    -- 3.3.5a: the item database can't be built (see ItemDataManager:load), don't offer it
+    if (GL.isLegacy) then
+        GL:notice("Searching items by name is not available on this client, shift-click an item to add it instead");
+        return;
+    end
+
     local needsEnable = not self:isEnabled();
     local needsReload = needsEnable;
 
