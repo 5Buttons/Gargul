@@ -402,7 +402,7 @@ function ClientInterface:build()
     Interface:addTooltip(ToggleFilters, L["Enable / Disable the hidden items filter"]);
 
     --[[ SCROLLFRAME BOILERPLATE ]]
-    ScrollFrame = CreateFrame("ScrollFrame", nil, Window, "UIPanelScrollFrameTemplate");
+    ScrollFrame = GL.createScrollFrame(Window);
     ScrollFrame:SetPoint("TOP", Search, "BOTTOM", 0, -10);
     ScrollFrame:SetPoint("BOTTOM", Window, "BOTTOM", 0, 40);
     ScrollFrame:SetPoint("LEFT", Window, "LEFT", 16);

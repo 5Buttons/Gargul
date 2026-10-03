@@ -88,7 +88,7 @@ function Overview:build()
 
     --[[ SCROLLFRAME BOILERPLATE ]]
     ---@type ScrollFrame
-    ScrollFrame = CreateFrame("ScrollFrame", nil, Window, "UIPanelScrollFrameTemplate")
+    ScrollFrame = GL.createScrollFrame(Window)
     ScrollFrame:SetPoint("TOPLEFT", Window, "TOPLEFT", 10, -60);
     ScrollFrame:SetPoint("BOTTOMRIGHT", Window, "BOTTOMRIGHT", -44, 58);
 

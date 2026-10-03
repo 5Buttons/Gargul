@@ -168,7 +168,7 @@ function Overview:build()
     Interface:addTooltip(SearchClear, L["Clear"]);
 
     --[[ SCROLLFRAME BOILERPLATE ]]
-    local ScrollFrame = CreateFrame("ScrollFrame", nil, Window, "UIPanelScrollFrameTemplate")
+    local ScrollFrame = GL.createScrollFrame(Window)
     ScrollFrame:SetPoint("TOPLEFT", Table.frame, "TOPRIGHT", 16, -24);
     ScrollFrame:SetPoint("BOTTOMRIGHT", Window, "BOTTOMRIGHT", -44, 54);
 

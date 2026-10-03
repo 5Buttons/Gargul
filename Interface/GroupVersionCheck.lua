@@ -112,7 +112,7 @@ function GroupVersionCheck:build()
     end
 
     --[[ SCROLLFRAME BOILERPLATE ]]
-    ScrollFrame = CreateFrame("ScrollFrame", nil, Window, "UIPanelScrollFrameTemplate")
+    ScrollFrame = GL.createScrollFrame(Window)
     ScrollFrame:SetPoint("TOP", PlayerLabel, "BOTTOM", 0, -10);
     ScrollFrame:SetPoint("BOTTOM", Window, "BOTTOM", 0, 80);
     ScrollFrame:SetPoint("LEFT", Window, "LEFT", 16);

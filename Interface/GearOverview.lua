@@ -128,7 +128,7 @@ function GearOverview:build()
 
     --[[ SCROLLFRAME BOILERPLATE ]]
     ---@type ScrollFrame
-    local ScrollFrame = CreateFrame("ScrollFrame", nil, Window, "UIPanelScrollFrameTemplate");
+    local ScrollFrame = GL.createScrollFrame(Window);
     ScrollFrame:SetPoint("TOP", PlayerLabel, "BOTTOM", 0, -8);
     ScrollFrame:SetPoint("BOTTOM", Window, "BOTTOM", 0, 50);
     ScrollFrame:SetPoint("LEFT", Window, "LEFT", 16);

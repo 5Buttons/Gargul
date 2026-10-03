@@ -161,6 +161,22 @@ GL.createMaximizeMinimizeButton = function (name, Parent)
     return Container;
 end;
 
+local scrollFrameCount = 0;
+
+--- 3.3.5a's UIPanelScrollFrameTemplate builds its children from the frame name ($parentScrollBar etc.),
+--- creating one without a name errors in its OnLoad. Give it a unique name and expose the modern parentKey
+---@param Parent table
+---@return table
+GL.createScrollFrame = function (Parent)
+    scrollFrameCount = scrollFrameCount + 1;
+    local name = "GargulScrollFrame" .. scrollFrameCount;
+
+    local ScrollFrame = CreateFrame("ScrollFrame", name, Parent, "UIPanelScrollFrameTemplate");
+    ScrollFrame.ScrollBar = ScrollFrame.ScrollBar or _G[name .. "ScrollBar"];
+
+    return ScrollFrame;
+end;
+
 -- Widget helpers for methods missing on 3.3.5a (we deliberately don't rely on methods injected by other addons)
 
 ---@param Widget table

@@ -128,7 +128,7 @@ function MailCuts:build()
 
     --[[ SCROLLFRAME BOILERPLATE ]]
     ---@type ScrollFrame
-    local ScrollFrame = CreateFrame("ScrollFrame", nil, Window, "UIPanelScrollFrameTemplate")
+    local ScrollFrame = GL.createScrollFrame(Window)
     ScrollFrame:SetPoint("TOPLEFT", Intro, "TOPLEFT", 0, -20);
     ScrollFrame:SetPoint("LEFT", Window, "LEFT", 4, 0);
     ScrollFrame:SetPoint("BOTTOMRIGHT", Window, "BOTTOMRIGHT", -44, 60);

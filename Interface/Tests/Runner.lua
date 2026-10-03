@@ -257,7 +257,7 @@ function Runner:open(title, stepNamesOrScenarios)
     Title:SetFont(1.25, "OUTLINE");
     Title:SetPoint("TOP", Window, "TOP", 0, -18);
 
-    local ScrollFrame = CreateFrame("ScrollFrame", nil, Window, "UIPanelScrollFrameTemplate");
+    local ScrollFrame = GL.createScrollFrame(Window);
     ScrollFrame:SetPoint("TOP", Title, "BOTTOM", 0, -10);
     ScrollFrame:SetPoint("LEFT", Window, "LEFT", 16, 0);
     ScrollFrame:SetPoint("RIGHT", Window, "RIGHT", -36, 0);
@@ -462,7 +462,7 @@ function Runner:buildLogFrame()
     Title:SetFont(1.25, "OUTLINE");
     Title:SetPoint("TOP", LogFrame, "TOP", 0, -18);
 
-    local ScrollFrame = CreateFrame("ScrollFrame", nil, LogFrame, "UIPanelScrollFrameTemplate");
+    local ScrollFrame = GL.createScrollFrame(LogFrame);
     ScrollFrame:SetPoint("TOP", Title, "BOTTOM", 0, -10);
     ScrollFrame:SetPoint("LEFT", LogFrame, "LEFT", 16, 0);
     ScrollFrame:SetPoint("RIGHT", LogFrame, "RIGHT", -36, 0);

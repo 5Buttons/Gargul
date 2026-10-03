@@ -166,7 +166,7 @@ function BidderQueue:build()
 
     --[[ SCROLLFRAME BOILERPLATE ]]
     ---@type ScrollFrame
-    ScrollFrame = CreateFrame("ScrollFrame", nil, Window, "UIPanelScrollFrameTemplate")
+    ScrollFrame = GL.createScrollFrame(Window)
     ScrollFrame:SetPoint("TOPLEFT", Window, "TOPLEFT", 10, -24);
     ScrollFrame:SetPoint("BOTTOMRIGHT", Window, "BOTTOMRIGHT", -19, 24);
 

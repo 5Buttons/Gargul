@@ -319,7 +319,7 @@ function Interface:textArea(Parent, name, width, height)
     height = Parent.height;
     Parent = Parent.Parent;
 
-    local ScrollFrame = CreateFrame("ScrollFrame", nil, Parent, "UIPanelScrollFrameTemplate")
+    local ScrollFrame = GL.createScrollFrame(Parent)
     ScrollFrame:SetPoint("LEFT", Parent, "LEFT", 30, 0);
     ScrollFrame:SetPoint("RIGHT", Parent, "RIGHT", -60, 0);
 

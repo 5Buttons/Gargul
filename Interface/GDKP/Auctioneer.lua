@@ -902,7 +902,7 @@ function AuctioneerUI:buildQueue(Window)
         IncLabel:SetPoint("TOPLEFT", MinLabel, "TOPRIGHT", 6, 0);
 
         --[[ SCROLLFRAME BOILERPLATE ]]
-        ScrollFrame = CreateFrame("ScrollFrame", nil, Queue, "UIPanelScrollFrameTemplate")
+        ScrollFrame = GL.createScrollFrame(Queue)
         ScrollFrame:SetPoint("TOPLEFT", Queue, "TOPLEFT", 16, -32);
         ScrollFrame:SetPoint("BOTTOMRIGHT", Queue, "BOTTOMRIGHT", -44, 44);
 

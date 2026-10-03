@@ -245,7 +245,7 @@ function Auctioneer:build()
     MinLabel:SetPoint("TOPRIGHT", IncLabel, "TOPLEFT", -20, 0);
 
     --[[ SCROLLFRAME BOILERPLATE ]]
-    ScrollFrame = CreateFrame("ScrollFrame", nil, Window, "UIPanelScrollFrameTemplate")
+    ScrollFrame = GL.createScrollFrame(Window)
     ScrollFrame:SetPoint("TOP", SelectAll, "BOTTOM", 0, -10);
     ScrollFrame:SetPoint("BOTTOM", Window, "BOTTOM", 0, 100);
     ScrollFrame:SetPoint("LEFT", Window, "LEFT", 16, 0);
