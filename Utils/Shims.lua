@@ -185,6 +185,25 @@ GL.createScrollFrame = function (Parent)
     return ScrollFrame;
 end;
 
+--- FontStrings and Textures can't receive mouse events on 3.3.5a (no EnableMouse/HookScript).
+--- Returns the region itself when it can, or an invisible mouse-enabled frame covering it otherwise
+---@param Region table
+---@return table
+GL.mouseRegionFor = function (Region)
+    if (Region.HookScript) then
+        return Region;
+    end
+
+    if (not Region._mouseFrame) then
+        local MouseFrame = CreateFrame("Frame", nil, Region:GetParent());
+        MouseFrame:SetAllPoints(Region);
+        MouseFrame:EnableMouse(true);
+        Region._mouseFrame = MouseFrame;
+    end
+
+    return Region._mouseFrame;
+end;
+
 -- Widget helpers for methods missing on 3.3.5a (we deliberately don't rely on methods injected by other addons)
 
 ---@param Widget table

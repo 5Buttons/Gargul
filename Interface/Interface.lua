@@ -897,10 +897,11 @@ function Interface:createCheckbox(Parent, name, checked, label, tooltip, callbac
         Label:SetPoint("CENTER", Checkbox, "CENTER");
         Label:SetPoint("LEFT", Checkbox, "RIGHT", 4, 0);
 
-        -- Not available in Era at time of writing
-        if (Label.EnableMouse) then
-            Label:EnableMouse(true);
-            Label:HookScript("OnMouseDown", Checkbox.toggle);
+        -- Not available in Era at time of writing (nor on 3.3.5a, mouseRegionFor covers the label with a frame)
+        local LabelMouseTarget = GL.mouseRegionFor(Label);
+        if (LabelMouseTarget.EnableMouse) then
+            LabelMouseTarget:EnableMouse(true);
+            LabelMouseTarget:HookScript("OnMouseDown", Checkbox.toggle);
         end
         Checkbox.Label = Label;
 
@@ -1458,7 +1459,7 @@ function Interface:addTooltip(Owner, Lines, anchor)
         end
     end
 
-    local Target = Owner.frame and Owner.frame or Owner;
+    local Target = GL.mouseRegionFor(Owner.frame and Owner.frame or Owner);
 
     -- Make sure mouse events are enabled
     if (Target.EnableMouse) then
