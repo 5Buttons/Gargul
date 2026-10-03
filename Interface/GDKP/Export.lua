@@ -3,7 +3,7 @@ local L = Gargul_L;
 ---@type GL
 local _, GL = ...;
 
-local AceGUI = LibStub("AceGUI-3.0");
+local AceGUI = GL.AceGUI;
 
 ---@type DB
 local DB = GL.DB;

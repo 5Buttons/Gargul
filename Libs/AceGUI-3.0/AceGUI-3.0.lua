@@ -222,11 +222,6 @@ function AceGUI:Release(widget)
 	widget.height = nil
 	widget.relHeight = nil
 	widget.noAutoHeight = nil
-	-- Gargul (3.3.5a): forget the last known size (see sizeChanged) so recycled widgets resize properly
-	widget.frame._lastResizeWidth, widget.frame._lastResizeHeight = nil, nil
-	if widget.content then
-		widget.content._lastResizeWidth, widget.content._lastResizeHeight = nil, nil
-	end
 	widget.frame:ClearAllPoints()
 	widget.frame:Hide()
 	widget.frame:SetParent(UIParent)
@@ -516,28 +511,9 @@ do
 		end
 	end
 
-	-- Gargul (3.3.5a): the 3.3.5a client fires OnSizeChanged for sub-pixel rounding differences (e.g. with a
-	-- non-default UI scale and while moving a window). Every event re-runs the complete layout of the window,
-	-- which cascades into seconds of layout work. Only react to actual size changes.
-	local function sizeChanged(this)
-		local width, height = this:GetWidth(), this:GetHeight()
-		local lastWidth, lastHeight = this._lastResizeWidth, this._lastResizeHeight
-
-		if lastWidth and math.abs(width - lastWidth) < .5 and math.abs(height - lastHeight) < .5 then
-			return false
-		end
-
-		this._lastResizeWidth, this._lastResizeHeight = width, height
-		return true
-	end
-
 	local function FrameResize(this, width, height) -- backwards compatibility
 		local self = this.obj
 		if this:GetWidth() and this:GetHeight() then
-			if not sizeChanged(this) then
-				return
-			end
-
 			if self.OnWidthSet then
 				self:OnWidthSet(width or this:GetWidth())
 			end
@@ -549,10 +525,6 @@ do
 
 	local function ContentResize(this)
 		if this:GetWidth() and this:GetHeight() then
-			if not sizeChanged(this) then
-				return
-			end
-
 			this.width = this:GetWidth()
 			this.height = this:GetHeight()
 			this.obj:DoLayout()
