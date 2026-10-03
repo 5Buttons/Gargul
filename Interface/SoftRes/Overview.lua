@@ -350,7 +350,13 @@ function Overview:refreshDetailsFrame()
         local Item = GL:getCachedItem(itemID);
 
         -- This should never be possible, but you never know what those weirdos are up to nowadays
-        if (not Item) then
+        -- 3.3.5a: SoftRes:draw() continues when the server didn't answer an item query in time
+        if (not Item and GL.isLegacy) then
+            Item = {
+                icon = "Interface\\Icons\\INV_Misc_QuestionMark",
+                link = "item:" .. itemID,
+            };
+        elseif (not Item) then
             GL:error(L["Something went wrong!"]);
             return false;
         end

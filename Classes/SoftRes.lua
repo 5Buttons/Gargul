@@ -378,8 +378,9 @@ function SoftRes:materializeData()
 
             for _, itemID in pairs(SoftResEntry.Items or {}) do
                 if (GL:higherThanZero(itemID)) then
+                    -- 3.3.5a only knows the item type of cached items, existence is checked when loading them in draw()
                     local _, itemType = GL.GetItemInfoInstant(itemID);
-                    if (not itemType) then
+                    if (not itemType and not GL.isLegacy) then
                         self:clearCorrupted();
                         return false;
                     end
@@ -460,16 +461,34 @@ function SoftRes:draw()
 
     -- Show the soft-reserve overview after all items are loaded
     -- This is to ensure that all item data is available before we draw the UI
-    GL:onItemLoadDo(
-        self.MaterializedData.ReservedItemIDs or {},
-        function (_, error)
-            if (not error) then
-                return GL.Interface.SoftRes.Overview:draw();
-            end
+    local attempts = 0;
+    local function loadItemsAndDraw()
+        attempts = attempts + 1;
 
-            self:clearCorrupted();
-        end
-    );
+        GL:onItemLoadDo(
+            self.MaterializedData.ReservedItemIDs or {},
+            function (_, error)
+                if (not error) then
+                    return GL.Interface.SoftRes.Overview:draw();
+                end
+
+                if (not GL.isLegacy) then
+                    return self:clearCorrupted();
+                end
+
+                -- 3.3.5a: item queries go to the server and can be slow, give them another go
+                if (attempts < 3) then
+                    return loadItemsAndDraw();
+                end
+
+                -- Better an overview with a few unknown items than no SoftRes at all
+                GL:warning(error);
+                GL.Interface.SoftRes.Overview:draw();
+            end
+        );
+    end
+
+    loadItemsAndDraw();
 end
 
 --- Empty values are returned as nil so callers can skip them
