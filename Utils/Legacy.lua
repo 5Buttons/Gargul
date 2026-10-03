@@ -735,7 +735,13 @@ GL.Item = {
     end,
     CreateFromItemLink = function (_, itemLink)
         local itemID = tonumber(tostring(itemLink):match("item:(%-?%d+)"));
-        return setmetatable({ itemID = itemID, itemLink = itemID and itemLink or nil, }, ItemObject);
+
+        -- Callers sometimes pass an item ID as a string (e.g. "45470" from SoftRes data)
+        if (not itemID) then
+            return setmetatable({ itemID = tonumber(itemLink), }, ItemObject);
+        end
+
+        return setmetatable({ itemID = itemID, itemLink = itemLink, }, ItemObject);
     end,
     CreateFromBagAndSlot = function (_, bag, slot)
         local itemLink = GetContainerItemLink(bag, slot);
