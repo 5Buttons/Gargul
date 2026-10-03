@@ -832,7 +832,7 @@ function AuctioneerUI:buildQueue(Window)
         Queue:SetPoint("TOPLEFT", Window, "TOPRIGHT", -2, 0);
         Queue:SetPoint("BOTTOMLEFT", Window, "BOTTOMRIGHT", -2, 0);
         Queue:SetResizable(true);
-        Queue:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
+        Queue:SetBackdrop(GL.BACKDROP_DARK_DIALOG_32_32);
         Interface:restoreDimensions(Queue, nil, 300);
         Interface:resizeBounds(Queue, 240, 1);
         Interface:addResizer(Queue);

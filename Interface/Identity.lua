@@ -57,7 +57,7 @@ GL.Interface.Identity = {
             ---@type Frame
             local Window = CreateFrame("Frame", nil, UIParent, GL.BackdropTemplate);
             Window:SetSize(110, 110);
-            Window:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
+            Window:SetBackdrop(GL.BACKDROP_DARK_DIALOG_32_32);
             Interface:addTooltip(Window, Identity.tooltip);
 
             ---@type Texture
@@ -231,7 +231,7 @@ GL.Interface.Identity = {
             ---@type Frame
             local Window = CreateFrame("Frame", nil, UIParent, GL.BackdropTemplate);
             Window:SetSize(110, 110);
-            Window:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
+            Window:SetBackdrop(GL.BACKDROP_DARK_DIALOG_32_32);
             Interface:addTooltip(Window, Identity.tooltip);
 
             ---@type Texture
@@ -386,7 +386,7 @@ GL.Interface.Identity = {
             ---@type Frame
             local Window = CreateFrame("Frame", nil, UIParent, GL.BackdropTemplate);
             Window:SetSize(110, 110);
-            Window:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
+            Window:SetBackdrop(GL.BACKDROP_DARK_DIALOG_32_32);
             Interface:addTooltip(Window, Identity.tooltip);
 
             ---@type Texture
@@ -509,7 +509,7 @@ GL.Interface.Identity = {
             ---@type Frame
             local Window = CreateFrame("Frame", nil, UIParent, GL.BackdropTemplate);
             Window:SetSize(110, 110);
-            Window:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
+            Window:SetBackdrop(GL.BACKDROP_DARK_DIALOG_32_32);
             Interface:addTooltip(Window, Identity.tooltip);
 
             ---@type Texture

@@ -121,6 +121,46 @@ GL.getMasterLooterFrame = function ()
     return _G.MasterLooterFrame;
 end;
 
+--- BACKDROP_* constants don't exist on 3.3.5a
+GL.BACKDROP_DARK_DIALOG_32_32 = _G.BACKDROP_DARK_DIALOG_32_32 or {
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+    tile = true,
+    tileSize = 32,
+    edgeSize = 32,
+    insets = { left = 11, right = 12, top = 12, bottom = 11, },
+};
+
+--- MaximizeMinimizeButtonFrameTemplate doesn't exist on 3.3.5a, build the same structure:
+--- a container with a .MinimizeButton and a .MaximizeButton child
+---@param name string
+---@param Parent table
+---@return table
+GL.createMaximizeMinimizeButton = function (name, Parent)
+    if (not GL.isLegacy) then
+        return CreateFrame("Button", name, Parent, "MaximizeMinimizeButtonFrameTemplate");
+    end
+
+    local Container = CreateFrame("Frame", name, Parent);
+
+    local function createButton(suffix, icon)
+        local Button = CreateFrame("Button", name .. suffix, Container);
+        Button:SetSize(16, 16);
+        Button:SetPoint("CENTER", Container, "CENTER", 0, 0);
+        Button:SetNormalTexture(("Interface\\Buttons\\UI-%sButton-Up"):format(icon));
+        Button:SetPushedTexture(("Interface\\Buttons\\UI-%sButton-Down"):format(icon));
+        Button:SetHighlightTexture("Interface\\Buttons\\UI-PlusButton-Hilight", "ADD");
+
+        return Button;
+    end
+
+    Container.MinimizeButton = createButton(".MinimizeButton", "Minus");
+    Container.MaximizeButton = createButton(".MaximizeButton", "Plus");
+    Container.MaximizeButton:Hide();
+
+    return Container;
+end;
+
 -- Widget helpers for methods missing on 3.3.5a (we deliberately don't rely on methods injected by other addons)
 
 ---@param Widget table

@@ -541,7 +541,7 @@ function Interface:addMinimizeButton(Element, title)
     MinimizedWindow:SetMovable(true);
     MinimizedWindow:SetClampedToScreen(true);
     MinimizedWindow:SetSize(200, 50);
-    MinimizedWindow:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
+    MinimizedWindow:SetBackdrop(GL.BACKDROP_DARK_DIALOG_32_32);
     MinimizedWindow:SetFrameStrata("FULLSCREEN_DIALOG");
     MinimizedWindow:SetFrameLevel(100);
     MinimizedWindow:EnableMouse(true);
@@ -573,7 +573,7 @@ function Interface:addMinimizeButton(Element, title)
     self:addResizer(MinimizedWindow);
 
     ---@type Button
-    local Minimize = CreateFrame("Button", Element:GetName() .. ".Minimize", Element, "MaximizeMinimizeButtonFrameTemplate");
+    local Minimize = GL.createMaximizeMinimizeButton(Element:GetName() .. ".Minimize", Element);
     Minimize:SetPoint("TOPRIGHT", Element, "TOPRIGHT", -13, 4);
     Minimize:SetSize(29, 29);
     self:addTooltip(Minimize.MinimizeButton, L["Minimize"]);
@@ -620,7 +620,7 @@ end
 ---@return nil
 function Interface:addMaximizeButton(Element, Opens)
     ---@type Frame
-    local Maximize = CreateFrame("Button", Element:GetName() .. ".Maximize", Element, "MaximizeMinimizeButtonFrameTemplate");
+    local Maximize = GL.createMaximizeMinimizeButton(Element:GetName() .. ".Maximize", Element);
     Maximize:SetPoint("TOPRIGHT", Element, "TOPRIGHT", -13, 4);
     Maximize:SetSize(29, 29);
     self:addTooltip(Maximize.MaximizeButton, L["Maximize"]);
@@ -751,7 +751,7 @@ function Interface:createWindow(
     end
 
     if (template ~= false) then
-        Window:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
+        Window:SetBackdrop(GL.BACKDROP_DARK_DIALOG_32_32);
     end
 
     Window:SetClampedToScreen(true);
