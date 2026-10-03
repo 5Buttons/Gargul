@@ -3,7 +3,7 @@ local L = Gargul_L;
 ---@type GL
 local _, GL = ...;
 
-local AceGUI = GL.AceGUI;
+local AceGUI = LibStub("AceGUI-3.0");
 
 ---@type Data
 local Constants = GL.Data.Constants;
@@ -340,6 +340,7 @@ function Overview:build()
 
     local ScrollFrameHolder = AceGUI:Create("InlineGroup");
     ScrollFrameHolder:SetLayout("FILL")
+    ScrollFrameHolder:SetAutoAdjustHeight(false); -- Fixed height: Fill + auto height grows forever on 3.3.5a
     ScrollFrameHolder:SetFullWidth(true)
     ScrollFrameHolder:SetFullHeight(true)
     SecondColumn:AddChild(ScrollFrameHolder);

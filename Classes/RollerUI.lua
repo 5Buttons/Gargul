@@ -940,6 +940,7 @@ function RollerUI:showRollAcceptedNotification(anchorFrame)
 
     local RollAcceptedNotification = GL.AceGUI:Create("InlineGroup");
     RollAcceptedNotification:SetLayout("Fill");
+    RollAcceptedNotification:SetAutoAdjustHeight(false); -- Fixed height: Fill + auto height grows forever on 3.3.5a
     RollAcceptedNotification:SetWidth(150);
     RollAcceptedNotification:SetHeight(50);
     RollAcceptedNotification.frame:SetParent(UIParent);

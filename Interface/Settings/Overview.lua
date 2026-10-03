@@ -158,6 +158,7 @@ function Overview:draw(section, onCloseCallback)
 
     local ScrollFrameHolder = AceGUI:Create("InlineGroup");
     ScrollFrameHolder:SetLayout("FILL")
+    ScrollFrameHolder:SetAutoAdjustHeight(false); -- Fixed height: Fill + auto height grows forever on 3.3.5a
     ScrollFrameHolder:SetWidth(556);
     ScrollFrameHolder:SetHeight(480);
     SecondColumn:AddChild(ScrollFrameHolder);

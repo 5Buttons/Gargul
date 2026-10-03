@@ -96,6 +96,7 @@ function Overview:draw()
     ]]
     local HardReserveFrame = AceGUI:Create("InlineGroup");
     HardReserveFrame:SetLayout("FILL")
+    HardReserveFrame:SetAutoAdjustHeight(false); -- Fixed height: Fill + auto height grows forever on 3.3.5a
     HardReserveFrame:SetHeight(50);
     HardReserveFrame:SetWidth(250);
     FirstColumn:AddChild(HardReserveFrame);
@@ -123,6 +124,7 @@ function Overview:draw()
     ]]
     local SecondColumn = AceGUI:Create("InlineGroup");
     SecondColumn:SetLayout("FILL")
+    SecondColumn:SetAutoAdjustHeight(false); -- Fixed height: Fill + auto height grows forever on 3.3.5a
     SecondColumn:SetWidth(300);
     SecondColumn:SetHeight(350);
     GL.Interface:set(self, "SecondColumn", SecondColumn);

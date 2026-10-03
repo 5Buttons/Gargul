@@ -304,6 +304,7 @@ end
 function Bidder:showBidDeniedNotification(Window)
     local BidDeniedNotification = GL.AceGUI:Create("InlineGroup");
     BidDeniedNotification:SetLayout("Fill");
+    BidDeniedNotification:SetAutoAdjustHeight(false); -- Fixed height: Fill + auto height grows forever on 3.3.5a
     BidDeniedNotification:SetWidth(150);
     BidDeniedNotification:SetHeight(50);
     BidDeniedNotification.frame:SetParent(Window);
