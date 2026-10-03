@@ -778,6 +778,64 @@ end;
 --- Not available on 3.3.5a
 GL.FlashClientIcon = function () end;
 
+--[[ DIAGNOSTICS ]]
+
+--- Print Gargul's (and its libraries') most CPU intensive functions. Requires /console scriptProfile 1 + reload
+---@param action? string "reset" resets the counters
+function GL:printCPUProfile(action)
+    if (GetCVar("scriptProfile") ~= "1") then
+        return print("|cFFF7922EGargul:|r enable profiling first: /console scriptProfile 1, then /reload");
+    end
+
+    if (action == "reset") then
+        ResetCPUUsage();
+        return print("|cFFF7922EGargul:|r CPU counters reset");
+    end
+
+    local Results, Visited = {}, {};
+
+    local function collect(Tbl, path, depth)
+        if (Visited[Tbl] or depth > 6) then
+            return;
+        end
+        Visited[Tbl] = true;
+
+        for key, value in pairs(Tbl) do
+            if (type(key) == "string") then
+                local valueType = type(value);
+
+                if (valueType == "function") then
+                    local own = GetFunctionCPUUsage(value, false);
+
+                    if (own > 1) then
+                        tinsert(Results, {
+                            path = path .. key,
+                            own = own,
+                            total = GetFunctionCPUUsage(value, true),
+                        });
+                    end
+                elseif (valueType == "table" and not value.GetObjectType) then
+                    collect(value, path .. key .. ".", depth + 1);
+                end
+            end
+        end
+    end
+
+    collect(GL, "GL.", 1);
+    for name, Lib in LibStub:IterateLibraries() do
+        collect(Lib, name .. ":", 1);
+    end
+
+    UpdateAddOnCPUUsage();
+    print(("|cFFF7922EGargul:|r addon total %.0f ms. Top functions (own / incl. calls, ms):"):format(GetAddOnCPUUsage("Gargul")));
+
+    table.sort(Results, function (a, b) return a.own > b.own; end);
+    for index = 1, math.min(15, #Results) do
+        local Result = Results[index];
+        print(("%2d. %.0f / %.0f  %s"):format(index, Result.own, Result.total, Result.path));
+    end
+end
+
 --- LibUIDropDownMenu-4.0 doesn't load on 3.3.5a. This stand-in mimics its method-style API
 --- (LibDD:UIDropDownMenu_SetWidth(...) etc.) by forwarding to the native UIDropDownMenu functions
 GL.LibDD = setmetatable({
