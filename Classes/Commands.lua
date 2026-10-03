@@ -19,7 +19,6 @@ GL.Commands = GL.Commands or {
         autoroll = "Open the Auto Roll rules window. Add item rules to automatically roll need, greed or pass when a Gargul roll is announced (does not work with group loot rolls).",
         boostedrolls = "Open the Boosted Rolls UI that allows you to easily manage roll boosts.",
         bugreport = "Include the output of this command when filing a bug report on the Gargul discord server",
-        cpu = "Show Gargul's most CPU intensive functions (requires /console scriptProfile 1 and a reload). Use /gl cpu reset to reset the counters",
         commtrace = "Export Gargul's recorded comm traffic for support/debugging (enable the recorder in Settings > Advanced first). Use /gl commtrace, /gl commtrace prev, or /gl commtrace clear",
         clearplusones = "Clear all plus one values",
         cleardisenchanter = "Clear the disenchanter entry so you can pick a new one the next time around",
@@ -243,9 +242,6 @@ GL.Commands = GL.Commands or {
 
         -- Dump all globals for API availability tracking. Run in each client.
         dumpglobals = function () GL:dumpGlobals(); end,
-
-        -- Show the most CPU intensive functions (requires script profiling)
-        cpu = function (...) GL:printCPUProfile(...); end,
 
         -- Open the GDKP overview
         gdkp = function () GL.Interface.GDKP.Overview:open(); end,
