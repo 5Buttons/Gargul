@@ -63,8 +63,7 @@ function PackMule:_init()
 
     -- Check whether the user is in a heroic instance
     -- More info about difficultyIDs: https://wowpedia.fandom.com/wiki/DifficultyID
-    local _, _, difficultyID = GetInstanceInfo();
-    self.playerIsInHeroicInstance = GL:inTable({ 2, 174, }, difficultyID);
+    self.playerIsInHeroicInstance = GL.isInHeroicInstance();
 
     self.Rules = Settings:get("PackMule.Rules");
 
@@ -133,9 +132,9 @@ function PackMule:_init()
             return;
         end
 
-        local slotType = GetLootSlotType(1);
+        local slotType = GL.GetLootSlotType(1);
         if (slotType == GL.LOOT_SLOT_MONEY) then
-            local guid = GetLootSourceInfo(1);
+            local guid = GL.GetLootSourceInfo(1);
 
             -- Exclude gold from items (lockboxes etc)
             if (GL:strStartsWith(guid, "Item-")) then
@@ -159,7 +158,7 @@ function PackMule:_init()
         local lootThreshold = GetLootThreshold();
         for itemIndex = GetNumLootItems(), 1, -1 do
             local itemLink = GetLootSlotLink(itemIndex);
-            local _, _, _, _, quality, locked = GetLootSlotInfo(itemIndex);
+            local _, _, _, _, quality, locked = GL.GetLootSlotInfo(itemIndex);
 
             -- We have to make sure that the item is lootable before we attempt to
             if (itemLink and not locked and quality and (not GL.User.isInGroup or quality < lootThreshold)) then
@@ -418,8 +417,7 @@ end
 function PackMule:zoneChanged()
     -- Check whether the user is in a heroic instance
     -- More info about difficultyIDs: https://wowpedia.fandom.com/wiki/DifficultyID
-    local _, _, difficultyID = GetInstanceInfo();
-    self.playerIsInHeroicInstance = GL:inTable({ 2, 174, }, difficultyID);
+    self.playerIsInHeroicInstance = GL.isInHeroicInstance();
 end
 
 ---@param itemIndex number
@@ -634,7 +632,7 @@ function PackMule:lootReady()
 
     for itemIndex = GetNumLootItems(), 1, -1 do
         (function ()
-            local _, _, _, _, _, locked = GetLootSlotInfo(itemIndex);
+            local _, _, _, _, _, locked = GL.GetLootSlotInfo(itemIndex);
 
             -- Locked means that you aren't able to loot it (tinted red)
             if (locked) then
@@ -667,7 +665,7 @@ function PackMule:lootReady()
 
                 target = GL:formatPlayerName(target);
                 for playerIndex = 1, GL.GetNumGroupMembers() do
-                    if (GL:iEquals(GetMasterLootCandidate(itemIndex, playerIndex) or "", target)) then
+                    if (GL:iEquals(GL.GetMasterLootCandidate(itemIndex, playerIndex) or "", target)) then
                         self:giveMasterLoot(itemIndex, playerIndex, itemLink, target);
                         return;
                     end
@@ -1283,7 +1281,7 @@ function PackMule:assignLootToPlayer(itemID, playerName)
     -- Try to determine the index of the player who should receive it
     local playerIndex = false;
     for _, Player in pairs(GL.User:groupMembers()) do
-        local candidate = GetMasterLootCandidate(itemIndex, Player.index);
+        local candidate = GL.GetMasterLootCandidate(itemIndex, Player.index);
 
         if (candidate) then
             candidate = GL:addRealm(candidate);

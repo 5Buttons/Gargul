@@ -362,6 +362,11 @@ function TradeWindow:handleEvents(event, ...)
     if (event == "UI_INFO_MESSAGE") then
         local _, message = ...;
 
+        -- 3.3.5a only passes the message
+        if (GL.isLegacy) then
+            message = ...;
+        end
+
         -- Trade was successful
         if (message == ERR_TRADE_COMPLETE) then
             -- Check the value of the "Announce trade" checkbox in the trade frame
@@ -405,7 +410,17 @@ function TradeWindow:handleEvents(event, ...)
 
         -- Start listening for gold dropped via cursor
         local moneyBefore = 0;
+        local previousCursorType = GL.Enum.UICursorType.Default;
         Events:register(CURSOR_CHANGED_LISTENER_ID, "CURSOR_CHANGED", function (_, _, newCursorType, oldCursorType)
+            -- 3.3.5a: CURSOR_UPDATE has no arguments, determine the cursor types ourselves
+            if (GL.isLegacy) then
+                oldCursorType = previousCursorType;
+                newCursorType = (GetCursorMoney() or 0) > 0 and GL.Enum.UICursorType.Money
+                    or (GetCursorInfo() and GL.Enum.UICursorType.Item)
+                    or GL.Enum.UICursorType.Default;
+                previousCursorType = newCursorType;
+            end
+
             -- Player picked up gold
             if (oldCursorType == GL.Enum.UICursorType.Default and newCursorType == GL.Enum.UICursorType.Money) then
                 moneyBefore = GetPlayerTradeMoney();

@@ -192,7 +192,7 @@ function DroppedLootLedger:lootOpened()
     for lootIndex = 1, GetNumLootItems() do
         local result = (function ()
             -- Make sure we don't override sourceGUID with false/nil if it was already set!
-            sourceGUID = sourceGUID or GetLootSourceInfo(lootIndex);
+            sourceGUID = sourceGUID or GL.GetLootSourceInfo(lootIndex);
 
             -- We've already fully processed this mop
             if (not sourceGUID or self.ProcessedNPCIDs[sourceGUID]) then

@@ -313,7 +313,7 @@ function GL:sendChatMessage(message, chatType, language, channel, stw, pretend)
             message,
             chatType,
             language,
-            channel
+            chatType == "WHISPER" and GL.nameForAPI(channel) or channel
         );
     end
 

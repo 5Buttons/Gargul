@@ -36,7 +36,7 @@ function Player.fromID(GUID)
     self.localizedClass, self.class, self.localizedRace, self.race, self.gender, self.name, self.realm = GetPlayerInfoByGUID(self.id);
     self.realm = not GL:empty(self.realm) and self.realm or GL.User.realm;
     self.fqn = GL:addRealm(self.name, self.realm);
-    self.race = strlower(self.race);
+    self.race = self.race and strlower(self.race);
 
     -- The GUID turns out to be invalid, destroy the player object
     if (not self.name or not type(self.name) == "string") then
@@ -116,7 +116,7 @@ function Player:hasAssist(playerNameOrID)
 
     local playerName = playerNameOrID;
     local realm, _;
-    if (GL:strStartsWith(playerNameOrID, "Player-")) then
+    if (GL.isPlayerGUID(playerNameOrID)) then
         _, _, _, _, _, playerName, realm = GetPlayerInfoByGUID(playerNameOrID);
         playerName = GL:formatPlayerName(playerName, { realm = realm, });
     else
@@ -157,7 +157,7 @@ function Player:hasLead(playerNameOrID)
 
     local playerName = playerNameOrID;
     local realm, _;
-    if (GL:strStartsWith(playerNameOrID, "Player-")) then
+    if (GL.isPlayerGUID(playerNameOrID)) then
         _, _, _, _, _, playerName, realm = GetPlayerInfoByGUID(playerNameOrID);
         playerName = GL:formatPlayerName(playerName, { realm = realm, });
     end
@@ -196,7 +196,7 @@ function Player:isMasterLooter(playerNameOrID)
 
     local playerName = playerNameOrID;
     local realm, _;
-    if (GL:strStartsWith(playerNameOrID, "Player-")) then
+    if (GL.isPlayerGUID(playerNameOrID)) then
         _, _, _, _, _, playerName, realm = GetPlayerInfoByGUID(playerNameOrID);
         playerName = GL:formatPlayerName(playerName, { realm = realm, });
     else

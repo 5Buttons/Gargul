@@ -392,7 +392,7 @@ function Export:exportAuctionsToCustomFormat(Session, Auctions)
                 local Values = {
                     ["@ID"] = Auction.itemID,
                     ["@LINK"] = ItemDetails.link:gsub("\124","\124\124"),
-                    ["@ITEM"] = C_Item.GetItemNameByID and C_Item.GetItemNameByID(ItemDetails.link) or ItemDetails.name,
+                    ["@ITEM"] = GL.C_Item.GetItemNameByID and GL.C_Item.GetItemNameByID(ItemDetails.link) or ItemDetails.name,
                     ["@ILVL"] = ItemDetails.level,
                     ["@QUALITY"] = ItemDetails.quality,
                     ["@GOLD"] = Auction.price,

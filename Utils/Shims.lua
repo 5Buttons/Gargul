@@ -21,6 +21,10 @@ GL.GetCoinTextureString = GetCoinTextureString or C_CurrencyInfo.GetCoinTextureS
 GL.GetItemInfo = GL.GetItemInfo or GetItemInfo or C_Item.GetItemInfo;
 GL.GetItemInfoInstant = GL.GetItemInfoInstant or GetItemInfoInstant or C_Item.GetItemInfoInstant;
 
+GL.Item = GL.Item or Item;
+GL.ItemLocation = GL.ItemLocation or ItemLocation;
+GL.C_Item = GL.C_Item or C_Item;
+
 -- Enums
 GL.Enum = GL.Enum or Enum;
 
@@ -35,6 +39,21 @@ GL.UnitIsGroupLeader = GL.UnitIsGroupLeader or UnitIsGroupLeader;
 GL.UnitIsGroupAssistant = GL.UnitIsGroupAssistant or UnitIsGroupAssistant;
 GL.GetRaidRosterInfo = GL.GetRaidRosterInfo or GetRaidRosterInfo;
 GL.IsMasterLooter = GL.IsMasterLooter or IsMasterLooter;
+
+-- Loot
+GL.LOOT_SLOT_ITEM = GL.LOOT_SLOT_ITEM or LOOT_SLOT_ITEM;
+GL.LOOT_SLOT_CURRENCY = GL.LOOT_SLOT_CURRENCY or LOOT_SLOT_CURRENCY;
+GL.GetLootSlotInfo = GL.GetLootSlotInfo or function (...) return GetLootSlotInfo(...); end;
+GL.GetLootSlotType = GL.GetLootSlotType or function (...) return GetLootSlotType(...); end;
+GL.GetLootSourceInfo = GL.GetLootSourceInfo or function (...) return GetLootSourceInfo(...); end;
+GL.GetMasterLootCandidate = GL.GetMasterLootCandidate or function (...) return GetMasterLootCandidate(...); end;
+
+--- More info about difficultyIDs: https://wowpedia.fandom.com/wiki/DifficultyID
+---@return boolean
+GL.isInHeroicInstance = GL.isInHeroicInstance or function ()
+    local _, _, difficultyID = GetInstanceInfo();
+    return GL:inTable({ 2, 174, }, difficultyID);
+end;
 
 -- Guild
 GL.CanEditOfficerNote = GL.CanEditOfficerNote or function ()
@@ -73,6 +92,34 @@ if (not GL.isLegacy) then
     GL.BackdropTemplate = BackdropTemplateMixin and "BackdropTemplate" or nil;
 end
 GL.LibDD = GL.LibDD or LibStub:GetLibrary("LibUIDropDownMenu-4.0", true);
+
+--- 3.3.5a doesn't accept same-realm "Name-Realm" targets for whispers (chat or addon), strip our own realm
+---@param name string
+---@return string
+GL.nameForAPI = function (name)
+    if (not GL.isLegacy or type(name) ~= "string") then
+        return name;
+    end
+
+    local nameOnly, realm = name:match("^(.-)%-(.+)$");
+    if (not nameOnly
+        or strlower((realm:gsub("[%s%-]", ""))) ~= strlower(GL.User.realm or "")
+    ) then
+        return name;
+    end
+
+    return nameOnly;
+end;
+
+--- The frame showing master loot candidates. 3.3.5a uses a dropdown (GroupLootDropDown) instead of MasterLooterFrame
+---@return table
+GL.getMasterLooterFrame = function ()
+    if (GL.isLegacy) then
+        return _G.DropDownList1;
+    end
+
+    return _G.MasterLooterFrame;
+end;
 
 -- Widget helpers for methods missing on 3.3.5a (we deliberately don't rely on methods injected by other addons)
 

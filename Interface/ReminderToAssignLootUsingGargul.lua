@@ -36,6 +36,7 @@ function ReminderToAssignLootUsingGargul:draw()
             self:close();
         end
     end);
+    local MasterLooterFrame = GL.getMasterLooterFrame();
     Window.frame:SetParent(MasterLooterFrame);
     GL.Interface:set(self, "Window", Window);
 

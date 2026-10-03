@@ -61,7 +61,7 @@ function DroppedLoot:_init()
         end
     end);
 
-    MasterLooterFrame:HookScript("OnHide", function ()
+    GL.getMasterLooterFrame():HookScript("OnHide", function ()
         GL.Interface.ReminderToAssignLootUsingGargul:close();
     end);
 
@@ -277,10 +277,10 @@ function DroppedLoot:announce(Modifiers)
     Modifiers = Modifiers or {};
     local Functions = Modifiers.Functions or {
         GetNumLootItems = GetNumLootItems,
-        GetLootSlotInfo = GetLootSlotInfo,
+        GetLootSlotInfo = GL.GetLootSlotInfo,
         GetLootSlotLink = GetLootSlotLink,
-        GetLootSlotType = GetLootSlotType,
-        GetLootSourceInfo = GetLootSourceInfo,
+        GetLootSlotType = GL.GetLootSlotType,
+        GetLootSourceInfo = GL.GetLootSourceInfo,
     };
 
     -- The sourceGUID is something we use to make sure
@@ -320,7 +320,7 @@ function DroppedLoot:announce(Modifiers)
             end
 
             -- Make sure we're dealing with an actual item, not currency for example
-            if (Functions.GetLootSlotType(lootIndex) ~= LOOT_SLOT_ITEM) then
+            if (Functions.GetLootSlotType(lootIndex) ~= GL.LOOT_SLOT_ITEM) then
                 return;
             end
 
@@ -437,10 +437,10 @@ function DroppedLoot:announceTest(...)
                     local itemLink = Details[slot].link or "";
 
                     if (GL:strContains(itemLink, "Hcurrency:")) then
-                        return LOOT_SLOT_CURRENCY;
+                        return GL.LOOT_SLOT_CURRENCY;
                     end
 
-                    return LOOT_SLOT_ITEM;
+                    return GL.LOOT_SLOT_ITEM;
                 end,
                 GetLootSourceInfo = function () return GL:uuid() end,
             }

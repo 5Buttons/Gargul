@@ -80,7 +80,7 @@ function Auctioneer:fillFromInventory(minimumQuality, minimumItemLevel, includeB
     minimumItemLevel = minimumItemLevel or -1;
 
     GL:forEachItemInBags(function (Location, bag, slot)
-        local itemQuality = tonumber(C_Item.GetItemQuality(Location));
+        local itemQuality = tonumber(GL.C_Item.GetItemQuality(Location));
         if (not itemQuality) then
             return;
         end
@@ -91,15 +91,15 @@ function Auctioneer:fillFromInventory(minimumQuality, minimumItemLevel, includeB
         end
 
         -- Check if the minimum item level is met
-        local itemLink = C_Item.GetItemLink(Location);
+        local itemLink = GL.C_Item.GetItemLink(Location);
         if (minimumItemLevel > -1
-            and C_Item.GetDetailedItemLevelInfo(itemLink) < minimumItemLevel
+            and GL.C_Item.GetDetailedItemLevelInfo(itemLink) < minimumItemLevel
         ) then
             return;
         end
 
         -- Check if we consider this a sellable item
-        local itemID = C_Item.GetItemID(Location);
+        local itemID = GL.C_Item.GetItemID(Location);
         if (GL:inTable(Constants.ItemsThatShouldntBeAnnounced, itemID)) then
             return;
         end
@@ -137,7 +137,7 @@ function Auctioneer:fillFromInventory(minimumQuality, minimumItemLevel, includeB
         end
 
         -- Check if we want to include previously awarded items
-        local itemGUID = C_Item.GetItemGUID(Location);
+        local itemGUID = GL.C_Item.GetItemGUID(Location);
         if (itemGUID and not includeAwarded and DB:get("RecentlyAwardedItems." .. itemGUID)) then
             return;
         end

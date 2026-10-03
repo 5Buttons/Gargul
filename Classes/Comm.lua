@@ -229,7 +229,7 @@ function Comm:send(CommMessage, broadcastFinishedCallback, packageSentCallback)
     GL.CommRecorder:recordSend(action, priority, distribution, recipient, stringLength, traceID);
     local sendStartedAt = GetTime();
 
-    GL.Ace:SendCommMessage(self.channel, compressedMessage, distribution, recipient, priority, function (_, sent, textlen)
+    GL.Ace:SendCommMessage(self.channel, compressedMessage, distribution, GL.nameForAPI(recipient), priority, function (_, sent, textlen)
         -- Cancel the throttle reset timer if it exists
         if (throttleResetTimer) then
             GL.Ace:CancelTimer(throttleResetTimer);

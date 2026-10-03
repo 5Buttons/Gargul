@@ -242,6 +242,86 @@ GL.CanEditOfficerNote = function ()
     return CanEditOfficerNote() and true or false;
 end;
 
+--[[ LOOT ]]
+
+GL.LOOT_SLOT_ITEM = 1;
+GL.LOOT_SLOT_MONEY = 2;
+GL.LOOT_SLOT_CURRENCY = 3;
+
+--- Modern return order: icon, name, quantity, currencyID, quality, locked, isQuestItem, questID, isActive
+--- 3.3.5a returns: icon, name, quantity, quality, locked
+---@param slot number
+GL.GetLootSlotInfo = function (slot)
+    local icon, name, quantity, quality, locked = _G.GetLootSlotInfo(slot);
+
+    return icon, name, quantity, nil, quality, locked;
+end;
+
+---@param slot number
+---@return number
+GL.GetLootSlotType = function (slot)
+    if (_G.LootSlotIsItem(slot)) then
+        return GL.LOOT_SLOT_ITEM;
+    end
+
+    if (_G.LootSlotIsCoin(slot)) then
+        return GL.LOOT_SLOT_MONEY;
+    end
+
+    return 0;
+end;
+
+--- 3.3.5a can't tell where loot came from. We use the GUID of the dead unit we're targeting, or a
+--- unique ID per loot window otherwise. It's remembered until the loot window closes
+local currentLootSourceGUID;
+local LootSourceResetFrame = CreateFrame("Frame");
+LootSourceResetFrame:RegisterEvent("LOOT_CLOSED");
+LootSourceResetFrame:SetScript("OnEvent", function ()
+    currentLootSourceGUID = nil;
+end);
+
+---@return string
+GL.GetLootSourceInfo = function ()
+    if (not currentLootSourceGUID) then
+        if (UnitExists("target") and UnitIsDead("target")) then
+            currentLootSourceGUID = UnitGUID("target");
+        end
+
+        currentLootSourceGUID = currentLootSourceGUID or ("Legacy-Loot-%.3f"):format(GetTime());
+    end
+
+    return currentLootSourceGUID;
+end;
+
+--- The modern API takes a loot slot as well, 3.3.5a only takes the candidate index
+---@param _ number slot
+---@param index number
+---@return string|nil
+GL.GetMasterLootCandidate = function (_, index)
+    return _G.GetMasterLootCandidate(index);
+end;
+
+--- 3.3.5a difficulty indexes: dungeons 1 = normal, 2 = heroic. Raids 1/2 = 10/25 normal, 3/4 = 10/25 heroic.
+--- Dynamic raids (ICC/RS) keep their size index and report heroic through dynamicDifficulty instead
+---@return boolean
+GL.isInHeroicInstance = function ()
+    local _, instanceType, difficultyIndex, _, _, dynamicDifficulty, isDynamic = GetInstanceInfo();
+
+    if (instanceType == "party") then
+        return difficultyIndex == 2;
+    end
+
+    if (instanceType == "raid") then
+        if (isDynamic) then
+            return dynamicDifficulty == 1;
+        end
+
+        return (difficultyIndex or 0) >= 3;
+    end
+
+    return false;
+end;
+
 --[[ UNITS / CLASSES ]]
 
 local ClassFileToID = {
@@ -485,6 +565,183 @@ GL.GetItemInfoInstant = function (item)
 
     return itemID, itemType, itemSubType, equipLoc, texture, classID, subClassID;
 end;
+
+--[[ ITEM LOCATIONS (bags only) ]]
+
+GL.ItemLocation = {
+    CreateFromBagAndSlot = function (_, bag, slot)
+        return { bagID = bag, slotIndex = slot, };
+    end,
+};
+
+---@param Location table
+---@return string|nil
+local function locationLink(Location)
+    if (type(Location) ~= "table" or not Location.bagID) then
+        return;
+    end
+
+    return GetContainerItemLink(Location.bagID, Location.slotIndex);
+end
+
+--- C_Item stand-in for the location based functions we use. Item GUIDs don't exist on 3.3.5a, we use
+--- "Legacy-bag-slot-itemID" instead: unique at any given time but no longer valid once the item moves
+GL.C_Item = {
+    DoesItemExist = function (Location)
+        return locationLink(Location) ~= nil;
+    end,
+    GetItemLink = locationLink,
+    GetItemID = function (Location)
+        local link = locationLink(Location);
+        return link and tonumber(link:match("item:(%d+)"));
+    end,
+    GetItemGUID = function (Location)
+        local itemID = GL.C_Item.GetItemID(Location);
+
+        if (not itemID) then
+            return;
+        end
+
+        return ("Legacy-%d-%d-%d"):format(Location.bagID, Location.slotIndex, itemID);
+    end,
+    GetItemQuality = function (Location)
+        local link = locationLink(Location);
+        return link and select(3, nativeGetItemInfo(link));
+    end,
+    GetItemIcon = function (Location)
+        return (GetContainerItemInfo(Location.bagID, Location.slotIndex));
+    end,
+    GetDetailedItemLevelInfo = function (item)
+        return (select(4, nativeGetItemInfo(item)));
+    end,
+    GetItemNameByID = function (item)
+        return (nativeGetItemInfo(item));
+    end,
+};
+
+--[[ ITEM OBJECTS (stand-in for Blizzard's ItemMixin) ]]
+
+local ItemObject = {};
+ItemObject.__index = ItemObject;
+
+function ItemObject:IsItemEmpty()
+    return self.itemID == nil;
+end
+
+function ItemObject:GetItemID()
+    return self.itemID;
+end
+
+function ItemObject:GetItemLink()
+    return self.itemLink or select(2, nativeGetItemInfo(self.itemID));
+end
+
+function ItemObject:GetItemName()
+    return (nativeGetItemInfo(self.itemLink or self.itemID));
+end
+
+function ItemObject:GetItemIcon()
+    return select(10, nativeGetItemInfo(self.itemLink or self.itemID));
+end
+
+function ItemObject:GetItemQuality()
+    return select(3, nativeGetItemInfo(self.itemLink or self.itemID));
+end
+
+function ItemObject:GetCurrentItemLevel()
+    return select(4, nativeGetItemInfo(self.itemLink or self.itemID));
+end
+
+function ItemObject:IsItemDataCached()
+    return self.itemID ~= nil and nativeGetItemInfo(self.itemID) ~= nil;
+end
+
+--- Items waiting for server data: itemID => { callbacks }
+local PendingItems = {};
+local PendingSince = {};
+local ITEM_LOAD_TIMEOUT = 10;
+local ItemLoader;
+
+--- Ask the server for item data, 3.3.5a does this when a tooltip shows an uncached item
+---@param itemID number
+local function requestItem(itemID)
+    local Tooltip = GL.getScanTooltip();
+    Tooltip:SetHyperlink("item:" .. itemID);
+end
+
+local function checkPendingItems()
+    local now = GetTime();
+
+    for itemID, Callbacks in pairs(PendingItems) do
+        local cached = nativeGetItemInfo(itemID) ~= nil;
+
+        if (cached or now - PendingSince[itemID] > ITEM_LOAD_TIMEOUT) then
+            PendingItems[itemID] = nil;
+            PendingSince[itemID] = nil;
+
+            -- Like ContinueOnItemLoad, callbacks only fire for items that actually loaded
+            if (cached) then
+                for _, callback in ipairs(Callbacks) do
+                    pcall(callback);
+                end
+            end
+        end
+    end
+
+    if (not next(PendingItems)) then
+        ItemLoader:Hide();
+    end
+end
+
+---@param callback function
+function ItemObject:ContinueOnItemLoad(callback)
+    if (self:IsItemEmpty()) then
+        return;
+    end
+
+    if (self:IsItemDataCached()) then
+        callback();
+        return;
+    end
+
+    if (not ItemLoader) then
+        local throttle = 0;
+        ItemLoader = CreateFrame("Frame");
+        ItemLoader:Hide();
+        ItemLoader:SetScript("OnUpdate", function (_, elapsed)
+            throttle = throttle + elapsed;
+
+            if (throttle >= .1) then
+                throttle = 0;
+                checkPendingItems();
+            end
+        end);
+    end
+
+    if (not PendingItems[self.itemID]) then
+        PendingItems[self.itemID] = {};
+        PendingSince[self.itemID] = GetTime();
+        requestItem(self.itemID);
+    end
+
+    tinsert(PendingItems[self.itemID], callback);
+    ItemLoader:Show();
+end
+
+GL.Item = {
+    CreateFromItemID = function (_, itemID)
+        return setmetatable({ itemID = tonumber(itemID), }, ItemObject);
+    end,
+    CreateFromItemLink = function (_, itemLink)
+        local itemID = tonumber(tostring(itemLink):match("item:(%-?%d+)"));
+        return setmetatable({ itemID = itemID, itemLink = itemID and itemLink or nil, }, ItemObject);
+    end,
+    CreateFromBagAndSlot = function (_, bag, slot)
+        local itemLink = GetContainerItemLink(bag, slot);
+        local itemID = itemLink and tonumber(itemLink:match("item:(%d+)"));
+        return setmetatable({ itemID = itemID, itemLink = itemLink, }, ItemObject);
+    end,
+};
 
 --[[ UI ]]
 

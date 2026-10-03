@@ -230,7 +230,8 @@ Interface/ShortcutKeysLegend.lua
 
 # Alerts
 Interface/Alerts.lua
-Interface/Alerts.xml
+# 3.3.5a: ContainedAlertFrame/mixins do not exist, Interface/Alerts.lua renders its own toasts
+# Interface/Alerts.xml
 
 # Test classes
 Interface/Tests/Runner.lua

@@ -350,10 +350,10 @@ function GL:getCachedItem(itemLinkOrID)
     local itemID = tonumber(itemLinkOrID);
 
     if (itemID) then
-        ItemResult = Item:CreateFromItemID(itemID);
+        ItemResult = GL.Item:CreateFromItemID(itemID);
     else
         itemID = GL:getItemIDFromLink(itemLinkOrID);
-        ItemResult = Item:CreateFromItemLink(itemLinkOrID);
+        ItemResult = GL.Item:CreateFromItemLink(itemLinkOrID);
     end
 
     local NormalizedItem = self:normalizeItem(ItemResult);
@@ -472,7 +472,7 @@ function GL:itemModifiers(itemLinkOrID)
     if (type(itemLinkOrID) == "string") then
         GL.TooltipFrame:SetHyperlink(itemLinkOrID);
     else
-        GL.TooltipFrame:SetItemByID(itemLinkOrID);
+        GL.TooltipFrame:SetHyperlink("item:" .. itemLinkOrID);
     end
 
     -- Attempt to find a matching item modifier
@@ -601,16 +601,16 @@ function GL:itemTradeTimeRemaining(itemLinkOrID)
     local Results = {};
     self:forEachItemInBags(function (Location, bag, slot)
         -- This is not the item we're looking for
-        if (C_Item.GetItemID(Location) ~= itemID) then
+        if (GL.C_Item.GetItemID(Location) ~= itemID) then
             return;
         end
 
         -- This is not the item variant we're looking for
-        if (concernsLink and not GL:iEquals(C_Item.GetItemLink(Location), itemLinkOrID)) then
+        if (concernsLink and not GL:iEquals(GL.C_Item.GetItemLink(Location), itemLinkOrID)) then
             return;
         end
 
-        Results[C_Item.GetItemGUID(Location)] = GL:inventoryItemTradeTimeRemaining(bag, slot);
+        Results[GL.C_Item.GetItemGUID(Location)] = GL:inventoryItemTradeTimeRemaining(bag, slot);
     end);
 
     return Results;
@@ -717,9 +717,9 @@ function GL:onItemLoadDo(Items, callback, haltOnError, sorter)
 
             -- Start loading the item
             if (identifierIsLink) then
-                ItemResult = Item:CreateFromItemLink(itemIdentifier);
+                ItemResult = GL.Item:CreateFromItemLink(itemIdentifier);
             else
-                ItemResult = Item:CreateFromItemID(itemID);
+                ItemResult = GL.Item:CreateFromItemID(itemID);
             end
 
         -- We can't use anything that's not an id or link so we skip it
@@ -731,7 +731,7 @@ function GL:onItemLoadDo(Items, callback, haltOnError, sorter)
         end
 
         if (
-            not itemType -- The item doesn't actually exist in this client
+            (not itemType and not GL.isLegacy) -- The item doesn't actually exist in this client (3.3.5a: or isn't cached yet)
             or ItemResult:IsItemEmpty() -- This is Blizzard's way of saying: this item don't exist fool
             or not ItemResult:GetItemID() -- The item could exist, but not in this client version
         ) then
@@ -780,7 +780,7 @@ function GL:onItemLoadDo(Items, callback, haltOnError, sorter)
             lastError = "Timed out loading item with identifier " .. itemIdentifier;
 
             tryCallback();
-        end, .5);
+        end, GL.isLegacy and 3 or .5); -- 3.3.5a server item queries are slower
     end
 
     ---@param itemLinkOrID string|number
@@ -807,7 +807,7 @@ end
 --- Use return false; in your func if you want to break the loop early
 ---
 ---@param func function
----@test /script _G.Gargul:forEachItemInBags(function (Location) print(C_Item.GetItemID(Location)); end);
+---@test /script _G.Gargul:forEachItemInBags(function (Location) print(_G.Gargul.C_Item.GetItemID(Location)); end);
 function GL:forEachItemInBags(func)
     -- Used to break out of our double loop
     local finished = false;
@@ -815,10 +815,10 @@ function GL:forEachItemInBags(func)
     for bag = GL.Enum.BagIndex.Backpack, GL.Enum.BagIndex.Bag_4 do
         for slot = 1, self.GetContainerNumSlots(bag) do
             (function ()
-                local Location = ItemLocation:CreateFromBagAndSlot(bag, slot);
+                local Location = GL.ItemLocation:CreateFromBagAndSlot(bag, slot);
 
                 -- Item doesn't exist
-                if (not Location or not C_Item.DoesItemExist(Location)) then
+                if (not Location or not GL.C_Item.DoesItemExist(Location)) then
                     return;
                 end
 
@@ -893,7 +893,7 @@ function GL:getBagAndSlotByGUID(itemGUID)
 
     self:forEachItemInBags(function (Location, bag, slot)
         -- This is not the item we're looking for
-        if (C_Item.GetItemGUID(Location) ~= itemGUID) then
+        if (GL.C_Item.GetItemGUID(Location) ~= itemGUID) then
             return;
         end
 
@@ -908,14 +908,14 @@ end
 ---@param slot number
 ---@return boolean|string
 function GL:getItemGUIDByBagAndSlot(bag, slot)
-    local Location = ItemLocation:CreateFromBagAndSlot(bag, slot);
+    local Location = GL.ItemLocation:CreateFromBagAndSlot(bag, slot);
 
     -- Item doesn't exist
-    if (not Location or not C_Item.DoesItemExist(Location)) then
+    if (not Location or not GL.C_Item.DoesItemExist(Location)) then
         return;
     end
 
-    return C_Item.GetItemGUID(Location);
+    return GL.C_Item.GetItemGUID(Location);
 end
 
 --- Check if the item could interest the current player based on SoftRes / TMB data

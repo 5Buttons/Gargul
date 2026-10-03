@@ -128,7 +128,7 @@ function BagInspector:processInspectionResults(CommMessage)
 
     local itemsLoaded = 0;
     for itemID in pairs(ItemIDs) do
-        local item = Item:CreateFromItemID(itemID);
+        local item = GL.Item:CreateFromItemID(itemID);
 
         item:ContinueOnItemLoad(function ()
             itemsLoaded = itemsLoaded + 1;

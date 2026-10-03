@@ -210,6 +210,11 @@ function GL:isGameMessageID(constant, messageID)
         return false;
     end
 
+    -- 3.3.5a has no message IDs, UI_ERROR_MESSAGE passes the (localized) message itself
+    if (GL.isLegacy) then
+        return type(messageID) == "string" and _G[constant] ~= nil and messageID == _G[constant];
+    end
+
     local constantID = GL.DB:get(("Utility.GameMessageIDs.%s.%s"):format(
         GL.tocVersion,
         constant

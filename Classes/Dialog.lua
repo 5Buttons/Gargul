@@ -332,7 +332,7 @@ function Dialog:show(Details, callback)
     if (self.itemLink) then
         -- Check if we can immediately show the dialog or whether
         -- we have to fetch the item details first
-        local ItemResult = Item:CreateFromItemLink(self.itemLink);
+        local ItemResult = GL.Item:CreateFromItemLink(self.itemLink);
         if (not ItemResult:IsItemDataCached()) then
             GL:onItemLoadDo(self.itemLink, function ()
                 ResultFrame = StaticPopup_Show(self.normalizedType, "", "", self, self.AppendFrame);
