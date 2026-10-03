@@ -814,8 +814,10 @@ function GL:printCPUProfile(action)
                             total = GetFunctionCPUUsage(value, true),
                         });
                     end
-                elseif (valueType == "table" and not value.GetObjectType) then
-                    collect(value, path .. key .. ".", depth + 1);
+                -- rawget: never trigger other addons' __index handlers (AceDB/AceLocale error on unknown keys).
+                -- Frames hold their userdata at index 0, skip those
+                elseif (valueType == "table" and rawget(value, 0) == nil) then
+                    pcall(collect, value, path .. key .. ".", depth + 1);
                 end
             end
         end
