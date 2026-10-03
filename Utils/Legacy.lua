@@ -782,7 +782,14 @@ GL.FlashClientIcon = function () end;
 --- (LibDD:UIDropDownMenu_SetWidth(...) etc.) by forwarding to the native UIDropDownMenu functions
 GL.LibDD = setmetatable({
     Create_UIDropDownMenu = function (_, name, parent)
-        return CreateFrame("Frame", name, parent, "UIDropDownMenuTemplate");
+        local DropDown = CreateFrame("Frame", name, parent, "UIDropDownMenuTemplate");
+
+        -- 3.3.5a's template only names its children ($parentText etc.), modern code expects parentKeys
+        for _, key in pairs({ "Text", "Button", "Icon", "Left", "Middle", "Right", }) do
+            DropDown[key] = DropDown[key] or _G[name .. key];
+        end
+
+        return DropDown;
     end,
 }, {
     __index = function (LibDD, key)
