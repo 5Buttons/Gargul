@@ -177,9 +177,9 @@ function UI:createSettingCheckbox(ParentFrame, label, description, onClick)
         onClick(self, checked and true or false)
 
         if checked then
-            PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
+            GL.PlaySound(856) -- GL.SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
         else
-            PlaySound(857) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF
+            GL.PlaySound(857) -- GL.SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF
         end
     end)
 

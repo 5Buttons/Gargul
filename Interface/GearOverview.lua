@@ -36,7 +36,7 @@ local function ageLabel(timestamp)
         return "";
     end
 
-    local seconds = math.max(GetServerTime() - timestamp, 0);
+    local seconds = math.max(GL.GetServerTime() - timestamp, 0);
 
     if (seconds < 60) then
         return L["now"];

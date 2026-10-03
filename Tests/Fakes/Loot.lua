@@ -281,7 +281,7 @@ function Loot:install()
             return 0;
         end
 
-        return _G.LOOT_SLOT_ITEM or (Enum and Enum.LootSlotType and Enum.LootSlotType.Item) or 1;
+        return _G.LOOT_SLOT_ITEM or (GL.Enum and GL.Enum.LootSlotType and GL.Enum.LootSlotType.Item) or 1;
     end;
 
     _G.GetLootSourceInfo = function ()
@@ -434,7 +434,7 @@ function Loot:setMasterLootGroup(players)
     GL.User.isInParty = false;
     GL.User.hasAssist = true;
     GL.User.isLead = true;
-    GL.User.groupSetupChangedAt = GetServerTime();
+    GL.User.groupSetupChangedAt = GL.GetServerTime();
     GL.User.groupMemberNamesCachedAt = -1;
     GL.User.GroupMemberNames = {};
     GL.User.groupMembers = function ()

@@ -718,7 +718,7 @@ function RaidGroups:updateTankAssignmentButton()
     local MainTanksByName = {};
 
     for _, index in pairs(MainTankIndexes) do
-        local name = GetRaidRosterInfo(index);
+        local name = GL.GetRaidRosterInfo(index);
 
         if (name) then
             MainTanksByName[name] = true;
@@ -741,7 +741,7 @@ end
 
 -- Move people recursively based on a list of migrations. The reason
 -- we do this is because it turns out that the client (or server?) starts
--- throttling SetRaidSubgroup/GetRaidRosterInfo when there's too many
+-- throttling SetRaidSubgroup/GL.GetRaidRosterInfo when there's too many
 -- in rapid succession. The raider index also changes after moving a player
 -- which is why we have to keep fetching the current index all the time
 function RaidGroups:processMigrations(Migrations, numberOfMigrations, index)
@@ -759,7 +759,7 @@ function RaidGroups:processMigrations(Migrations, numberOfMigrations, index)
         local leftIndex = 0;
 
         for index = 1, _G.MAX_RAID_MEMBERS do
-            local nameOnIndex = GetRaidRosterInfo(index);
+            local nameOnIndex = GL.GetRaidRosterInfo(index);
 
             if (GL:iEquals(name, nameOnIndex)
                 or GL:iEquals(name, GL:disambiguateName(nameOnIndex))
@@ -782,7 +782,7 @@ function RaidGroups:processMigrations(Migrations, numberOfMigrations, index)
         local rightIndex = 0;
 
         for index = 1, _G.MAX_RAID_MEMBERS do
-            local nameOnIndex = strlower(GetRaidRosterInfo(index));
+            local nameOnIndex = strlower(GL.GetRaidRosterInfo(index));
 
             if (leftName == nameOnIndex) then
                 leftIndex = index;

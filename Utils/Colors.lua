@@ -15,7 +15,7 @@ end
 ---@return string
 function GL:classColorize(var, class)
     class = class and strupper(class) or class;
-    local classColor = { GetClassColor(class or "PRIEST") };
+    local classColor = { GL.GetClassColor(class or "PRIEST") };
     return ("|c%s%s|r"):format(classColor[4], var);
 end
 

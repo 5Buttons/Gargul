@@ -1001,7 +1001,7 @@ function Interface:createSlider(Parent, name, min, max, step, value, callback, w
             return;
         end
 
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+        PlaySound(GL.SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
         Slider:SetValue(value);
     end);
     Slider.Input = Input;

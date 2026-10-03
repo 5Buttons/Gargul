@@ -52,11 +52,11 @@ function GL:formatPlayerName(name, Options)
     end
 
     if (colorize) then
-        class = class or UnitClassBase(name);
+        class = class or GL.UnitClassBase(name);
 
-        -- UnitClassBase doesn't work on FQNs on the same realm
+        -- GL.UnitClassBase doesn't work on FQNs on the same realm
         if (not class and realm and self:iEquals(realm, GL.User.realm)) then
-            class = UnitClassBase(nameWithoutRealm);
+            class = GL.UnitClassBase(nameWithoutRealm);
         end
 
         if (not class) then
@@ -218,17 +218,17 @@ end
 ---@param default? string Default class if not found (default: "PRIEST")
 ---@return string
 function GL:playerClassByName(name, default)
-    local class = UnitClassBase(name);
+    local class = GL.UnitClassBase(name);
 
     if (class) then
         return class;
     end
 
-    -- UnitClassBase doesn't work on same-realm FQNs
+    -- GL.UnitClassBase doesn't work on same-realm FQNs
     local nameWithoutRealm, realm = GL:stripRealm(name);
 
     if (realm and GL:iEquals(realm, GL.User.realm)) then
-        class = UnitClassBase(nameWithoutRealm);
+        class = GL.UnitClassBase(nameWithoutRealm);
     end
 
     if (class) then

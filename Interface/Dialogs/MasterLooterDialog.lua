@@ -96,7 +96,7 @@ function MasterLooterDialog:flightAttendant()
 
     -- If the add-on has not been loaded for that long yet we need
     -- to set a delay for the announcement message
-    local addonLoadedInSeconds = GetServerTime() - GL.loadedOn;
+    local addonLoadedInSeconds = GL.GetServerTime() - GL.loadedOn;
 
     -- No need to announce if it's < 5 since it's most likely a /reload
     if (addonLoadedInSeconds >= 5) then

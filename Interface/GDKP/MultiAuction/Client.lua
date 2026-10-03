@@ -281,40 +281,40 @@ function ClientInterface:build()
         {
             text = "Cloth",
             checked = function ()
-                return Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Cloth));
+                return Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, GL.Enum.ItemArmorSubclass.Cloth));
             end,
             func = function (Entry)
-                Settings:set(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Cloth), Entry.checked);
+                Settings:set(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, GL.Enum.ItemArmorSubclass.Cloth), Entry.checked);
                 filter();
             end,
         },
         {
             text = "Leather",
             checked = function ()
-                return Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Leather));
+                return Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, GL.Enum.ItemArmorSubclass.Leather));
             end,
             func = function (Entry)
-                Settings:set(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Leather), Entry.checked);
+                Settings:set(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, GL.Enum.ItemArmorSubclass.Leather), Entry.checked);
                 filter();
             end,
         },
         {
             text = "Mail",
             checked = function ()
-                return Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Mail));
+                return Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, GL.Enum.ItemArmorSubclass.Mail));
             end,
             func = function (Entry)
-                Settings:set(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Mail), Entry.checked);
+                Settings:set(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, GL.Enum.ItemArmorSubclass.Mail), Entry.checked);
                 filter();
             end,
         },
         {
             text = "Plate",
             checked = function ()
-                return Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Plate));
+                return Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, GL.Enum.ItemArmorSubclass.Plate));
             end,
             func = function (Entry)
-                Settings:set(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Plate), Entry.checked);
+                Settings:set(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, GL.Enum.ItemArmorSubclass.Plate), Entry.checked);
                 filter();
             end,
         },
@@ -378,10 +378,10 @@ function ClientInterface:build()
         {
             text = "Shields",
             checked = function ()
-                return Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Shield));
+                return Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, GL.Enum.ItemArmorSubclass.Shield));
             end,
             func = function (Entry)
-                Settings:set(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Shield), Entry.checked);
+                Settings:set(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, GL.Enum.ItemArmorSubclass.Shield), Entry.checked);
                 filter();
             end,
         },
@@ -724,7 +724,7 @@ function ClientInterface:build()
         local minimum = Details.minimum;
         local increment = Details.increment;
         local auctionID = Details.auctionID;
-        local time = Details.endsAt - GetServerTime();
+        local time = Details.endsAt - GL.GetServerTime();
 
         GL:onItemLoadDo(link, function (Item)
             if (not Item) then
@@ -1488,9 +1488,9 @@ function ClientInterface:filterAndSort()
                 end
 
                 -- Hide unwanted armor types
-                if (ItemRow._Details.classID == Enum.ItemClass.Armor
+                if (ItemRow._Details.classID == GL.Enum.ItemClass.Armor
                     and ItemRow._Details.inventoryType ~= "INVTYPE_CLOAK"
-                    and Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(Enum.ItemClass.Armor, ItemRow._Details.subclassID)) == true
+                    and Settings:get(("GDKP.MultiAuction." .. GL.User.id .. ".Filters.%s-%s"):format(GL.Enum.ItemClass.Armor, ItemRow._Details.subclassID)) == true
                 ) then
                     return;
                 end
@@ -1597,7 +1597,7 @@ function ClientInterface:refresh(forceFilterAndSort)
 
     forceFilterAndSort = forceFilterAndSort == true;
     local rowsChanged = false;
-    local serverTime = GetServerTime();
+    local serverTime = GL.GetServerTime();
     for auctionID, Details in pairs(Client.AuctionDetails.Auctions or {}) do
         local AuctionRow = self.AuctionRows[auctionID];
 
@@ -1654,7 +1654,7 @@ function ClientInterface:refresh(forceFilterAndSort)
 
                     self.AuctionRows[auctionID].addingBar = true;
                     GL:after(.5, "GDKP_MULTI_AUCTION_CLIENT_ADD_BAR_FOR_" .. auctionID, function ()
-                        AuctionRow.addCountDownBar(Client.AuctionDetails.Auctions[auctionID].endsAt - GetServerTime());
+                        AuctionRow.addCountDownBar(Client.AuctionDetails.Auctions[auctionID].endsAt - GL.GetServerTime());
                         self:setAuctionBarColor(AuctionRow, Details);
 
                         GL:after(.2, "GDKP_MULTI_AUCTION_CLIENT_STOP_ADDING_BAR_FOR_" .. auctionID, function ()

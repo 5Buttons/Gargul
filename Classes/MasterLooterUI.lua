@@ -917,7 +917,7 @@ function MasterLooterUI:drawPlayersTable(parent)
                 );
             end
 
-            local ItemsWonByRollerInTheLast8Hours = GL.AwardedLoot:byWinner(GL:addRealm(roller), GetServerTime() - (8 * 60 * 60)) or {};
+            local ItemsWonByRollerInTheLast8Hours = GL.AwardedLoot:byWinner(GL:addRealm(roller), GL.GetServerTime() - (8 * 60 * 60)) or {};
             local wonItems = not GL:empty(ItemsWonByRollerInTheLast8Hours);
             local showPlayerGroups = GL:count(GL.DB:get("TMB.RaidGroups", {})) > 1
                 and GL.Settings:get("TMB.showRaidGroup");

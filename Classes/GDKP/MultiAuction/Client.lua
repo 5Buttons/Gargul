@@ -198,7 +198,7 @@ function Client:start(Message)
         };
 
         local runningAuctions = false;
-        local serverTime = GetServerTime();
+        local serverTime = GL.GetServerTime();
         for _, Item in pairs(Auctions) do
             if (serverTime < Item.endsAt) then
                 runningAuctions = true;
@@ -263,14 +263,14 @@ function Client:addToCurrentSession(link, duration, minimum, increment)
 
         self.AuctionDetails.Auctions[lastAuctionID] = {
             auctionID = lastAuctionID,
-            isBOE = GL:inTable({ Enum.ItemBind.OnEquip, Enum.ItemBind.Quest }, Item.bindType),
+            isBOE = GL:inTable({ GL.Enum.ItemBind.OnEquip, GL.Enum.ItemBind.Quest }, Item.bindType),
             itemLevel = Item.level,
             name = Item.name,
             quality = Item.quality,
             link = Item.link,
             minimum = minimum,
             increment = increment,
-            endsAt = GetServerTime() + duration,
+            endsAt = GL.GetServerTime() + duration,
         };
 
         Auctioneer.IDsToAnnounce[lastAuctionID] = true;
@@ -505,7 +505,7 @@ end
 ---@return nil
 function Client:outbidNotification()
     -- Flash the game icon in case the player alt-tabbed
-    FlashClientIcon();
+    GL.FlashClientIcon();
 
     GL:after(2, "GDKP.MultiAuction.OutbidNotification", function ()
         -- Play a sound if the user enabled it

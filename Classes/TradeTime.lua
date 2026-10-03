@@ -19,6 +19,7 @@ local TradeTime = GL.TradeTime;
 ---@return nil
 function TradeTime:_init()
     if (self._initialized
+        or GL.isLegacy -- Item GUIDs don't exist on 3.3.5a (!!!ClassicAPI only stubs C_Item.GetItemGUID)
         or not C_Item
         or not C_Item.GetItemGUID -- This adaptation only works on newer game versions
     ) then
@@ -74,7 +75,7 @@ function TradeTime:process()
             itemGUID = itemGUID,
             itemLink = C_Item.GetItemLink(Location),
             secondsRemaining = timeRemaining,
-            measuredAt = GetServerTime(),
+            measuredAt = GL.GetServerTime(),
         };
 
         -- Seems like we received a new item with a trade time remaining.

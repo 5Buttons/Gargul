@@ -322,7 +322,7 @@ function Auctioneer:build()
             end
 
             --[[ BOE ]]
-            if (GL:inTable({ Enum.ItemBind.OnEquip, Enum.ItemBind.Quest }, Details.bindType)) then
+            if (GL:inTable({ GL.Enum.ItemBind.OnEquip, GL.Enum.ItemBind.Quest }, Details.bindType)) then
                 ---@type FontString
                 local BOE = Interface:createFontString(Icon, L["BOE"]);
                 BOE:SetPoint("TOPLEFT", Icon, "TOPLEFT", -3, 3);

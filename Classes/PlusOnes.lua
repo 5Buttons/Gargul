@@ -283,7 +283,7 @@ function PlusOnes:setPlusOnes(name, plusOne, dontBroadcast)
     end
 
     DB:set("PlusOnes.Totals." .. playerGUID, plusOne);
-    DB:set("PlusOnes.MetaData.updatedAt", GetServerTime());
+    DB:set("PlusOnes.MetaData.updatedAt", GL.GetServerTime());
 
     if (not dontBroadcast
         and GL.Settings:get("PlusOnes.automaticallyShareData")
@@ -313,7 +313,7 @@ function PlusOnes:deletePlusOnes(name, dontBroadcast)
 
     self.MaterializedData.DetailsByPlayerName[playerGUID] = nil;
     DB.PlusOnes.Totals[playerGUID] = nil;
-    DB:set("PlusOnes.MetaData.updatedAt", GetServerTime());
+    DB:set("PlusOnes.MetaData.updatedAt", GL.GetServerTime());
 
     if (not dontBroadcast
         and GL.Settings:get("PlusOnes.automaticallyShareData")
@@ -370,8 +370,8 @@ function PlusOnes:import(data, openOverview, MetaData)
     DB:set("PlusOnes", {
         Totals = Totals,
         MetaData = {
-            importedAt = MetaData.importedAt or GetServerTime(),
-            updatedAt = MetaData.updatedAt or GetServerTime(),
+            importedAt = MetaData.importedAt or GL.GetServerTime(),
+            updatedAt = MetaData.updatedAt or GL.GetServerTime(),
             uuid = MetaData.uuid or GL:uuid(),
         },
     });
@@ -591,7 +591,7 @@ function PlusOnes:requestData()
 
         -- Master looting is active, return the name of the master looter
         if (lootMethod == "master") then
-            return GetRaidRosterInfo(masterLooterIndex);
+            return GL.GetRaidRosterInfo(masterLooterIndex);
         end
 
         -- Fetch the group leader
@@ -601,7 +601,7 @@ function PlusOnes:requestData()
         end
 
         for index = 1, maximumNumberOfGroupMembers do
-            local name, rank = GetRaidRosterInfo(index);
+            local name, rank = GL.GetRaidRosterInfo(index);
 
             -- Rank 2 means leader
             if (name and rank == 2) then

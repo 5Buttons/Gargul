@@ -318,7 +318,7 @@ function GL:bugReport()
     end
 
     local oldestTimestamp = (function ()
-        local now = GetServerTime();
+        local now = GL.GetServerTime();
         local oldest = now;
 
         local brUpdatedAt = GL.DB:get("BoostedRolls.MetaData.updatedAt", now);
@@ -383,7 +383,7 @@ function GL:bugReport()
         AddonData = AddonData,
         LoadDetails = GL.DB.LoadDetails,
         Settings = Settings,
-        ScriptErrors = C_CVar.GetCVar("scriptErrors"),
+        ScriptErrors = GL.isLegacy and GetCVar("scriptErrors") or C_CVar.GetCVar("scriptErrors"),
         dataSince = oldestTimestamp,
         guid = GL.User.id,
         name = GL.User.name,
@@ -624,7 +624,7 @@ function GL:playSound(soundNameOrNumber, channel, forceNoDuplicates, runFinishCa
         if (GL:strContains(normalizedName, "interface/addons") or normalizedName == "none") then
             PlaySoundFile(soundNameOrNumber, channel);
         else
-            PlaySound(soundNameOrNumber, channel, forceNoDuplicates, runFinishCallback);
+            GL.PlaySound(soundNameOrNumber, channel, forceNoDuplicates, runFinishCallback);
         end
     end);
 end

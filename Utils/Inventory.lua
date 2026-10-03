@@ -5,6 +5,18 @@ local _, GL = ...;
 ---@param slot number
 ---@return any
 function GL:getContainerItemInfo(bagID, slot)
+    -- 3.3.5a returns the first 7 values only, the itemID can be derived from the link
+    if (GL.isLegacy) then
+        local icon, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bagID, slot);
+
+        if (not icon) then
+            return nil;
+        end
+
+        return icon, count, locked, quality, readable, lootable, link, false, false,
+        link and tonumber(link:match("item:(%d+)")), nil;
+    end
+
     if (C_Container and C_Container.GetContainerItemInfo) then
         local Info = C_Container.GetContainerItemInfo(bagID, slot);
 

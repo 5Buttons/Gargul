@@ -79,7 +79,7 @@ function GL:bootstrap(_, _, addonName)
     self.MinimapButton:_init();
 
     -- Mark the add-on as fully loaded
-    GL.loadedOn = GetServerTime();
+    GL.loadedOn = GL.GetServerTime();
 
     GL:after(1, nil, function ()
         -- Check if ElvUI is loaded (useful for making adhoc UI changes)
@@ -294,7 +294,7 @@ function GL:hookNativeWindowEvents()
 
     -- Era uses legacy events; other clients use PLAYER_INTERACTION_MANAGER_FRAME_* (types 5/8/10/17/21).
     -- Don't register both: 1.15.9 fires both, which would set window state twice.
-    if (not GL.isEra) then
+    if (not GL.isEra and not GL.isLegacy) then
         GL.Events:register("BootstrapPlayerInteractionShow", "PLAYER_INTERACTION_MANAGER_FRAME_SHOW", function (_, type)
             if (type == 5) then
                 self.merchantIsShown = true;

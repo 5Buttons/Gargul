@@ -1298,7 +1298,7 @@ function Test:gdkpTestFixture()
     end
 
     Session.Auctions = Session.Auctions or {};
-    local now = GetServerTime();
+    local now = GL.GetServerTime();
     local createdByClass = GL.User.class or "WARRIOR";
     local createdByRace = GL.User.race or "Human";
     local createdByGuild = (GL.User.Guild and GL.User.Guild.name) or "";

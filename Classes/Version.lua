@@ -69,7 +69,7 @@ function Version:_init()
         end
     end
 
-    local now = GetServerTime();
+    local now = GL.GetServerTime();
     GL.DB.LoadDetails.lastLoadedOn = now;
     GL.DB.LoadDetails[self.current] = GL.DB.LoadDetails[self.current] or now;
 
@@ -168,7 +168,7 @@ function Version:replyToUpdateCheck(Message)
     end
 
     -- We don't handle too many of these messages
-    local serverTime = GetServerTime();
+    local serverTime = GL.GetServerTime();
     if (serverTime - self.lastUpdateCheckReplyAt < 20) then
         return;
     end
@@ -240,7 +240,7 @@ end
 ---
 ---@return nil
 function Version:notBackwardsCompatibleNotice()
-    local serverTime = GetServerTime();
+    local serverTime = GL.GetServerTime();
 
     if (self.lastNotBackwardsCompatibleNotice == 0) then
         self.lastNotBackwardsCompatibleNotice = serverTime;
@@ -259,7 +259,7 @@ function Version:notifyOfLatestVersion()
         return;
     end
 
-    self.lastUpdateNotice = GetServerTime();
+    self.lastUpdateNotice = GL.GetServerTime();
 
     local notify = function ()
         GL:warning((L["|c00A79EFFv%s is available on CurseForge/Wago. You can update without closing your game, just be sure to |c00%s/reload|r!"]):format(self.latest, GL.Data.Constants.commandHexColor));

@@ -53,8 +53,8 @@ function BoostedRolls:_init()
         GL.Interface.BoostedRolls.Overview:refreshTable();
         GL.Ace:CancelTimer(self.QueuedUpdateBroadcastTimer);
 
-        self.QueuedUpdateFirstQueuedAt = self.QueuedUpdateFirstQueuedAt or GetServerTime();
-        local waitedSoFar = GetServerTime() - self.QueuedUpdateFirstQueuedAt;
+        self.QueuedUpdateFirstQueuedAt = self.QueuedUpdateFirstQueuedAt or GL.GetServerTime();
+        local waitedSoFar = GL.GetServerTime() - self.QueuedUpdateFirstQueuedAt;
         local delay = math.max(0, math.min(debounceSeconds, maxWaitSeconds - waitedSoFar));
 
         self.QueuedUpdateBroadcastTimer = GL.Ace:ScheduleTimer(function ()
@@ -467,8 +467,8 @@ function BoostedRolls:importFromSoftres(BonusRolls, PlayerMap, Options)
             Points = Points,
             Aliases = Aliases,
             MetaData = {
-                importedAt = GetServerTime(),
-                updatedAt = GetServerTime(),
+                importedAt = GL.GetServerTime(),
+                updatedAt = GL.GetServerTime(),
                 uuid = GL:uuid(),
                 source = GL.Data.Constants.BoostedRollSources.softres,
                 softresID = softresID,
@@ -557,7 +557,7 @@ function BoostedRolls:setAliases(name, aliases, dontBroadcast)
             end
         end
         self.MaterializedData.DetailsByPlayerName[mainGUID].Aliases = cleanAliases;
-        DB:set("BoostedRolls.MetaData.updatedAt", GetServerTime());
+        DB:set("BoostedRolls.MetaData.updatedAt", GL.GetServerTime());
 
         if (not dontBroadcast
             and GL.Settings:get("BoostedRolls.automaticallyShareData")
@@ -589,7 +589,7 @@ function BoostedRolls:setPoints(name, points, dontBroadcast)
     points = math.max(0, math.min(GL.Settings:get("BoostedRolls.maxmimumPoints", points), points));
     self.MaterializedData.DetailsByPlayerName[normalizedName].points = points;
     DB:set("BoostedRolls.Points." .. normalizedName, points);
-    DB:set("BoostedRolls.MetaData.updatedAt", GetServerTime());
+    DB:set("BoostedRolls.MetaData.updatedAt", GL.GetServerTime());
 
     if (not dontBroadcast
         and GL.Settings:get("BoostedRolls.automaticallyShareData")
@@ -624,7 +624,7 @@ function BoostedRolls:deletePoints(name, dontBroadcast)
 
     self.MaterializedData.DetailsByPlayerName[normalizedName] = nil;
     DB.BoostedRolls.Points[normalizedName] = nil;
-    DB:set("BoostedRolls.MetaData.updatedAt", GetServerTime());
+    DB:set("BoostedRolls.MetaData.updatedAt", GL.GetServerTime());
 
     if (not dontBroadcast
         and GL.Settings:get("BoostedRolls.automaticallyShareData")
@@ -711,8 +711,8 @@ function BoostedRolls:addMissingRaiders()
         return;
     end
 
-    DB:set("BoostedRolls.MetaData.importedAt", GetServerTime());
-    DB:set("BoostedRolls.MetaData.updatedAt", GetServerTime());
+    DB:set("BoostedRolls.MetaData.importedAt", GL.GetServerTime());
+    DB:set("BoostedRolls.MetaData.updatedAt", GL.GetServerTime());
 
     if (not DB:get("BoostedRolls.MetaData.uuid")) then
         DB:set("BoostedRolls.MetaData.uuid", GL:uuid());
@@ -856,8 +856,8 @@ function BoostedRolls:import(data, openOverview, MetaData)
         Points = Points,
         Aliases = Aliases,
         MetaData = {
-            importedAt = MetaData.importedAt or GetServerTime(),
-            updatedAt = MetaData.updatedAt or GetServerTime(),
+            importedAt = MetaData.importedAt or GL.GetServerTime(),
+            updatedAt = MetaData.updatedAt or GL.GetServerTime(),
             uuid = MetaData.uuid or GL:uuid(),
         },
     };
@@ -1093,7 +1093,7 @@ function BoostedRolls:requestData()
 
         -- Master looting is active, return the name of the master looter
         if (lootMethod == "master") then
-            return GetRaidRosterInfo(masterLooterIndex);
+            return GL.GetRaidRosterInfo(masterLooterIndex);
         end
 
         -- Fetch the group leader
@@ -1103,7 +1103,7 @@ function BoostedRolls:requestData()
         end
 
         for index = 1, maximumNumberOfGroupMembers do
-            local name, rank = GetRaidRosterInfo(index);
+            local name, rank = GL.GetRaidRosterInfo(index);
 
             -- Rank 2 means leader
             if (name and rank == 2) then

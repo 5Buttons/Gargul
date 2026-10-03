@@ -45,8 +45,8 @@ function Overview:draw()
     Window:EnableResize(false);
 
     Window:SetStatusText((L["Imported on |c00A79EFF%s at |c00A79EFF%s"]):format(
-        date(L["%Y-%m-%d"], DB:get("SoftRes.MetaData.importedAt", GetServerTime())),
-        date(L["%H:%M"], DB:get("SoftRes.MetaData.importedAt", GetServerTime()))
+        date(L["%Y-%m-%d"], DB:get("SoftRes.MetaData.importedAt", GL.GetServerTime())),
+        date(L["%H:%M"], DB:get("SoftRes.MetaData.importedAt", GL.GetServerTime()))
     ));
 
     -- Make sure the window can be closed by pressing the escape button

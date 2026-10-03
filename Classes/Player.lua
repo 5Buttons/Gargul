@@ -135,7 +135,7 @@ function Player:hasAssist(playerNameOrID)
     -- Check if the player has lead or assist
     local maximumNumberOfGroupMembers = GL.User.isInRaid and _G.MAX_RAID_MEMBERS or _G.MEMBERS_PER_RAID_GROUP;
     for index = 1, maximumNumberOfGroupMembers do
-        local name, rank = GetRaidRosterInfo(index);
+        local name, rank = GL.GetRaidRosterInfo(index);
 
         -- Rank 1 = assist, 2 = lead
         if (name == playerName) then
@@ -174,7 +174,7 @@ function Player:hasLead(playerNameOrID)
     -- Check if the player has lead or assist
     local maximumNumberOfGroupMembers = GL.User.isInRaid and _G.MAX_RAID_MEMBERS or _G.MEMBERS_PER_RAID_GROUP;
     for index = 1, maximumNumberOfGroupMembers do
-        local name, rank = GetRaidRosterInfo(index);
+        local name, rank = GL.GetRaidRosterInfo(index);
 
         -- Rank 1 = assist, 2 = lead
         if (GL:iEquals(GL:formatPlayerName(name), playerName)) then
@@ -216,7 +216,7 @@ function Player:isMasterLooter(playerNameOrID)
 
     -- Master looting is active and this player is the master looter
     if (lootMethod == "master") then
-        return GL:iEquals(GetRaidRosterInfo(masterLooterIndex), GL:formatPlayerName(playerName));
+        return GL:iEquals(GL.GetRaidRosterInfo(masterLooterIndex), GL:formatPlayerName(playerName));
     end
 
     return false;
@@ -240,7 +240,7 @@ function Player:classByName(playerName, default)
     end
 
     -- Attempt to fetch the player class
-    local classFile = UnitClassBase(playerName);
+    local classFile = GL.UnitClassBase(playerName);
 
     -- Player names can be stored for the entire session since
     -- it's impossible for them to change during runtime

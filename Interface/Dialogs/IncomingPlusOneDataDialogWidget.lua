@@ -21,7 +21,7 @@ local CreateFrame, UIParent = CreateFrame, UIParent;
 local sender = "";
 
 local function OnClose(Frame)
-    PlaySound(799) -- SOUNDKIT.GS_TITLE_OPTION_EXIT
+    GL.PlaySound(799) -- GL.SOUNDKIT.GS_TITLE_OPTION_EXIT
 
     GL.Interface:storePosition(Frame, "PopupDialog");
 

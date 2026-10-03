@@ -556,7 +556,7 @@ function RollOff:start(CommMessage)
             local itemOfInterestSound = GL.Settings:get("Rolling.itemOfInterestSound");
 
             -- Play a raid warning sound
-            GL:playSound(SOUNDKIT.RAID_WARNING);
+            GL:playSound(GL.SOUNDKIT.RAID_WARNING);
 
             -- If this is an item of interest, play a different sound and post a message
             local isItemOfInterest, reason = GL:isItemOfInterest(Details.id);
@@ -595,10 +595,10 @@ function RollOff:start(CommMessage)
             end
 
             -- Flash the game icon in case the player alt-tabbed
-            FlashClientIcon();
+            GL.FlashClientIcon();
 
             -- Flash the game icon in case the player alt-tabbed
-            FlashClientIcon();
+            GL.FlashClientIcon();
 
             self:refreshRollsTable();
 
@@ -644,7 +644,7 @@ function RollOff:storeBoostedRanges(CommMessage, identifier, hash, RangePerPlaye
         identifier = identifier,
         hash = hash,
         RangePerPlayer = RangePerPlayer,
-        at = GetServerTime(),
+        at = GL.GetServerTime(),
     });
 
     -- Don't keep a map for every loot master we ever rolled with
@@ -818,7 +818,7 @@ function RollOff:stop(CommMessage)
     end
 
     -- Play raid warning sound
-    GL:playSound(SOUNDKIT.RAID_WARNING, "SFX");
+    GL:playSound(GL.SOUNDKIT.RAID_WARNING, "SFX");
 
     RollOff.inProgress = false;
     GL.Ace:CancelTimer(RollOff.StopRollOffTimer);
@@ -1160,7 +1160,7 @@ function RollOff:processRoll(message)
                     amount = roll,
                     min = low,
                     max = high,
-                    time = GetServerTime(),
+                    time = GL.GetServerTime(),
                     classification = RollType[1],
                     priority = RollType[4],
                 };
@@ -1299,7 +1299,7 @@ end
 function RollOff:storeGear(playerKey, Gear, wasInspected)
     self.EquippedGearByPlayer[playerKey] = Gear;
     self.GearWasInspectedByPlayer[playerKey] = wasInspected or nil;
-    self.GearReceivedAt[playerKey] = GetServerTime();
+    self.GearReceivedAt[playerKey] = GL.GetServerTime();
 
     self:hintAtGearOverview(Gear);
 end
@@ -1443,7 +1443,7 @@ function RollOff:receiveSharedEquippedGear(CommMessage)
         return;
     end
 
-    -- GetRaidRosterInfo (used by the ML/assist checks) is raid-only, so the roll
+    -- GL.GetRaidRosterInfo (used by the ML/assist checks) is raid-only, so the roll
     -- owner is our fallback: they're already the authority for this roll
     local senderStartedTheRoll = CommMessage.Sender.id ~= nil
         and CommMessage.Sender.id == self.CurrentRollOff.initiator;
@@ -1575,8 +1575,8 @@ function RollOff:inspectUnitForPlayer(playerFQN)
         return nil;
     end
 
-    if (IsInRaid()) then
-        for i = 1, GetNumGroupMembers() do
+    if (GL.IsInRaid()) then
+        for i = 1, GL.GetNumGroupMembers() do
             local unit = "raid" .. i;
             local name, realm = UnitName(unit);
 
@@ -1592,7 +1592,7 @@ function RollOff:inspectUnitForPlayer(playerFQN)
             end
         end
     else
-        for i = 1, GetNumGroupMembers() - 1 do
+        for i = 1, GL.GetNumGroupMembers() - 1 do
             local unit = "party" .. i;
             local name, realm = UnitName(unit);
 

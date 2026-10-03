@@ -288,7 +288,7 @@ function Overview:close(onCloseCallback)
     if (Window) then
         GL.Interface:storePosition(Window, "Settings");
         Window:Hide();
-        PlaySound(799) -- SOUNDKIT.GS_TITLE_OPTION_EXIT
+        GL.PlaySound(799) -- GL.SOUNDKIT.GS_TITLE_OPTION_EXIT
     end
 end
 

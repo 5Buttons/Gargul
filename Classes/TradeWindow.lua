@@ -407,13 +407,13 @@ function TradeWindow:handleEvents(event, ...)
         local moneyBefore = 0;
         Events:register(CURSOR_CHANGED_LISTENER_ID, "CURSOR_CHANGED", function (_, _, newCursorType, oldCursorType)
             -- Player picked up gold
-            if (oldCursorType == Enum.UICursorType.Default and newCursorType == Enum.UICursorType.Money) then
+            if (oldCursorType == GL.Enum.UICursorType.Default and newCursorType == GL.Enum.UICursorType.Money) then
                 moneyBefore = GetPlayerTradeMoney();
                 return;
             end
 
             -- Player dropped gold
-            if (oldCursorType == Enum.UICursorType.Money and newCursorType == Enum.UICursorType.Default) then
+            if (oldCursorType == GL.Enum.UICursorType.Money and newCursorType == GL.Enum.UICursorType.Default) then
                 GL:after(.1, nil, function ()
                     local copper = GetPlayerTradeMoney();
                     if (copper and copper > 0 and copper ~= moneyBefore) then

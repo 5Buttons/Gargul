@@ -215,14 +215,14 @@ function DroppedLootLedger:lootOpened()
             local quality = GL:getItemQualityFromLink(itemLink);
             if (quality and quality >= self.minimumQuality) then
                 tinsert(self.Dropped[itemID], {
-                    at = GetServerTime(),
+                    at = GL.GetServerTime(),
                     source = sourceGUID,
                     unitName = unitName,
                 });
             end
 
             tinsert(Drops, {
-                at = GetServerTime(),
+                at = GL.GetServerTime(),
                 source = sourceGUID,
                 itemLink = itemLink,
             });

@@ -247,7 +247,7 @@ function Broadcast:build()
         elseif (channel == CHANNEL_RAID_WARNING) then
             channel = "RAID_WARNING";
         elseif (channel == CHANNEL_OFFICER) then
-            if (not C_GuildInfo.CanEditOfficerNote()) then
+            if (not GL.CanEditOfficerNote()) then
                 GL:error(L["You don't have officer privileges"]);
                 return;
             end
@@ -308,7 +308,7 @@ end
 function Broadcast:getTradeTimeDetails(includeAwarded, includeDisenchanted, includeHidden, maximumTradeTime)
     local State = TradeTime:getState();
     local Filtered = {};
-    local now = GetServerTime();
+    local now = GL.GetServerTime();
 
     for _, Details in pairs(State or {}) do
         local secondsRemaining = (now - (Details.measuredAt + Details.secondsRemaining)) * -1;

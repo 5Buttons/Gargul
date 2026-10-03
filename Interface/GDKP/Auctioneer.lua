@@ -983,7 +983,7 @@ function AuctioneerUI:buildQueue(Window)
                     return;
                 end
 
-                local bindOnPickup = GL:inTable({ Enum.ItemBind.OnAcquire, Enum.ItemBind.Quest }, Details.bindType);
+                local bindOnPickup = GL:inTable({ GL.Enum.ItemBind.OnAcquire, GL.Enum.ItemBind.Quest }, Details.bindType);
 
                 ---@type Frame
                 local ItemRow = CreateFrame("Frame", nil, ItemHolder);
@@ -1197,7 +1197,7 @@ function AuctioneerUI:buildBidsTable(Window)
             end
 
             local bidder = data[realrow].cols[1].value;
-            local ItemsWonByRollerInTheLast8Hours = GL.AwardedLoot:byWinner(bidder, GetServerTime() - (8 * 60 * 60));
+            local ItemsWonByRollerInTheLast8Hours = GL.AwardedLoot:byWinner(bidder, GL.GetServerTime() - (8 * 60 * 60));
 
             if (GL:empty(ItemsWonByRollerInTheLast8Hours)) then
                 return;

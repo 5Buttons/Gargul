@@ -91,7 +91,7 @@ function SoftRes:_init()
 
     -- Remove old SoftRes data if it's more than 10h old
     if (self:available()
-        and DB:get("SoftRes.MetaData.importedAt") < GetServerTime() - 36000
+        and DB:get("SoftRes.MetaData.importedAt") < GL.GetServerTime() - 36000
     ) then
         self:clear();
     end
@@ -219,7 +219,7 @@ function SoftRes:requestData()
 
         -- Master looting is active, return the name of the master looter
         if (lootMethod == "master") then
-            return GetRaidRosterInfo(masterLooterIndex);
+            return GL.GetRaidRosterInfo(masterLooterIndex);
         end
 
         -- Fetch the group leader
@@ -229,7 +229,7 @@ function SoftRes:requestData()
         end
 
         for index = 1, maximumNumberOfGroupMembers do
-            local name, rank = GetRaidRosterInfo(index);
+            local name, rank = GL.GetRaidRosterInfo(index);
 
             -- Rank 2 means leader
             if (name and rank == 2) then
@@ -993,7 +993,7 @@ function SoftRes:import(data, openOverview)
             if (GL.Settings:get("SoftRes.enableWhisperCommand", true)
                 and (not GL.User.isInGroup
                     or not self.announcedImportSoftResAt -- Hasn't been announced yet
-                    or self.announcedImportSoftResAt <= GetServerTime() - 300 -- Was announced 5 minutes ago or more
+                    or self.announcedImportSoftResAt <= GL.GetServerTime() - 300 -- Was announced 5 minutes ago or more
                 )
             ) then
                 GL:sendChatMessage(
@@ -1050,7 +1050,7 @@ function SoftRes:confirmNameFixes(Proposals, callback)
     end
 
     -- classHexColor is used over formatPlayerName's colorize, which runs the class
-    -- through GetClassColor and would choke on softres.it's "death knight"
+    -- through GL.GetClassColor and would choke on softres.it's "death knight"
     local colorized = function (name, class)
         return ("|c00%s%s|r"):format(GL:classHexColor(class), GL:formatPlayerName(name));
     end
@@ -1143,7 +1143,7 @@ function SoftRes:importLootReserveData(Reserves)
         HardReserves = {}, -- The weakaura format (CSV) doesn't include hard-reserves
         MetaData = {
             source = Constants.SoftReserveSources.lootReserve,
-            importedAt = GetServerTime(),
+            importedAt = GL.GetServerTime(),
             importString = "",
         },
     });
@@ -1229,7 +1229,7 @@ function SoftRes:importGargulData(data)
         discordUrl = discordUrl,
         hidden = hidden,
         id = id,
-        importedAt = GetServerTime(),
+        importedAt = GL.GetServerTime(),
         importString = importString,
         raidStartsAt = raidStartsAt,
         updatedAt = updatedAt,
@@ -1423,7 +1423,7 @@ function SoftRes:importCSVData(data, reportStatus)
         HardReserves = {}, -- The weakaura format (CSV) doesn't include hard-reserves
         MetaData = {
             source = Constants.SoftReserveSources.weakaura,
-            importedAt = GetServerTime(),
+            importedAt = GL.GetServerTime(),
             importString = data,
         },
     });

@@ -462,7 +462,7 @@ function Session:deleteGoldTrade(sessionID, playerGUID, checksum)
         return false;
     end
 
-    GL:tableSet(Instance, ("GoldLedger.%s.%s.deletedAt"):format(playerGUID, checksum), GetServerTime());
+    GL:tableSet(Instance, ("GoldLedger.%s.%s.deletedAt"):format(playerGUID, checksum), GL.GetServerTime());
     Events:fire("GL.GDKP_GOLD_TRADE_DELETED", sessionID, playerGUID, Trade.given, Trade.received);
 
     return self:store(Instance);
@@ -520,7 +520,7 @@ function Session:addGoldTrade(sessionID, playerGUID, given, received)
         return false;
     end
 
-    local now = GetServerTime();
+    local now = GL.GetServerTime();
     local checksum = GL:stringHash{ Constants.GDKP.tradeIdentifier, given, received, playerGUID, now };
     GL:tableSet(Instance, ("GoldLedger.%s.%s"):format(playerGUID, checksum), {
         createdAt = now,
@@ -558,7 +558,7 @@ function Session:registerGoldTrade(Details)
     end
 
     local playerGUID = GDKP:playerGUID(Details.partner);
-    local now = GetServerTime();
+    local now = GL.GetServerTime();
     local checksum = GL:stringHash{ Constants.GDKP.tradeIdentifier, myGold, theirGold, playerGUID, now };
     GL:tableSet(Instance, ("GoldLedger.%s.%s"):format(playerGUID, checksum), {
         createdAt = now,
@@ -590,7 +590,7 @@ function Session:registerGoldMail(player, copper)
     end
 
     local playerGUID = GDKP:playerGUID(player);
-    local now = GetServerTime();
+    local now = GL.GetServerTime();
     local checksum = GL:stringHash{ Constants.GDKP.tradeIdentifier, copper, 0, playerGUID, now };
     GL:tableSet(Instance, ("GoldLedger.%s.%s"):format(playerGUID, checksum), {
         createdAt = now,
@@ -785,7 +785,7 @@ function Session:create(title, managementCut, sessionType)
 
     local Instance = {
         title = GL:capitalize(strsub(title, 0, 30)),
-        createdAt = GetServerTime(),
+        createdAt = GL.GetServerTime(),
         managementCut = managementCut,
         type = sessionType,
         Auctions = {},
@@ -859,7 +859,7 @@ function Session:lock(sessionID)
         return false;
     end
 
-    Instance.lockedAt = GetServerTime();
+    Instance.lockedAt = GL.GetServerTime();
     self:store(Instance);
 
     Events:fire("GL.GDKP_SESSION_LOCKED", Instance);
@@ -916,7 +916,7 @@ function Session:delete(sessionID)
 
     -- There are auctions, mark the Session as deleted but keep it for 24h still
     else
-        DB:set("GDKP.Ledger." .. sessionID .. ".deletedAt", GetServerTime());
+        DB:set("GDKP.Ledger." .. sessionID .. ".deletedAt", GL.GetServerTime());
     end
 
     Events:fire("GL.GDKP_SESSION_CHANGED", Instance);

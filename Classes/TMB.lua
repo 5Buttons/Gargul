@@ -899,8 +899,8 @@ function TMB:import(data, triedToDecompress, source)
         importedFromCSV = GL:toboolean(WebsiteData.importedFromCSV),
         importedFromCPR = source == "cpr",
         importedFromRRobin = source == "rrobin" or GL:toboolean(WebsiteData.importedFromRRobin),
-        importedAt = GetServerTime(),
-        hash = GL:uuid() .. GetServerTime(),
+        importedAt = GL.GetServerTime(),
+        hash = GL:uuid() .. GL.GetServerTime(),
         lootPriorityHash = lootPriorityHash,
     };
 
@@ -1385,7 +1385,7 @@ function TMB:broadcast(sendEmptyPayload)
             action = CommActions.broadcastTMBData,
             content = self:encodeForComm({
                 Items = { ["01"] = { { character = "_reset", prio = 1, type = 1, }, }, },
-                MetaData = { importedAt = GetServerTime(), },
+                MetaData = { importedAt = GL.GetServerTime(), },
             }),
             channel = "GROUP",
         }):send();
@@ -1588,12 +1588,12 @@ function TMB:requestData()
 
         -- Master looting is active, return the name of the master looter
         if (lootMethod == "master") then
-            return GetRaidRosterInfo(masterLooterIndex);
+            return GL.GetRaidRosterInfo(masterLooterIndex);
         end
 
         -- Fetch the group leader
         for index = 1, GL.User.isInRaid and _G.MEMBERS_PER_RAID_GROUP or _G.MAX_RAID_MEMBERS do
-            local name, rank = GetRaidRosterInfo(index);
+            local name, rank = GL.GetRaidRosterInfo(index);
 
             -- Rank 2 means leader
             if (name and rank == 2) then

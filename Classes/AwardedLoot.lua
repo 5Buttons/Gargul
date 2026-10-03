@@ -134,7 +134,7 @@ end
 function AwardedLoot:tooltipLines(itemLink)
     local itemID = GL:getItemIDFromLink(itemLink);
 
-    local fiveHoursAgo = GetServerTime() - 18000;
+    local fiveHoursAgo = GL.GetServerTime() - 18000;
     local loadItemsGTE = math.min(fiveHoursAgo, GL.loadedOn);
     local winnersAvailable = false;
     local Lines = { ("\n|c00efb8cd%s|r"):format(L["Awarded To"]) };
@@ -218,7 +218,7 @@ end
 ---@return table
 function AwardedLoot:winnersToTradeForItemID(itemID)
     local Winners = {};
-    local fiveHoursAgo = GetServerTime() - 18000;
+    local fiveHoursAgo = GL.GetServerTime() - 18000;
     local loadItemsGTE = math.min(fiveHoursAgo, GL.loadedOn);
     for _, Loot in pairs(DB:get("AwardHistory")) do
         (function ()
@@ -484,7 +484,7 @@ function AwardedLoot:addWinner(winner, itemLink, announce, date, isOS, BRCost, g
     if (not dateProvided and type(date) == "number") then
         timestamp = date;
     else
-        timestamp = GetServerTime();
+        timestamp = GL.GetServerTime();
     end
 
     if (type(winner) ~= "string"
@@ -893,7 +893,7 @@ function AwardedLoot:tradeInitiated()
     local tradedPlayerIsDisenchanter = GL:iEquals(GL:addRealm(tradingPartner), GL.PackMule.disenchanter);
 
     -- Check whether there are any awarded items that need to be traded to your trading partner
-    local threeHoursAgo = GetServerTime() - 10800;
+    local threeHoursAgo = GL.GetServerTime() - 10800;
 
     -- Loop through our awarded loot table in reverse
     for _, Loot in pairs(DB:get("AwardHistory")) do
@@ -947,7 +947,7 @@ function AwardedLoot:tradeCompleted(Details)
         return;
     end
 
-    local threeHoursAgo = GetServerTime() - 10800;
+    local threeHoursAgo = GL.GetServerTime() - 10800;
 
     -- Loop through our awarded loot table in reverse
     for checksum, Loot in pairs(DB:get("AwardHistory")) do

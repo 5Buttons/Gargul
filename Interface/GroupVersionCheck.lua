@@ -332,10 +332,11 @@ function GroupVersionCheck:refresh()
 
     -- Check if there are any players in our raid that we have on our ignore list
     if (GL.User.isInGroup) then
-        local numberOfIgnoredPlayers = C_FriendList.GetNumIgnores();
+        local FriendList = GL.isLegacy and _G or C_FriendList;
+        local numberOfIgnoredPlayers = FriendList.GetNumIgnores();
         if (numberOfIgnoredPlayers > 0) then
             for i = 1, numberOfIgnoredPlayers do
-                local player = C_FriendList.GetIgnoreName(i);
+                local player = FriendList.GetIgnoreName(i);
 
                 if (player and GL.User:unitInGroup(player)) then
                     tinsert(self.Results.Ignored, GL:formatPlayerName(player, { includeRealm = "always", decorator = strlower, }));

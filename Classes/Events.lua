@@ -22,6 +22,68 @@ local Events = {
 ---@type Events
 GL.Events = Events;
 
+--- 3.3.5a: modern events and the native events that stand in for them (false = no equivalent, never fires)
+local LegacyEventSources = GL.isLegacy and {
+    BAG_UPDATE_DELAYED = { "BAG_UPDATE" },
+    CURSOR_CHANGED = { "CURSOR_UPDATE" },
+    GROUP_ROSTER_UPDATE = { "RAID_ROSTER_UPDATE", "PARTY_MEMBERS_CHANGED" },
+    INSPECT_READY = { "INSPECT_TALENT_READY" },
+    LOOT_READY = { "LOOT_OPENED" },
+    PLAYER_INTERACTION_MANAGER_FRAME_HIDE = false,
+    PLAYER_INTERACTION_MANAGER_FRAME_SHOW = false,
+    SECURE_TRANSFER_CONFIRM_TRADE_ACCEPT = false,
+} or {};
+
+--- Stand-in events that should only fire once after a burst of their native counterpart
+local DebouncedLegacyEvents = {
+    BAG_UPDATE_DELAYED = true,
+};
+
+--- Native event => modern events it stands in for
+local LegacyEventTargets = {};
+for modernEvent, Sources in pairs(LegacyEventSources) do
+    for _, nativeEvent in ipairs(Sources or {}) do
+        LegacyEventTargets[nativeEvent] = LegacyEventTargets[nativeEvent] or {};
+        tinsert(LegacyEventTargets[nativeEvent], modernEvent);
+    end
+end
+
+--- Number of registered events (modern or native) relying on a native frame event
+local FrameEventUsage = {};
+
+--- Register an event on our frame, or the native events standing in for it on 3.3.5a
+---@param event string
+function Events:registerFrameEvent(event)
+    local Sources = LegacyEventSources[event];
+
+    if (Sources == false) then
+        return;
+    end
+
+    for _, source in ipairs(Sources or { event }) do
+        FrameEventUsage[source] = (FrameEventUsage[source] or 0) + 1;
+        self.Frame:RegisterEvent(source);
+    end
+end
+
+---@param event string
+function Events:unregisterFrameEvent(event)
+    local Sources = LegacyEventSources[event];
+
+    if (Sources == false) then
+        return;
+    end
+
+    for _, source in ipairs(Sources or { event }) do
+        FrameEventUsage[source] = (FrameEventUsage[source] or 1) - 1;
+
+        if (FrameEventUsage[source] <= 0) then
+            FrameEventUsage[source] = nil;
+            self.Frame:UnregisterEvent(source);
+        end
+    end
+end
+
 --- Prepare the event frame for future use
 ---@param EventFrame Frame
 function Events:_init(EventFrame)
@@ -94,7 +156,7 @@ function Events:register(identifier, event, callback)
         -- We exclude internal events (prefixed with GL.) since we fire
         -- those manually from within the codebase without relying on a frame
         if (not GL:strStartsWith(event, "GL.")) then
-            self.Frame:RegisterEvent(event);
+            self:registerFrameEvent(event);
         end
 
         self.Registry.EventListeners[event] = {};
@@ -150,7 +212,7 @@ function Events:unregister(identifier)
         -- We exclude internal events (prefixed with GL.) since we fire
         -- those manually from within the codebase without relying on a frame
         if (not GL:strStartsWith(event, "GL.")) then
-            self.Frame:UnregisterEvent(event);
+            self:unregisterFrameEvent(event);
         end
     end
 end
@@ -160,6 +222,19 @@ end
 ---@param ... any
 function Events:listen(event, ...)
     local args = {...};
+
+    -- 3.3.5a: fire the modern events this native event stands in for first (e.g. LOOT_READY precedes LOOT_OPENED)
+    for _, modernEvent in ipairs(LegacyEventTargets[event] or {}) do
+        if (GL.Events.Registry.EventListeners[modernEvent]) then
+            if (DebouncedLegacyEvents[modernEvent]) then
+                GL:after(.1, "LegacyEvent" .. modernEvent, function ()
+                    GL.Events:listen(modernEvent);
+                end);
+            else
+                GL.Events:listen(modernEvent, unpack(args));
+            end
+        end
+    end
 
     for _, listener in pairs(GL.Events.Registry.EventListeners[event] or {}) do
         pcall(function () listener(event, unpack(args)); end);

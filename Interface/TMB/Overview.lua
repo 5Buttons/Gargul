@@ -42,8 +42,8 @@ function Overview:draw()
     Window:SetPoint(GL.Interface:getPosition("TMBOverview"));
 
     Window:SetStatusText(GL:printfn(L["Imported on ${date} at ${time}"], {
-        date = GL:colorize(date(L["%Y-%m-%d"], DB:get("TMB.MetaData.importedAt", GetServerTime())), GL.Interface.Colors.WARLOCK),
-        time = GL:colorize(date(L["%H:%M"], DB:get("TMB.MetaData.importedAt", GetServerTime())), GL.Interface.Colors.WARLOCK),
+        date = GL:colorize(date(L["%Y-%m-%d"], DB:get("TMB.MetaData.importedAt", GL.GetServerTime())), GL.Interface.Colors.WARLOCK),
+        time = GL:colorize(date(L["%H:%M"], DB:get("TMB.MetaData.importedAt", GL.GetServerTime())), GL.Interface.Colors.WARLOCK),
     }));
 
     -- Make sure the window can be closed by pressing the escape button
@@ -79,8 +79,8 @@ function Overview:draw()
     local TimestampLabel = AceGUI:Create("Label");
     TimestampLabel:SetFullWidth(true);
     TimestampLabel:SetText(GL:printfn("\n" .. L["Imported on ${date} at ${time}"], {
-        date = GL:colorize(date(L["%Y-%m-%d"], DB:get("TMB.MetaData.importedAt", GetServerTime())), GL.Interface.Colors.WARLOCK),
-        time = GL:colorize(date(L["%H:%M"], DB:get("TMB.MetaData.importedAt", GetServerTime())), GL.Interface.Colors.WARLOCK),
+        date = GL:colorize(date(L["%Y-%m-%d"], DB:get("TMB.MetaData.importedAt", GL.GetServerTime())), GL.Interface.Colors.WARLOCK),
+        time = GL:colorize(date(L["%H:%M"], DB:get("TMB.MetaData.importedAt", GL.GetServerTime())), GL.Interface.Colors.WARLOCK),
     }));
     TimestampLabel:SetJustifyH("CENTER");
     TimestampLabel:SetFontObject(_G.GameFontNormal);

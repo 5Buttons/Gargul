@@ -84,7 +84,7 @@ function Settings:sanitizeSettings()
     end
 
     -- Remove old roll data so it doesn't clog our SavedVariables
-    local fiveWeeksAgo = GetServerTime() - 3024000;
+    local fiveWeeksAgo = GL.GetServerTime() - 3024000;
     for key, Award in pairs(DB:get("AwardHistory", {})) do
         if (Award.timestamp < fiveWeeksAgo) then
             Award.Rolls = nil;
@@ -93,7 +93,7 @@ function Settings:sanitizeSettings()
     end
 
     -- Permanently delete soft-deleted GDKP sessions after 48 hours
-    local twoDaysAgo = GetServerTime() - 172800;
+    local twoDaysAgo = GL.GetServerTime() - 172800;
     for key, Session in pairs(DB:get("GDKP.Ledger", {})) do
         if (Session.deletedAt and Session.deletedAt < twoDaysAgo) then
             DB:set("GDKP.Ledger." .. key, nil);
@@ -101,7 +101,7 @@ function Settings:sanitizeSettings()
     end
 
     -- Remove awarded items that are more than 5 days old
-    local fiveDaysAgo = GetServerTime() - 432000;
+    local fiveDaysAgo = GL.GetServerTime() - 432000;
     local ValidItems = {};
     for itemGUID, Details in pairs(DB:get("RecentlyAwardedItems", {})) do
         if (Details.timestamp > fiveDaysAgo) then

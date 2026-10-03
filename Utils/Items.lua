@@ -339,7 +339,7 @@ function GL:normalizeItem(ItemMixin)
         name = itemName,
         subclassID = subclassID,
         quality = itemQuality,
-        isBOE = GL:inTable({ Enum.ItemBind.OnEquip, Enum.ItemBind.Quest, }, bindType),
+        isBOE = GL:inTable({ GL.Enum.ItemBind.OnEquip, GL.Enum.ItemBind.Quest, }, bindType),
     };
 end
 
@@ -812,7 +812,7 @@ function GL:forEachItemInBags(func)
     -- Used to break out of our double loop
     local finished = false;
 
-    for bag = Enum.BagIndex.Backpack, Enum.BagIndex.Bag_4 do
+    for bag = GL.Enum.BagIndex.Backpack, GL.Enum.BagIndex.Bag_4 do
         for slot = 1, self.GetContainerNumSlots(bag) do
             (function ()
                 local Location = ItemLocation:CreateFromBagAndSlot(bag, slot);
@@ -853,13 +853,13 @@ function GL:findBagIdAndSlotForItem(itemLinkOrID, skipSoulBound, includeBank, in
     skipSoulBound = skipSoulBound == true;
     includeBank = includeBank == true;
 
-    local maxBagID = Enum.BagIndex.Bag_4;
+    local maxBagID = GL.Enum.BagIndex.Bag_4;
     if (includeBank) then
-        maxBagID = Enum.BagIndex.BankBag_7;
+        maxBagID = GL.Enum.BagIndex.BankBag_7;
     end
 
     local itemID = identifierIsLink and GL:getItemIDFromLink(itemLinkOrID) or itemLinkOrID;
-    for bag = Enum.BagIndex.Backpack, maxBagID do
+    for bag = GL.Enum.BagIndex.Backpack, maxBagID do
         for slot = 1, GL.GetContainerNumSlots(bag) do
             local Result = (function ()
                 local _, _, locked, _, _, _, itemLink, _, _, bagItemID = GL:getContainerItemInfo(bag, slot);

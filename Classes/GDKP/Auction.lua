@@ -213,11 +213,11 @@ function Auction:userWasOutBidHandler()
     end
 
     -- Flash the game icon in case the player alt-tabbed
-    FlashClientIcon();
+    GL.FlashClientIcon();
 
     -- We don't want to spam the user with alerts!
     if (self.lastOutBidNotificationShownAt
-        and GetServerTime() - self.lastOutBidNotificationShownAt <= 8
+        and GL.GetServerTime() - self.lastOutBidNotificationShownAt <= 8
     ) then
         return;
     end
@@ -228,7 +228,7 @@ function Auction:userWasOutBidHandler()
         GL:playSound(sound);
     end
 
-    self.lastOutBidNotificationShownAt = GetServerTime();
+    self.lastOutBidNotificationShownAt = GL.GetServerTime();
     GL.Interface.Alerts:fire("GargulNotification", {
         message = "|c00BE3333" .. L["You were outbid!"] .. "|r",
     });
@@ -275,7 +275,7 @@ function Auction:create(itemLinkOrID, price, winner, sessionID, Bids, note, awar
         itemID = itemID,
         itemLink = itemLink,
         manualAdjustment = self:concernsManualAdjustment(itemID) or nil,
-        createdAt = GetServerTime(),
+        createdAt = GL.GetServerTime(),
         note = note ~= "" and note or nil,
         CreatedBy = {
             class = GL.User.class,
@@ -359,7 +359,7 @@ function Auction:delete(sessionID, auctionID, reason)
     Instance.PreviousStates = Instance.PreviousStates or {};
 
     local PreviousState = {
-        createdAt = GetServerTime(),
+        createdAt = GL.GetServerTime(),
         price = Instance.price,
         CreatedBy = {
             class = GL.User.class,
@@ -1168,7 +1168,7 @@ function Auction:announceStart(itemLink, minimumBid, minimumIncrement, duration,
 
     -- We're still waiting for an auction to start
     if (self.waitingForStart
-        and GetServerTime() - self.waitingForStart < 6
+        and GL.GetServerTime() - self.waitingForStart < 6
     ) then
         return;
     end
@@ -1178,7 +1178,7 @@ function Auction:announceStart(itemLink, minimumBid, minimumIncrement, duration,
         return;
     end
 
-    self.waitingForStart = GetServerTime();
+    self.waitingForStart = GL.GetServerTime();
     local Bids = self.Current.Bids;
     local TopBid = self.Current.TopBid;
     duration = tonumber(duration) or 0;
@@ -1283,7 +1283,7 @@ end
 ---@param time number
 ---@return boolean
 function Auction:announceExtension(time)
-    self.waitingForReschedule = GetServerTime();
+    self.waitingForReschedule = GL.GetServerTime();
 
     time = tonumber(time) or 0
     if (time < 1) then
@@ -1307,7 +1307,7 @@ end
 ---@param time number
 ---@return boolean
 function Auction:announceShortening(time)
-    self.waitingForReschedule = GetServerTime();
+    self.waitingForReschedule = GL.GetServerTime();
 
     time = tonumber(time) or 0
     if (time < 1) then
@@ -1336,7 +1336,7 @@ function Auction:announceReschedule(time)
         return;
     end
 
-    self.waitingForReschedule = GetServerTime();
+    self.waitingForReschedule = GL.GetServerTime();
 
     time = tonumber(time) or 0
     if (time < 1) then
@@ -1582,10 +1582,10 @@ function Auction:start(CommMessage)
         end
 
         -- Play raid warning sound
-        GL:playSound(SOUNDKIT.RAID_WARNING);
+        GL:playSound(GL.SOUNDKIT.RAID_WARNING);
 
         -- Flash the game icon in case the player alt-tabbed
-        FlashClientIcon();
+        GL.FlashClientIcon();
 
         -- Automatically auto-bid on the item if we set an auto bid max
         if (self.QueuedItemAutoBids[Details.id]) then
@@ -1641,7 +1641,7 @@ function Auction:stop(CommMessage)
     self:stopAutoBid();
 
     -- Play raid warning sound
-    GL:playSound(SOUNDKIT.RAID_WARNING);
+    GL:playSound(GL.SOUNDKIT.RAID_WARNING);
 
     self.inProgress = false;
     GL.Ace:CancelTimer(self.timerID);
@@ -1968,7 +1968,7 @@ function Auction:processBid(message, bidder)
         },
         bid = bid,
         bidder = bidderGUID,
-        createdAt = GetServerTime(),
+        createdAt = GL.GetServerTime(),
     };
 
     -- Determine the minimum bid

@@ -19,9 +19,9 @@ GL.User = {
     Guild = {},
     isOfficer = false,
     isMasterLooter = false,
-    isInRaid = IsInRaid(),
-    isInParty = IsInGroup() and not IsInRaid(),
-    isInGroup = IsInGroup(),
+    isInRaid = GL.IsInRaid(),
+    isInParty = GL.IsInGroup() and not GL.IsInRaid(),
+    isInGroup = GL.IsInGroup(),
 
     -- Group specific
     raidIndex = nil,
@@ -77,7 +77,7 @@ end
 --- composition or loot method changes
 ---@return nil
 function User:groupSetupChanged()
-    self.groupSetupChangedAt = GetServerTime();
+    self.groupSetupChangedAt = GL.GetServerTime();
 
     -- The timer throttle is necessary to prevent performance
     -- issues when an entire raid comes online after a break for example
@@ -109,16 +109,16 @@ function User:refresh()
 
     self.Guild = {};
     self.Guild.name, self.Guild.rank, self.Guild.index = GetGuildInfo("player");
-    self.isOfficer = C_GuildInfo.CanEditOfficerNote();
-    self.isInGroup = IsInGroup();
-    self.isInRaid = self.isInGroup and IsInRaid();
+    self.isOfficer = GL.CanEditOfficerNote();
+    self.isInGroup = GL.IsInGroup();
+    self.isInRaid = self.isInGroup and GL.IsInRaid();
     self.isInParty = self.isInGroup and not self.isInRaid;
     self.hasAssist = false;
     self.isLead = false;
-    self.isMasterLooter = IsMasterLooter() == true;
+    self.isMasterLooter = GL.IsMasterLooter() == true;
     self.raidIndex = nil;
     self.combatRole = nil;
-    self.classFile = UnitClassBase("player");
+    self.classFile = GL.UnitClassBase("player");
     self.class = strlower(self.classFile);
     self.localizedRace, self.race = UnitRace("player");
     self.race = strlower(self.race);
@@ -128,7 +128,7 @@ function User:refresh()
         -- And check the user's roles in the group
         for index = 1, _G.MAX_RAID_MEMBERS do
             local name, rank, _, _, _, classFile,
-            _, _, _, role, isMasterLooter, combatRole = GetRaidRosterInfo(index);
+            _, _, _, role, isMasterLooter, combatRole = GL.GetRaidRosterInfo(index);
 
             GL.Player:cacheClass(name, classFile); -- We cache player classes wherever we can
 
@@ -236,7 +236,7 @@ function User:guildMembers()
     end
 
     -- We cache guild member results for 5 minutes
-    if (GetServerTime() - self.guildMembersCachedAt <= 300) then
+    if (GL.GetServerTime() - self.guildMembersCachedAt <= 300) then
         return self.GuildMembers;
     end
 
@@ -268,7 +268,7 @@ function User:guildMembers()
     end
 
     self.GuildMembers = Roster;
-    self.guildMembersCachedAt = GetServerTime();
+    self.guildMembersCachedAt = GL.GetServerTime();
 
     return Roster;
 end
@@ -302,7 +302,7 @@ function User:groupMembers()
         end
 
         for index = 1, maximumNumberOfGroupMembers do
-            local name, rank, subgroup, level, _, classFile, zone, online, isDead, role, isML = GetRaidRosterInfo(index);
+            local name, rank, subgroup, level, _, classFile, zone, online, isDead, role, isML = GL.GetRaidRosterInfo(index);
 
             if (name) then
                 classFile = classFile or "PRIEST";
@@ -370,7 +370,7 @@ function User:hasActiveGroupMembers()
             return true;
         end
 
-        local name, _, _, _, _, _, _, online = GetRaidRosterInfo(index);
+        local name, _, _, _, _, _, _, online = GL.GetRaidRosterInfo(index);
 
         if (not name) then
             return false;
@@ -402,7 +402,7 @@ end
 function User:groupMemberNames(fqn)
     -- The -1 is used as an extra buffer to make sure we don't miss out on any names...
     -- Race conditions are a pain in the butt and I've seen them happen with this event
-    local timestamp = GetServerTime() - 1;
+    local timestamp = GL.GetServerTime() - 1;
 
     -- The group names changed
     if (self.groupMemberNamesCachedAt <= self.groupSetupChangedAt) then

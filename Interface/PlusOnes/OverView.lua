@@ -39,8 +39,8 @@ function Overview:draw()
     end);
     GL.Interface:set(self, "Window", Window);
     Window:SetPoint(GL.Interface:getPosition("PlusOnesOverview"));
-    local importedAt = GL:tableGet(DB.PlusOnes, "MetaData.importedAt", GetServerTime());
-    local updatedAt = GL:tableGet(DB.PlusOnes, "MetaData.updatedAt", GetServerTime());
+    local importedAt = GL:tableGet(DB.PlusOnes, "MetaData.importedAt", GL.GetServerTime());
+    local updatedAt = GL:tableGet(DB.PlusOnes, "MetaData.updatedAt", GL.GetServerTime());
         Window:SetStatusText((L["Imported on |c00A79EFF%s at |c00A79EFF%s, Updated on |c00A79EFF%s at |c00A79EFF%s"]):format(
             date(L["%Y-%m-%d"], importedAt),
             date(L["%H:%M"], importedAt),
@@ -326,8 +326,8 @@ end
 
 --- Update all PlusOne values in the plusone overview
 function Overview:update()
-    local importedAt = GL:tableGet(DB.PlusOnes, "MetaData.importedAt", GetServerTime());
-    local updatedAt = GL:tableGet(DB.PlusOnes, "MetaData.updatedAt", GetServerTime());
+    local importedAt = GL:tableGet(DB.PlusOnes, "MetaData.importedAt", GL.GetServerTime());
+    local updatedAt = GL:tableGet(DB.PlusOnes, "MetaData.updatedAt", GL.GetServerTime());
         self.Window:SetStatusText((L["Imported on |c00A79EFF%s at |c00A79EFF%s, Updated on |c00A79EFF%s at |c00A79EFF%s"]):format(
             date(L["%Y-%m-%d"], importedAt),
             date(L["%H:%M"], importedAt),

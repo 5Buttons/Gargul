@@ -1,8 +1,10 @@
 ---@type GL
 local _, GL = ...;
 
+-- Anything already defined in GL at this point comes from Utils/Legacy.lua (3.3.5a client)
+
 -- AddOns
-GL.GetAddOnEnableState = GetAddOnEnableState or C_AddOns.GetAddOnEnableState;
+GL.GetAddOnEnableState = GL.GetAddOnEnableState or GetAddOnEnableState or C_AddOns.GetAddOnEnableState;
 GL.GetAddOnInfo = GetAddOnInfo or C_AddOns.GetAddOnInfo;
 GL.GetAddOnMetadata = GetAddOnMetadata or C_AddOns.GetAddOnMetadata;
 GL.GetNumAddOns = GetNumAddOns or C_AddOns.GetNumAddOns;
@@ -16,27 +18,82 @@ GL.UseContainerItem = UseContainerItem or C_Container.UseContainerItem;
 GL.GetCoinTextureString = GetCoinTextureString or C_CurrencyInfo.GetCoinTextureString;
 
 -- Item
-GL.GetItemInfo = GetItemInfo or C_Item.GetItemInfo;
-GL.GetItemInfoInstant = GetItemInfoInstant or C_Item.GetItemInfoInstant;
+GL.GetItemInfo = GL.GetItemInfo or GetItemInfo or C_Item.GetItemInfo;
+GL.GetItemInfoInstant = GL.GetItemInfoInstant or GetItemInfoInstant or C_Item.GetItemInfoInstant;
+
+-- Enums
+GL.Enum = GL.Enum or Enum;
+
+-- Time
+GL.GetServerTime = GL.GetServerTime or GetServerTime;
+
+-- Group
+GL.IsInRaid = GL.IsInRaid or IsInRaid;
+GL.IsInGroup = GL.IsInGroup or IsInGroup;
+GL.GetNumGroupMembers = GL.GetNumGroupMembers or GetNumGroupMembers;
+GL.UnitIsGroupLeader = GL.UnitIsGroupLeader or UnitIsGroupLeader;
+GL.UnitIsGroupAssistant = GL.UnitIsGroupAssistant or UnitIsGroupAssistant;
+GL.GetRaidRosterInfo = GL.GetRaidRosterInfo or GetRaidRosterInfo;
+GL.IsMasterLooter = GL.IsMasterLooter or IsMasterLooter;
+
+-- Guild
+GL.CanEditOfficerNote = GL.CanEditOfficerNote or function ()
+    return C_GuildInfo.CanEditOfficerNote();
+end;
+
+-- Units
+GL.UnitClassBase = GL.UnitClassBase or UnitClassBase;
+GL.GetClassColor = GL.GetClassColor or GetClassColor;
+
+---@param GUID string
+---@return boolean
+GL.isPlayerGUID = GL.isPlayerGUID or function (GUID)
+    return type(GUID) == "string" and GUID:find("^Player%-") ~= nil;
+end;
+
+---@param GUID string
+---@return number|nil
+GL.npcIDFromGUID = GL.npcIDFromGUID or function (GUID)
+    if (type(GUID) ~= "string") then
+        return;
+    end
+
+    return tonumber((select(6, strsplit("-", GUID))));
+end;
+
+-- Timers (C_Timer doesn't exist on 3.3.5a, AceTimer works everywhere)
+---@param seconds number
+---@param func function
+GL.timerAfter = function (seconds, func)
+    return GL.Ace:ScheduleTimer(func, seconds);
+end;
+
+-- UI
+if (not GL.isLegacy) then
+    GL.BackdropTemplate = BackdropTemplateMixin and "BackdropTemplate" or nil;
+end
+GL.SOUNDKIT = GL.SOUNDKIT or SOUNDKIT;
+GL.PlaySound = GL.PlaySound or PlaySound;
+GL.FlashClientIcon = GL.FlashClientIcon or FlashClientIcon;
 
 -- Item class IDs (LE_ITEM_CLASS_* may not exist in Retail/TBC anniversary)
 -- Prefer LE_* when available, else Enum.ItemClass.* (Retail), else numeric fallback
-GL.LE_ITEM_CLASS_RECIPE = LE_ITEM_CLASS_RECIPE or (Enum and Enum.ItemClass and Enum.ItemClass.Recipe) or 9;
-GL.LE_ITEM_CLASS_QUESTITEM = LE_ITEM_CLASS_QUESTITEM or (Enum and Enum.ItemClass and Enum.ItemClass.Questitem) or 12;
-GL.LE_ITEM_CLASS_MISCELLANEOUS = LE_ITEM_CLASS_MISCELLANEOUS or (Enum and Enum.ItemClass and Enum.ItemClass.Miscellaneous) or 15;
+GL.LE_ITEM_CLASS_RECIPE = LE_ITEM_CLASS_RECIPE or (GL.Enum and GL.Enum.ItemClass and GL.Enum.ItemClass.Recipe) or 9;
+GL.LE_ITEM_CLASS_QUESTITEM = LE_ITEM_CLASS_QUESTITEM or (GL.Enum and GL.Enum.ItemClass and GL.Enum.ItemClass.Questitem) or 12;
+GL.LE_ITEM_CLASS_MISCELLANEOUS = LE_ITEM_CLASS_MISCELLANEOUS or (GL.Enum and GL.Enum.ItemClass and GL.Enum.ItemClass.Miscellaneous) or 15;
 
 -- Loot slot types (LOOT_SLOT_* absent in Retail; Enum.LootSlotType.Money may exist)
 -- Numeric value 2 per wowpedia GetLootSlotType
-GL.LOOT_SLOT_MONEY = LOOT_SLOT_MONEY or (Enum and Enum.LootSlotType and Enum.LootSlotType.Money) or 2;
+GL.LOOT_SLOT_MONEY = LOOT_SLOT_MONEY or (GL.Enum and GL.Enum.LootSlotType and GL.Enum.LootSlotType.Money) or 2;
 
 -- Item bind types (Enum.ItemBind.* may not exist in all clients)
 -- Numeric values: None=0, OnAcquire=1, Quest=4 (verified in-game)
-GL.LE_ITEM_BIND_NONE = (Enum and Enum.ItemBind and Enum.ItemBind.None) or 0;
-GL.LE_ITEM_BIND_ON_ACQUIRE = (Enum and Enum.ItemBind and Enum.ItemBind.OnAcquire) or 1;
-GL.LE_ITEM_BIND_QUEST = (Enum and Enum.ItemBind and Enum.ItemBind.Quest) or 4;
+GL.LE_ITEM_BIND_NONE = (GL.Enum and GL.Enum.ItemBind and GL.Enum.ItemBind.None) or 0;
+GL.LE_ITEM_BIND_ON_ACQUIRE = (GL.Enum and GL.Enum.ItemBind and GL.Enum.ItemBind.OnAcquire) or 1;
+GL.LE_ITEM_BIND_QUEST = (GL.Enum and GL.Enum.ItemBind and GL.Enum.ItemBind.Quest) or 4;
 
 -- ItemMiscellaneousSubclass.CompanionPet (numeric value 2 per wowpedia)
-GL.LE_ITEM_MISCELLANEOUS_SUBCLASS_COMPANION_PET = (Enum and Enum.ItemMiscellaneousSubclass and Enum.ItemMiscellaneousSubclass.CompanionPet) or 2;
+GL.LE_ITEM_MISCELLANEOUS_SUBCLASS_COMPANION_PET = (GL.Enum and GL.Enum.ItemMiscellaneousSubclass and GL.Enum.ItemMiscellaneousSubclass.CompanionPet) or 2;
 
 -- PartyInfo
 GL.InviteUnit = InviteUnit or C_PartyInfo.InviteUnit;
@@ -197,11 +254,11 @@ GL.GetLootMethod = function ()
     end
 
     if (GL.User.isInRaid) then
-        return method, masterLooterIndex;
+        return method, GL.isLegacy and masterLooterRaidID or masterLooterIndex;
     end
 
     for index = 1, _G.MEMBERS_PER_RAID_GROUP do
-        local isMasterLooter = select(11, GetRaidRosterInfo(index));
+        local isMasterLooter = select(11, GL.GetRaidRosterInfo(index));
 
         if (isMasterLooter) then
             return method, index;

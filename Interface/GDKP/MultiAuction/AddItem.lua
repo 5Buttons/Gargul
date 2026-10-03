@@ -50,7 +50,7 @@ function AddItem:open(link)
 
         local AuctionDetails = GL:tableGet(GDKP, "MultiAuction.Client.AuctionDetails.Auctions", {});
         local highestEndsAt = 0;
-        local serverTime = GetServerTime();
+        local serverTime = GL.GetServerTime();
         for _, Details in pairs(AuctionDetails or {}) do
             if (Details.endsAt > highestEndsAt
                 and Details.endsAt > (serverTime + 20)

@@ -448,7 +448,7 @@ end
 
 function Overview:refreshItems()
     local phraseDefined = self.phrase and not GL:empty(self.phrase);
-    local fiveHoursAgo = GetServerTime() - 18000;
+    local fiveHoursAgo = GL.GetServerTime() - 18000;
 
     for key, ItemRow in pairs(self.ItemRows or {}) do
         Interface:release(ItemRow);

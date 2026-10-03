@@ -56,8 +56,8 @@ function Overview:draw()
 
     Window:SetPoint(GL.Interface:getPosition("BoostedRollsOverview"));
 
-    local importedAt = GL:tableGet(DB.BoostedRolls, "MetaData.importedAt", GetServerTime());
-    local updatedAt = GL:tableGet(DB.BoostedRolls, "MetaData.updatedAt", GetServerTime());
+    local importedAt = GL:tableGet(DB.BoostedRolls, "MetaData.importedAt", GL.GetServerTime());
+    local updatedAt = GL:tableGet(DB.BoostedRolls, "MetaData.updatedAt", GL.GetServerTime());
     if (GL:higherThanZero(importedAt)) then
         Window:SetStatusText((L["Imported on |c00A79EFF%s at |c00A79EFF%s, Updated on |c00A79EFF%s at |c00A79EFF%s"]):format(
             date(L["%Y-%m-%d"], importedAt),

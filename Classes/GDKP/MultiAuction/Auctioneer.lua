@@ -106,12 +106,12 @@ function Auctioneer:fillFromInventory(minimumQuality, minimumItemLevel, includeB
 
         -- Exclude projectiles (bullets and arrows)
         local classID = select(12, GL.GetItemInfo(itemID));
-        if (classID == Enum.ItemClass.Projectile) then
+        if (classID == GL.Enum.ItemClass.Projectile) then
             return;
         end
 
         -- Exclude enchantments (Eternal Belt Buckle, Frosthide Leg Armor, Greater Inscription of the Axe etc)
-        if (classID == Enum.ItemClass.Consumable
+        if (classID == GL.Enum.ItemClass.Consumable
             and itemQuality > 2
         ) then
             return;
@@ -120,8 +120,8 @@ function Auctioneer:fillFromInventory(minimumQuality, minimumItemLevel, includeB
         -- Check if we need to exclude reagents
         if (not includeMaterials) then
             -- We don't need trade goods / crafting reagents
-            if (classID == Enum.ItemClass.Tradegoods
-                or classID == Enum.ItemClass.Gem
+            if (classID == GL.Enum.ItemClass.Tradegoods
+                or classID == GL.Enum.ItemClass.Gem
             ) then
                 return;
             end
@@ -199,7 +199,7 @@ function Auctioneer:start(ItemDetails, duration, antiSnipe)
         for _, Item in pairs(Items or {}) do
             tinsert(ItemsUpForAuction, {
                 auctionID = auctionID,
-                isBOE = GL:inTable({ Enum.ItemBind.OnEquip, Enum.ItemBind.Quest, }, Item.bindType),
+                isBOE = GL:inTable({ GL.Enum.ItemBind.OnEquip, GL.Enum.ItemBind.Quest, }, Item.bindType),
                 itemLevel = Item.level,
                 name = Item.name,
                 quality = Item.quality,
@@ -386,7 +386,7 @@ function Auctioneer:syncWithRunningSession()
                     local ExtendIDs = {};
 
                     -- Check if there are any auctions worth resuming
-                    local anHourAgo = GetServerTime() - 3600;
+                    local anHourAgo = GL.GetServerTime() - 3600;
                     for auctionID, Auction in pairs(Auctions) do
                         (function ()
                             -- This auction was deleted or otherwise made unavailable
@@ -440,7 +440,7 @@ function Auctioneer:syncWithRunningSession()
                         OnYes = function (duration)
                             duration = tonumber(duration) or 5;
 
-                            local endsAt = GetServerTime() + duration;
+                            local endsAt = GL.GetServerTime() + duration;
                             for _, auctionID in pairs(ExtendIDs) do
                                 Auctions[auctionID].endsAt = endsAt;
                             end
@@ -539,7 +539,7 @@ function Auctioneer:announceStart(ItemDetails, duration, antiSnipe, precision)
         return false;
     end
 
-    local serverTime = GetServerTime();
+    local serverTime = GL.GetServerTime();
 
     -- We're still waiting for a MultiAuction to start
     if (self.waitingForAuctionStart
@@ -693,7 +693,7 @@ function Auctioneer:scheduleUpdater()
 
         -- Check if there are newly closed auctions
         local activeAuctions = false;
-        local serverTime = GetServerTime();
+        local serverTime = GL.GetServerTime();
         for auctionID, Details in pairs(Client.AuctionDetails.Auctions or {}) do
             (function ()
                 if (Details.endsAt <= 0) then
@@ -876,7 +876,7 @@ function Auctioneer:processBid(Message)
     end
 
     -- Regardless of what happens make sure to extend the auction if needed
-    local serverTime = GetServerTime();
+    local serverTime = GL.GetServerTime();
     local secondsLeft = Client.AuctionDetails.Auctions[auctionID].endsAt - serverTime;
 
     -- This auction has "long" ended
@@ -941,7 +941,7 @@ function Auctioneer:processBid(Message)
     self:processAutoBids(auctionID);
 
     -- LastBidAt functions as an extra anti-snipe failsafe
-    self.LastBidAt[auctionID] = GetServerTime();
+    self.LastBidAt[auctionID] = GL.GetServerTime();
 
     local auctioneerIsTopBidder = GL:iEquals(
         GL:tableGet(Client.AuctionDetails.Auctions[auctionID], "CurrentBid.player", ""),
@@ -1041,7 +1041,7 @@ function Auctioneer:closeAuction(auctionID)
 
                 HighestBidPerPlayer[player] = {
                     bid = bid,
-                    createdAt = GetServerTime(),
+                    createdAt = GL.GetServerTime(),
                     bidder = player,
                     Bidder = {
                         name = Player.name,
@@ -1145,7 +1145,7 @@ function Auctioneer:finalCall(auctionID, seconds)
     end
 
     seconds = seconds or GL.Settings:get("GDKP.finalCallTime");
-    Client.AuctionDetails.Auctions[auctionID].endsAt = GetServerTime() + seconds;
+    Client.AuctionDetails.Auctions[auctionID].endsAt = GL.GetServerTime() + seconds;
     tinsert(self.IDsChangedSinceLastSync, auctionID);
 
     -- Restart the updater if it was cancelled (all auctions were stopped)

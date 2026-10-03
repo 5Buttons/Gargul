@@ -666,7 +666,7 @@ function PackMule:lootReady()
                 end
 
                 target = GL:formatPlayerName(target);
-                for playerIndex = 1, GetNumGroupMembers() do
+                for playerIndex = 1, GL.GetNumGroupMembers() do
                     if (GL:iEquals(GetMasterLootCandidate(itemIndex, playerIndex) or "", target)) then
                         self:giveMasterLoot(itemIndex, playerIndex, itemLink, target);
                         return;

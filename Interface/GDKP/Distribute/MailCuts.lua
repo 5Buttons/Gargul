@@ -233,7 +233,7 @@ function MailCuts:refreshPlayerCuts()
             self:mailPlayerCut(player, function (success, copper, message)
                 if (type(message) == "string") then
                     GL:tableAdd(Session, "MailHistory." .. player, {
-                        timestamp = GetServerTime(),
+                        timestamp = GL.GetServerTime(),
                         message = message,
                     });
                 end
@@ -302,7 +302,7 @@ function MailCuts:mailAllCuts()
             return self:mailPlayerCut(player, function (success, copper, message)
                 if (type(message) == "string") then
                     GL:tableAdd(Session, "MailHistory." .. player, {
-                        timestamp = GetServerTime(),
+                        timestamp = GL.GetServerTime(),
                         message = message,
                     });
                 end
