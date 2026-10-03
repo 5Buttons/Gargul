@@ -93,6 +93,12 @@ end
 ---
 ---@return boolean success
 function ItemDataManager:load()
+    -- 3.3.5a can't check whether an item exists without querying the server, populating
+    -- the item database would mean hundreds of thousands of item queries
+    if (GL.isLegacy) then
+        return false;
+    end
+
     if (self:isLoaded()) then
         return true;
     end
