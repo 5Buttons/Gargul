@@ -82,7 +82,8 @@ local MENU_DIVIDER = {
     isUninteractable  = true,
     notCheckable      = true,
     iconOnly          = true,
-    icon              = "Interface/Common/UI-TooltipDivider-Transparent",
+    -- 3.3.5a has neither this texture nor icon-only entries: the divider becomes an empty spacer row
+    icon              = not GL.isLegacy and "Interface/Common/UI-TooltipDivider-Transparent" or nil,
     tCoordLeft        = 0,
     tCoordRight       = 1,
     tCoordTop         = 0,
