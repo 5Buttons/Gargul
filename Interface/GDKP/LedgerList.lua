@@ -251,13 +251,13 @@ function LedgerList:build()
     do
         local Line = Window:CreateLine();
         Line:SetThickness(2);
-        Line:SetColorTexture(.6, .5, .82, 1);
+        Line:SetTexture(.6, .5, .82, 1);
         Line:SetStartPoint("BOTTOMLEFT", Paid, 0, -4);
         Line:SetEndPoint("BOTTOMRIGHT", Paid, 0, -4);
 
         Line = Window:CreateLine();
         Line:SetThickness(1);
-        Line:SetColorTexture(.6, .5, .82, 1);
+        Line:SetTexture(.6, .5, .82, 1);
         Line:SetStartPoint("CENTER", Paid, 0, -10);
         Line:SetEndPoint("TOPLEFT", PlayersTable.head.cols[2], 0, 0);
     end
@@ -271,13 +271,13 @@ function LedgerList:build()
     do
         local Line = Window:CreateLine();
         Line:SetThickness(2);
-        Line:SetColorTexture(.6, .5, .82, 1);
+        Line:SetTexture(.6, .5, .82, 1);
         Line:SetStartPoint("BOTTOMLEFT", Received, 0, -4);
         Line:SetEndPoint("BOTTOMRIGHT", Received, 0, -4);
 
         Line = Window:CreateLine();
         Line:SetThickness(1);
-        Line:SetColorTexture(.6, .5, .82, 1);
+        Line:SetTexture(.6, .5, .82, 1);
         Line:SetStartPoint("CENTER", Received, 0, -10);
         Line:SetEndPoint("TOPLEFT", PlayersTable.head.cols[4], 10, 0);
     end
@@ -291,13 +291,13 @@ function LedgerList:build()
     do
         local Line = Window:CreateLine();
         Line:SetThickness(2);
-        Line:SetColorTexture(.6, .5, .82, 1);
+        Line:SetTexture(.6, .5, .82, 1);
         Line:SetStartPoint("BOTTOMLEFT", Mailed, 0, -4);
         Line:SetEndPoint("BOTTOMRIGHT", Mailed, 0, -4);
 
         Line = Window:CreateLine();
         Line:SetThickness(1);
-        Line:SetColorTexture(.6, .5, .82, 1);
+        Line:SetTexture(.6, .5, .82, 1);
         Line:SetStartPoint("CENTER", Mailed, 0, -10);
         Line:SetEndPoint("TOPLEFT", PlayersTable.head.cols[5], 20, 0);
     end
@@ -312,20 +312,20 @@ function LedgerList:build()
     do
         local Line = Window:CreateLine();
         Line:SetThickness(2);
-        Line:SetColorTexture(.6, .5, .82, 1);
+        Line:SetTexture(.6, .5, .82, 1);
         Line:SetStartPoint("BOTTOMLEFT", Balance, 0, -4);
         Line:SetEndPoint("BOTTOMRIGHT", Balance, 0, -4);
 
         Line = Window:CreateLine();
         Line:SetThickness(1);
-        Line:SetColorTexture(.6, .5, .82, 1);
+        Line:SetTexture(.6, .5, .82, 1);
         Line:SetStartPoint("BOTTOMRIGHT", PlayersTable.head.cols[6], 0, 8);
         Line:SetEndPoint("BOTTOMRIGHT", PlayersTable.head.cols[6], 200, 8);
         local PreviousLine = Line;
 
         Line = Window:CreateLine();
         Line:SetThickness(1);
-        Line:SetColorTexture(.6, .5, .82, 1);
+        Line:SetTexture(.6, .5, .82, 1);
         Line:SetStartPoint("RIGHT", PreviousLine, 0, 0);
         Line:SetEndPoint("BOTTOM", Balance, 0, -4);
     end

@@ -31,6 +31,24 @@ lib.barPrototype = lib.barPrototype or setmetatable({}, lib.barFrameMT)
 lib.barPrototype_mt = lib.barPrototype_mt or {__index = lib.barPrototype}
 lib.barCache = lib.barCache or {}
 
+-- Gargul (3.3.5a): C_Timer and BackdropTemplate don't exist on 3.3.5a
+local backdropTemplate = BackdropTemplateMixin and "BackdropTemplate" or nil
+local function NewTimer(duration, callback)
+	local timer = CreateFrame("Frame")
+	local elapsed = 0
+	timer:SetScript("OnUpdate", function(self, delta)
+		elapsed = elapsed + delta
+		if elapsed >= duration then
+			self:SetScript("OnUpdate", nil)
+			callback()
+		end
+	end)
+	timer.Cancel = function(self)
+		self:SetScript("OnUpdate", nil)
+	end
+	return timer
+end
+
 local barPrototype = lib.barPrototype
 local barPrototype_meta = lib.barPrototype_mt
 local barCache = lib.barCache
@@ -63,7 +81,7 @@ local function barUpdate(updater)
 			bar:SetDuration(0)
 			bar:SetTimeVisibility(false)
 			if bar.maxPauseDuration then
-				bar.maxPauseDurationCallback = C_Timer.NewTimer(bar.maxPauseDuration, function()
+				bar.maxPauseDurationCallback = NewTimer(bar.maxPauseDuration, function()
 					bar.maxPauseDurationCallback = nil
 					bar:Stop()
 				end)
@@ -566,11 +584,11 @@ function lib:New(texture, width, height)
 		bg:SetAllPoints()
 		bar.candyBarBackground = bg
 
-		local backdrop = CreateFrame("Frame", nil, bar, "BackdropTemplate") -- Used by bar stylers for backdrops
+		local backdrop = CreateFrame("Frame", nil, bar, backdropTemplate) -- Used by bar stylers for backdrops
 		backdrop:SetFrameLevel(0)
 		bar.candyBarBackdrop = backdrop
 
-		local iconBackdrop = CreateFrame("Frame", nil, bar, "BackdropTemplate") -- Used by bar stylers for backdrops
+		local iconBackdrop = CreateFrame("Frame", nil, bar, backdropTemplate) -- Used by bar stylers for backdrops
 		bar.candyBarIconFrameBackdrop = iconBackdrop
 
 		local label = statusbar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmallOutline")

@@ -519,3 +519,26 @@ end;
 
 --- Not available on 3.3.5a
 GL.FlashClientIcon = function () end;
+
+--- LibUIDropDownMenu-4.0 doesn't load on 3.3.5a. This stand-in mimics its method-style API
+--- (LibDD:UIDropDownMenu_SetWidth(...) etc.) by forwarding to the native UIDropDownMenu functions
+GL.LibDD = setmetatable({
+    Create_UIDropDownMenu = function (_, name, parent)
+        return CreateFrame("Frame", name, parent, "UIDropDownMenuTemplate");
+    end,
+}, {
+    __index = function (LibDD, key)
+        local native = _G[key];
+
+        if (type(native) ~= "function") then
+            return;
+        end
+
+        local method = function (_, ...)
+            return native(...);
+        end;
+
+        rawset(LibDD, key, method);
+        return method;
+    end,
+});

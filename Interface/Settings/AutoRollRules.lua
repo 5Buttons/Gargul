@@ -4,7 +4,7 @@ local L = Gargul_L;
 local _, GL = ...;
 
 local Overview = GL.Interface.Settings.Overview; ---@type SettingsOverview
-local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0");
+local LibDD = GL.LibDD;
 
 ---@class AutoRollRules
 ---@field description string
@@ -93,7 +93,7 @@ function AutoRollRules:refreshProfileUI(RulesList)
     local deleteBtn = self._profileDeleteBtn;
     if (deleteBtn) then
         local isDefault = activeProfile and GL:iEquals(activeProfile.name, L["Default"]);
-        deleteBtn:SetEnabled(not isDefault);
+        GL.setEnabled(deleteBtn, not isDefault);
     end
 end
 
@@ -317,7 +317,7 @@ function AutoRollRules:createAutocompleteFrame(editBox)
         return self._autocompleteFrame;
     end
 
-    local frame = CreateFrame("Frame", "GargulAutoRollAutocomplete", UIParent, "BackdropTemplate");
+    local frame = CreateFrame("Frame", "GargulAutoRollAutocomplete", UIParent, GL.BackdropTemplate);
     frame:SetSize(200, 200);
     frame:SetPoint("TOPLEFT", editBox, "BOTTOMLEFT", 0, -2);
     frame:SetFrameStrata("TOOLTIP");
@@ -395,7 +395,7 @@ function AutoRollRules:showAutocomplete(editBox, results)
         -- Highlight texture for keyboard/mouse selection
         local highlight = button:CreateTexture(nil, "BACKGROUND");
         highlight:SetAllPoints();
-        highlight:SetColorTexture(1, 1, 1, .2);
+        highlight:SetTexture(1, 1, 1, .2);
         highlight:Hide();
         button.highlight = highlight;
 
@@ -452,7 +452,7 @@ function AutoRollRules:updateAutocompleteHighlight()
             if (not button.highlight) then
                 local highlight = button:CreateTexture(nil, "BACKGROUND");
                 highlight:SetAllPoints();
-                highlight:SetColorTexture(1, 1, 1, .2);
+                highlight:SetTexture(1, 1, 1, .2);
                 button.highlight = highlight;
             end
             button.highlight:Show();
@@ -638,12 +638,12 @@ function AutoRollRules:updatePopulateProgress(progress, label)
 
         local bg = frame:CreateTexture(nil, "BACKGROUND");
         bg:SetAllPoints();
-        bg:SetColorTexture(0, 0, 0, .8);
+        bg:SetTexture(0, 0, 0, .8);
 
         local border = frame:CreateTexture(nil, "BORDER");
         border:SetPoint("TOPLEFT", -1, 1);
         border:SetPoint("BOTTOMRIGHT", 1, -1);
-        border:SetColorTexture(0, 0, 0, 1);
+        border:SetTexture(0, 0, 0, 1);
 
         local bar = CreateFrame("StatusBar", nil, frame);
         bar:SetPoint("TOPLEFT", 1, -1);

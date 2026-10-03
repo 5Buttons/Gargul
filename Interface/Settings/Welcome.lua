@@ -66,7 +66,7 @@ function Welcome:draw(Parent)
 
     local HighlightTex = DiscordRow:CreateTexture(nil, "HIGHLIGHT");
     HighlightTex:SetAllPoints();
-    HighlightTex:SetColorTexture(1, 1, 1, .06);
+    HighlightTex:SetTexture(1, 1, 1, .06);
 
     local DiscordLogo = DiscordRow:CreateTexture(nil, "ARTWORK");
     DiscordLogo:SetSize(20, 20);

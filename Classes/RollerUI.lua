@@ -93,7 +93,7 @@ function RollerUI:draw(time, itemLink, itemIcon, note, SupportedRolls, userCanUs
     self.rollOffEnded = false;
 
     local Texture = Window:CreateTexture(nil,"BACKGROUND");
-    Texture:SetColorTexture(0, 0, 0, .6);
+    Texture:SetTexture(0, 0, 0, .6);
     Texture:SetAllPoints(Window)
     Window.texture = Texture;
 
@@ -548,7 +548,7 @@ function RollerUI:drawRollTracker(width)
     end);
 
     local TrackerBG = Tracker:CreateTexture(nil, "BACKGROUND");
-    TrackerBG:SetColorTexture(0, 0, 0, .5);
+    TrackerBG:SetTexture(0, 0, 0, .5);
     TrackerBG:SetAllPoints(Tracker);
 
     self.RollTrackerFrame = Tracker;
@@ -559,7 +559,7 @@ function RollerUI:drawRollTracker(width)
     TopRow:SetPoint("TOPLEFT", Tracker, "TOPLEFT", 0, 0);
 
     local TopRowHL = TopRow:CreateTexture(nil, "HIGHLIGHT");
-    TopRowHL:SetColorTexture(1, 1, 1, .08);
+    TopRowHL:SetTexture(1, 1, 1, .08);
     TopRowHL:SetAllPoints(TopRow);
 
     local NameText = TopRow:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
@@ -654,11 +654,11 @@ function RollerUI:drawRollTracker(width)
     ExpandedFrame:Hide();
 
     local ExpandedBG = ExpandedFrame:CreateTexture(nil, "BACKGROUND");
-    ExpandedBG:SetColorTexture(0, 0, 0, .5);
+    ExpandedBG:SetTexture(0, 0, 0, .5);
     ExpandedBG:SetAllPoints(ExpandedFrame);
 
     local Separator = ExpandedFrame:CreateTexture(nil, "ARTWORK");
-    Separator:SetColorTexture(.5, .5, .5, .3);
+    Separator:SetTexture(.5, .5, .5, .3);
     Separator:SetSize(width - 8, 1);
     Separator:SetPoint("TOPLEFT", ExpandedFrame, "TOPLEFT", 4, 0);
 
@@ -686,11 +686,11 @@ function RollerUI:drawRollTracker(width)
     ScrollTrack:Hide();
 
     local ScrollTrackBG = ScrollTrack:CreateTexture(nil, "BACKGROUND");
-    ScrollTrackBG:SetColorTexture(1, 1, 1, .1);
+    ScrollTrackBG:SetTexture(1, 1, 1, .1);
     ScrollTrackBG:SetAllPoints(ScrollTrack);
 
     local ScrollThumb = ScrollTrack:CreateTexture(nil, "OVERLAY");
-    ScrollThumb:SetColorTexture(1, 1, 1, .3);
+    ScrollThumb:SetTexture(1, 1, 1, .3);
     ScrollThumb:SetWidth(3);
 
     self.RollTrackerScrollTrack = ScrollTrack;

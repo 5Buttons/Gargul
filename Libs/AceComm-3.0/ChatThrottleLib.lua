@@ -23,7 +23,7 @@
 -- LICENSE: ChatThrottleLib is released into the Public Domain
 --
 
-local CTL_VERSION = 32
+local CTL_VERSION = 31
 
 local _G = _G
 
@@ -74,7 +74,11 @@ local math_max = math.max
 local next = next
 local strlen = string.len
 local GetFramerate = GetFramerate
-local unpack,type,pairs,wipe = unpack,type,pairs,table.wipe
+local unpack,type,pairs,wipe = unpack,type,pairs,wipe
+local strlower = string.lower
+local assert,loadstring,rawset,tconcat = assert,loadstring,rawset,table.concat
+local select = select
+local UnitInRaid,GetNumPartyMembers = UnitInRaid,GetNumPartyMembers
 
 
 -----------------------------------------------------------------------
@@ -141,6 +145,12 @@ ChatThrottleLib.PipeBin = nil -- pre-v19, drastically different
 local PipeBin = setmetatable({}, {__mode="k"})
 
 local function DelPipe(pipe)
+	for i = #pipe, 1, -1 do
+		pipe[i] = nil
+	end
+	pipe.prev = nil
+	pipe.next = nil
+
 	PipeBin[pipe] = true
 end
 
@@ -232,41 +242,13 @@ function ChatThrottleLib:Init()
 		-- Use secure hooks as of v16. Old regular hook support yanked out in v21.
 		self.securelyHooked = true
 		--SendChatMessage
-		if _G.C_ChatInfo and _G.C_ChatInfo.SendChatMessage then
-			hooksecurefunc(_G.C_ChatInfo, "SendChatMessage", function(...)
-				return ChatThrottleLib.Hook_SendChatMessage(...)
-			end)
-		else
-			hooksecurefunc("SendChatMessage", function(...)
-				return ChatThrottleLib.Hook_SendChatMessage(...)
-			end)
-		end
+		hooksecurefunc("SendChatMessage", function(...)
+			return ChatThrottleLib.Hook_SendChatMessage(...)
+		end)
 		--SendAddonMessage
-		hooksecurefunc(_G.C_ChatInfo, "SendAddonMessage", function(...)
+		hooksecurefunc("SendAddonMessage", function(...)
 			return ChatThrottleLib.Hook_SendAddonMessage(...)
 		end)
-	end
-
-	-- v26: Hook SendAddonMessageLogged for traffic logging
-	if not self.securelyHookedLogged then
-		self.securelyHookedLogged = true
-		hooksecurefunc(_G.C_ChatInfo, "SendAddonMessageLogged", function(...)
-			return ChatThrottleLib.Hook_SendAddonMessageLogged(...)
-		end)
-	end
-
-	-- v29: Hook BNSendGameData for traffic logging
-	if not self.securelyHookedBNGameData then
-		self.securelyHookedBNGameData = true
-		if _G.C_BattleNet and _G.C_BattleNet.SendGameData then
-			hooksecurefunc(_G.C_BattleNet, "SendGameData", function(...)
-				return ChatThrottleLib.Hook_BNSendGameData(...)
-			end)
-		else
-			hooksecurefunc("BNSendGameData", function(...)
-				return ChatThrottleLib.Hook_BNSendGameData(...)
-			end)
-		end
 	end
 
 	self.nBypass = 0
@@ -279,7 +261,6 @@ end
 local bMyTraffic = false
 
 function ChatThrottleLib.Hook_SendChatMessage(text, chattype, language, destination, ...)
-	if issecretvalue and (issecretvalue(text) or issecretvalue(destination)) then return end
 	if bMyTraffic then
 		return
 	end
@@ -289,7 +270,6 @@ function ChatThrottleLib.Hook_SendChatMessage(text, chattype, language, destinat
 	self.nBypass = self.nBypass + size	-- just a statistic
 end
 function ChatThrottleLib.Hook_SendAddonMessage(prefix, text, chattype, destination, ...)
-	if issecretvalue and (issecretvalue(text) or issecretvalue(destination)) then return end
 	if bMyTraffic then
 		return
 	end
@@ -298,12 +278,6 @@ function ChatThrottleLib.Hook_SendAddonMessage(prefix, text, chattype, destinati
 	size = size + tostring(destination or ""):len() + self.MSG_OVERHEAD
 	self.avail = self.avail - size
 	self.nBypass = self.nBypass + size	-- just a statistic
-end
-function ChatThrottleLib.Hook_SendAddonMessageLogged(prefix, text, chattype, destination, ...)
-	ChatThrottleLib.Hook_SendAddonMessage(prefix, text, chattype, destination, ...)
-end
-function ChatThrottleLib.Hook_BNSendGameData(destination, prefix, text)
-	ChatThrottleLib.Hook_SendAddonMessage(prefix, text, "WHISPER", destination)
 end
 
 
@@ -346,7 +320,7 @@ end
 -- - ... made up of N "Pipe"s (1 for each destination/pipename)
 -- - and each pipe contains messages
 
-local SendAddonMessageResult = Enum.SendAddonMessageResult or {
+local SendAddonMessageResult = {
 	Success = 0,
 	AddonMessageThrottle = 3,
 	NotInGroup = 5,
@@ -381,16 +355,64 @@ local function IsThrottledSendResult(result)
 	return result == SendAddonMessageResult.AddonMessageThrottle
 end
 
--- A copy of this function exists in FrameXML, but for clarity it's here too.
-local function CallErrorHandler(...)
-	return geterrorhandler()(...)
+--[[
+	 xpcall safecall implementation
+]]
+local xpcall = xpcall
+
+local function errorhandler(err)
+	return geterrorhandler()(err)
+end
+
+local function CreateDispatcher(argCount)
+	local code = [[
+		local xpcall, eh = ...
+		local method, ARGS
+		local function call() return method(ARGS) end
+
+		local function dispatch(func, ...)
+			method = func
+			if not method then return end
+			ARGS = ...
+			return xpcall(call, eh)
+		end
+
+		return dispatch
+	]]
+
+	local ARGS = {}
+	for i = 1, argCount do ARGS[i] = "arg"..i end
+	code = code:gsub("ARGS", tconcat(ARGS, ", "))
+	return assert(loadstring(code, "safecall Dispatcher["..argCount.."]"))(xpcall, errorhandler)
+end
+
+local Dispatchers = setmetatable({}, {__index=function(self, argCount)
+	local dispatcher = CreateDispatcher(argCount)
+	rawset(self, argCount, dispatcher)
+	return dispatcher
+end})
+Dispatchers[0] = function(func)
+	return xpcall(func, errorhandler)
+end
+
+local function safecall(func, ...)
+	return Dispatchers[select("#", ...)](func, ...)
 end
 
 local function PerformSend(sendFunction, ...)
 	bMyTraffic = true
-	local sendResult = MapToSendResult(xpcall(sendFunction, CallErrorHandler, ...))
+	local sendResult = MapToSendResult(safecall(sendFunction, ...))
 	bMyTraffic = false
 	return sendResult
+end
+
+local function GetGroupSendResult(chattype)
+	local lowerDest = strlower(chattype or "")
+	if lowerDest == "raid" and not UnitInRaid("player") then
+		return SendAddonMessageResult.NotInGroup
+	elseif lowerDest == "party" and GetNumPartyMembers() == 0 then
+		return SendAddonMessageResult.NotInGroup
+	end
 end
 
 function ChatThrottleLib:Despool(Prio)
@@ -398,7 +420,7 @@ function ChatThrottleLib:Despool(Prio)
 	while ring.pos and Prio.avail > ring.pos[1].nSize do
 		local pipe = ring.pos
 		local msg = pipe[1]
-		local sendResult = PerformSend(msg.f, unpack(msg, 1, msg.n))
+		local sendResult = GetGroupSendResult(msg[3]) or PerformSend(msg.f, unpack(msg, 1, msg.n))
 
 		if IsThrottledSendResult(sendResult) then
 			-- Message was throttled; move the pipe into the blocked ring.
@@ -426,7 +448,7 @@ function ChatThrottleLib:Despool(Prio)
 
 			-- Notify caller of message submission.
 			if msg.callbackFn then
-				securecallfunction(msg.callbackFn, msg.callbackArg, didSend, sendResult)
+				safecall(msg.callbackFn, msg.callbackArg, didSend, sendResult)
 			end
 		end
 	end
@@ -555,7 +577,7 @@ function ChatThrottleLib:SendChatMessage(prio, prefix,   text, chattype, languag
 
 	-- Check if there's room in the global available bandwidth gauge to send directly
 	if not self.bQueueing and nSize < self:UpdateAvail() then
-		local sendResult = PerformSend(_G.C_ChatInfo.SendChatMessage or _G.SendChatMessage, text, chattype, language, destination)
+		local sendResult = PerformSend(_G.SendChatMessage, text, chattype, language, destination)
 
 		if not IsThrottledSendResult(sendResult) then
 			local didSend = (sendResult == SendAddonMessageResult.Success)
@@ -566,7 +588,7 @@ function ChatThrottleLib:SendChatMessage(prio, prefix,   text, chattype, languag
 			end
 
 			if callbackFn then
-				securecallfunction(callbackFn, callbackArg, didSend, sendResult)
+				safecall(callbackFn, callbackArg, didSend, sendResult)
 			end
 
 			return
@@ -575,7 +597,7 @@ function ChatThrottleLib:SendChatMessage(prio, prefix,   text, chattype, languag
 
 	-- Message needs to be queued
 	local msg = NewMsg()
-	msg.f = _G.C_ChatInfo.SendChatMessage or _G.SendChatMessage
+	msg.f = _G.SendChatMessage
 	msg[1] = text
 	msg[2] = chattype or "SAY"
 	msg[3] = language
@@ -590,11 +612,11 @@ end
 
 
 local function SendAddonMessageInternal(self, sendFunction, prio, prefix, text, chattype, target, queueName, callbackFn, callbackArg)
-	local nSize = #text + self.MSG_OVERHEAD
+	local nSize = #prefix + 1 + #text + self.MSG_OVERHEAD
 
 	-- Check if there's room in the global available bandwidth gauge to send directly
 	if not self.bQueueing and nSize < self:UpdateAvail() then
-		local sendResult = PerformSend(sendFunction, prefix, text, chattype, target)
+		local sendResult = GetGroupSendResult(chattype) or PerformSend(sendFunction, prefix, text, chattype, target)
 
 		if not IsThrottledSendResult(sendResult) then
 			local didSend = (sendResult == SendAddonMessageResult.Success)
@@ -605,7 +627,7 @@ local function SendAddonMessageInternal(self, sendFunction, prio, prefix, text, 
 			end
 
 			if callbackFn then
-				securecallfunction(callbackFn, callbackArg, didSend, sendResult)
+				safecall(callbackFn, callbackArg, didSend, sendResult)
 			end
 
 			return
@@ -633,11 +655,11 @@ function ChatThrottleLib:SendAddonMessage(prio, prefix, text, chattype, target, 
 		error('Usage: ChatThrottleLib:SendAddonMessage("{BULK||NORMAL||ALERT}", "prefix", "text", "chattype"[, "target"])', 2)
 	elseif callbackFn and type(callbackFn)~="function" then
 		error('ChatThrottleLib:SendAddonMessage(): callbackFn: expected function, got '..type(callbackFn), 2)
-	elseif #text>255 then
-		error("ChatThrottleLib:SendAddonMessage(): message length cannot exceed 255 bytes", 2)
+	elseif #prefix + 1 + #text>255 then
+		error("ChatThrottleLib:SendAddonMessage(): prefix + message length cannot exceed 254 bytes", 2)
 	end
 
-	local sendFunction = _G.C_ChatInfo.SendAddonMessage
+	local sendFunction = _G.SendAddonMessage
 	SendAddonMessageInternal(self, sendFunction, prio, prefix, text, chattype, target, queueName, callbackFn, callbackArg)
 end
 
@@ -647,42 +669,16 @@ function ChatThrottleLib:SendAddonMessageLogged(prio, prefix, text, chattype, ta
 		error('Usage: ChatThrottleLib:SendAddonMessageLogged("{BULK||NORMAL||ALERT}", "prefix", "text", "chattype"[, "target"])', 2)
 	elseif callbackFn and type(callbackFn)~="function" then
 		error('ChatThrottleLib:SendAddonMessageLogged(): callbackFn: expected function, got '..type(callbackFn), 2)
-	elseif #text>255 then
-		error("ChatThrottleLib:SendAddonMessageLogged(): message length cannot exceed 255 bytes", 2)
+	elseif #prefix + 1 + #text>255 then
+		error("ChatThrottleLib:SendAddonMessageLogged(): prefix + message length cannot exceed 254 bytes", 2)
 	end
 
-	local sendFunction = _G.C_ChatInfo.SendAddonMessageLogged
+	-- 3.3.5a has no logged transport, so use normal addon messages.
+	local sendFunction = _G.SendAddonMessage
 	SendAddonMessageInternal(self, sendFunction, prio, prefix, text, chattype, target, queueName, callbackFn, callbackArg)
 end
 
-local function BNSendGameDataReordered(prefix, text, _, gameAccountID)
-	local bnSendFunc = _G.C_BattleNet and _G.C_BattleNet.SendGameData or _G.BNSendGameData
-	return bnSendFunc(gameAccountID, prefix, text)
-end
 
-function ChatThrottleLib:BNSendGameData(prio, prefix, text, chattype, gameAccountID, queueName, callbackFn, callbackArg)
-	-- Note that this API is intentionally limited to 255 bytes of data
-	-- for reasons of traffic fairness, which is less than the 4078 bytes
-	-- BNSendGameData natively supports. Additionally, a chat type is required
-	-- but must always be set to 'WHISPER' to match what is exposed by the
-	-- receipt event.
-	--
-	-- If splitting messages, callers must also be aware that message
-	-- delivery over BNSendGameData is unordered.
-
-	if not self or not prio or not prefix or not text or not gameAccountID or not chattype or not self.Prio[prio] then
-		error('Usage: ChatThrottleLib:BNSendGameData("{BULK||NORMAL||ALERT}", "prefix", "text", "chattype", gameAccountID)', 2)
-	elseif callbackFn and type(callbackFn)~="function" then
-		error('ChatThrottleLib:BNSendGameData(): callbackFn: expected function, got '..type(callbackFn), 2)
-	elseif #text>255 then
-		error("ChatThrottleLib:BNSendGameData(): message length cannot exceed 255 bytes", 2)
-	elseif chattype ~= "WHISPER" then
-		error("ChatThrottleLib:BNSendGameData(): chat type must be 'WHISPER'", 2)
-	end
-
-	local sendFunction = BNSendGameDataReordered
-	SendAddonMessageInternal(self, sendFunction, prio, prefix, text, chattype, gameAccountID, queueName, callbackFn, callbackArg)
-end
 
 
 -----------------------------------------------------------------------

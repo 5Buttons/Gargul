@@ -56,8 +56,8 @@ function Launcher:refreshButtons()
         return;
     end
     local anyRunning = self:isAnyRunning();
-    self.StopButton:SetEnabled(anyRunning);
-    self.StartButton:SetEnabled(not self:isQueueInProgress());
+    GL.setEnabled(self.StopButton, anyRunning);
+    GL.setEnabled(self.StartButton, not self:isQueueInProgress());
 end
 
 ---@return nil

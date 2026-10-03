@@ -356,7 +356,7 @@ function Overview:build()
         update = function (self)
             local SelectedSession = Overview:getSelectedSession();
 
-            self:SetEnabled(SelectedSession and SelectedSession.deletedAt == nil and SelectedSession.lockedAt == nil and (not GL.User.isInGroup or GL.User.isLead or GL.User.isMasterLooter));
+            GL.setEnabled(self, SelectedSession and SelectedSession.deletedAt == nil and SelectedSession.lockedAt == nil and (not GL.User.isInGroup or GL.User.isLead or GL.User.isMasterLooter));
         end,
         updateOnCreate = false,
         updateOn = {
@@ -381,7 +381,7 @@ function Overview:build()
         normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/award",
         updateOn = { "GL.GDKP_OVERVIEW_SESSION_CHANGED", "GL.GDKP_OVERVIEW_SESSION_CHANGED", "GL.GDKP_OVERVIEW_SESSIONS_REFRESHED", "GL.GDKP_AUCTION_CHANGED", },
         update = function (self)
-            self:SetEnabled(not GL:empty(GL:tableGet(Overview:getSelectedSession() or {}, "Auctions")));
+            GL.setEnabled(self, not GL:empty(GL:tableGet(Overview:getSelectedSession() or {}, "Auctions")));
         end,
     });
     ListViewButton:SetPoint("TOPLEFT", AddGoldButton, "TOPRIGHT", 2, 0);
@@ -418,7 +418,7 @@ function Overview:build()
         normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/eye",
         updateOn = { "GL.GDKP_OVERVIEW_SESSION_CHANGED", "GL.GDKP_OVERVIEW_SESSION_CHANGED", "GL.GDKP_OVERVIEW_SESSIONS_REFRESHED" },
         update = function (Button)
-            Button:SetEnabled(not GL:empty(GL:tableGet(Overview:getSelectedSession() or {}, "Auctions")));
+            GL.setEnabled(Button, not GL:empty(GL:tableGet(Overview:getSelectedSession() or {}, "Auctions")));
         end,
     });
     Interface:addTooltip(SearchButton, "Search by item or player name");
@@ -822,7 +822,7 @@ function Overview:refreshLedger()
                         disabledTooltip = L["\nYou need lead or master loot to delete entries.\nYou can't delete entries on locked/deleted sessions"],
                         normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/delete",
                         update = function (self)
-                            self:SetEnabled(not auctionWasDeleted and not Session.deletedAt and not Session.lockedAt);
+                            GL.setEnabled(self, not auctionWasDeleted and not Session.deletedAt and not Session.lockedAt);
                         end,
                     });
                     Delete:SetPoint("TOPRIGHT", Eye, "TOPLEFT", -2, 0);
@@ -837,7 +837,7 @@ function Overview:refreshLedger()
                         disabledTooltip = L["\nYou need lead or master loot to restore entries.\nYou can't restore entries of locked/deleted sessions"],
                         normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/restore",
                         update = function (self)
-                            self:SetEnabled(not Session.deletedAt and not Session.lockedAt);
+                            GL.setEnabled(self, not Session.deletedAt and not Session.lockedAt);
                         end,
                     });
                     Restore:SetPoint("TOPRIGHT", Eye, "TOPLEFT", -2, 0);
@@ -854,7 +854,7 @@ function Overview:refreshLedger()
                     disabledTooltip = L["\nYou need lead or master loot to edit entries.\nYou can't edit deleted entries or entries on locked/deleted sessions"],
                     normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/edit",
                     update = function (self)
-                        self:SetEnabled(not auctionWasDeleted and not Session.deletedAt and not Session.lockedAt);
+                        GL.setEnabled(self, not auctionWasDeleted and not Session.deletedAt and not Session.lockedAt);
                     end,
                 });
                 Edit:SetPoint("TOPRIGHT", Delete or Restore, "TOPLEFT", -2, 0);

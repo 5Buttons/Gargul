@@ -567,10 +567,10 @@ function AuctioneerUI:build()
         ExtendButton:SetPoint("TOPLEFT", StopButton, "TOPRIGHT", 1, 0);
         ExtendButton:SetScript("OnClick", function ()
             if (Auctioneer:extend()) then
-                ExtendButton:SetEnabled(false);
+                GL.setEnabled(ExtendButton, false);
 
                 GL.Ace:ScheduleTimer(function ()
-                    ExtendButton:SetEnabled(true);
+                    GL.setEnabled(ExtendButton, true);
                 end, 2);
             end
         end);
@@ -581,10 +581,10 @@ function AuctioneerUI:build()
         ShortenButton:SetPoint("TOPLEFT", ExtendButton, "TOPRIGHT", 1, 0);
         ShortenButton:SetScript("OnClick", function ()
             if (Auctioneer:shorten()) then
-                ShortenButton:SetEnabled(false);
+                GL.setEnabled(ShortenButton, false);
 
                 GL.Ace:ScheduleTimer(function ()
-                    ShortenButton:SetEnabled(true);
+                    GL.setEnabled(ShortenButton, true);
                 end, 2);
             end
         end);
@@ -595,10 +595,10 @@ function AuctioneerUI:build()
         FinalCallButton:SetPoint("TOPLEFT", ShortenButton, "TOPRIGHT", 1, 0);
         FinalCallButton:SetScript("OnClick", function ()
             if (Auctioneer:finalCall()) then
-                FinalCallButton:SetEnabled(false);
+                GL.setEnabled(FinalCallButton, false);
 
                 GL.Ace:ScheduleTimer(function ()
-                    FinalCallButton:SetEnabled(true);
+                    GL.setEnabled(FinalCallButton, true);
                 end, 2);
             end
         end);
@@ -680,7 +680,7 @@ function AuctioneerUI:build()
         LCG.PixelGlow_Start(MultiAuctionWindow, { .59, .5, .82, 1, }, Window:GetWidth() / 4, .02, 5, 2);
 
         local Texture = MultiAuctionWindow:CreateTexture(nil,"BACKGROUND");
-        Texture:SetColorTexture(0, 0, 0, .6);
+        Texture:SetTexture(0, 0, 0, .6);
         Texture:SetAllPoints(MultiAuctionWindow)
 
         ---@type Button
@@ -828,7 +828,7 @@ function AuctioneerUI:buildQueue(Window)
         ---@type ScrollFrame
         local ScrollFrame;
 
-        Queue = CreateFrame("Frame", self.queueWindowName, Window, "BackdropTemplate");
+        Queue = CreateFrame("Frame", self.queueWindowName, Window, GL.BackdropTemplate);
         Queue:SetPoint("TOPLEFT", Window, "TOPRIGHT", -2, 0);
         Queue:SetPoint("BOTTOMLEFT", Window, "BOTTOMRIGHT", -2, 0);
         Queue:SetResizable(true);

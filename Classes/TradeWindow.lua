@@ -102,7 +102,7 @@ GL.TradeWindow = TradeWindow;
 ---@return Frame
 local createPlayerTradeMoneyFrame = function ()
     ---@type Frame
-    local PlayerTradeMoneyFrame = CreateFrame("Frame", nil, TradeFrame, "BackdropTemplate");
+    local PlayerTradeMoneyFrame = CreateFrame("Frame", nil, TradeFrame, GL.BackdropTemplate);
     PlayerTradeMoneyFrame:Hide();
     PlayerTradeMoneyFrame:SetSize(200, 30);
 
@@ -151,7 +151,7 @@ local createAnnounceTradeCheckbox = function ()
     -- Create the cogwheel that links to the announcement settings
     local Cogwheel = CreateFrame("Button", "TradeWindowAnnouncementBox", TradeFrame, nil);
     Cogwheel:Show();
-    Cogwheel:SetClipsChildren(true);
+    GL.setClipsChildren(Cogwheel, true);
     Cogwheel:SetSize(13, 13);
     Cogwheel:SetPoint("TOPRIGHT", CheckBox, "TOPRIGHT", 138, -5);
 

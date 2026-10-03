@@ -199,7 +199,7 @@ function GL:popupMessage(text)
     Window.Text:SetText(text);
 
     -- Fit the window to its contents
-    local textWidth, textHeight = Window.Text:GetUnboundedStringWidth(), Window.Text:GetStringHeight();
+    local textWidth, textHeight = GL.unboundedStringWidth(Window.Text), Window.Text:GetStringHeight();
     Window:SetWidth(math.max(250, textWidth + 40));
     Window:SetHeight(textHeight + 100);
 

@@ -1134,7 +1134,7 @@ function MasterLooterUI:updateShareGearButton()
         return;
     end
 
-    self.ShareGearButton:SetEnabled(GL.RollOff:userCanShareEquippedGear()
+    GL.setEnabled(self.ShareGearButton, GL.RollOff:userCanShareEquippedGear()
         and GL.RollOff:sharableGearPayload() ~= nil
     );
 end

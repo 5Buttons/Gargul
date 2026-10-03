@@ -213,7 +213,7 @@ function Overview:build()
     end);
 
     local WindowBackgroundTexture = Window:CreateTexture(nil,"BACKGROUND");
-    WindowBackgroundTexture:SetColorTexture(0, 0, 0, .6);
+    WindowBackgroundTexture:SetTexture(0, 0, 0, .6);
     WindowBackgroundTexture:SetAllPoints(Window)
     Window.texture = WindowBackgroundTexture;
     GL.Interface:set(self, "Window", Window);

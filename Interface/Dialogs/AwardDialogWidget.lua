@@ -151,7 +151,7 @@ local FrameBackdrop = {
 
 local function constructor()
     local frameName = "GargulAwardDialog" .. GL:uuid();
-    local Frame = CreateFrame("Frame", frameName, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil);
+    local Frame = CreateFrame("Frame", frameName, UIParent, GL.BackdropTemplate);
     Frame:Hide();
 
     Frame:EnableMouse(true);

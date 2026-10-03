@@ -35,7 +35,7 @@ end
 
 do
 	local widgetType = "Dropdown-Pullout"
-	local widgetVersion = 5
+	local widgetVersion = 7
 
 	--[[ Static data ]]--
 
@@ -249,7 +249,7 @@ do
 
 	local function Constructor()
 		local count = AceGUI:GetNextWidgetNum(widgetType)
-		local frame = CreateFrame("Frame", "AceGUI30Pullout"..count, UIParent, "BackdropTemplate")
+		local frame = CreateFrame("Frame", "AceGUI30Pullout"..count, UIParent)
 		local self = {}
 		self.count = count
 		self.type = widgetType
@@ -292,7 +292,9 @@ do
 
 		-- NOTE: The whole scroll frame code is copied from the AceGUI-3.0 widget ScrollFrame
 		local scrollFrame = CreateFrame("ScrollFrame", nil, frame)
+		scrollFrame:SetFrameLevel(frame:GetFrameLevel() + 1)
 		local itemFrame = CreateFrame("Frame", nil, scrollFrame)
+		itemFrame:SetFrameLevel(scrollFrame:GetFrameLevel() + 1)
 
 		self.scrollFrame = scrollFrame
 		self.itemFrame = itemFrame
@@ -300,7 +302,8 @@ do
 		scrollFrame.obj = self
 		itemFrame.obj = self
 
-		local slider = CreateFrame("Slider", "AceGUI30PulloutScrollbar"..count, scrollFrame, "BackdropTemplate")
+		local slider = CreateFrame("Slider", "AceGUI30PulloutScrollbar"..count, scrollFrame)
+		slider:SetFrameLevel(scrollFrame:GetFrameLevel() + 1)
 		slider:SetOrientation("VERTICAL")
 		slider:SetHitRectInsets(0, 0, -10, 0)
 		slider:SetBackdrop(sliderBackdrop)
@@ -347,7 +350,7 @@ end
 
 do
 	local widgetType = "Dropdown"
-	local widgetVersion = 36
+	local widgetVersion = 38
 
 	--[[ Static data ]]--
 
@@ -644,8 +647,9 @@ do
 
 	local function Constructor()
 		local count = AceGUI:GetNextWidgetNum(widgetType)
-		local frame = CreateFrame("Frame", nil, UIParent)
+		local frame = CreateFrame("Frame", widgetType .. count, UIParent)
 		local dropdown = CreateFrame("Frame", "AceGUI30DropDown"..count, frame, "UIDropDownMenuTemplate")
+		dropdown:SetFrameLevel(frame:GetFrameLevel() + 1)
 
 		local self = {}
 		self.type = widgetType
@@ -700,7 +704,8 @@ do
 		button:SetScript("OnLeave",Control_OnLeave)
 		button:SetScript("OnClick",Dropdown_TogglePullout)
 
-		local button_cover = CreateFrame("BUTTON",nil,self.frame)
+		local button_cover = CreateFrame("Button",nil,self.frame)
+		button_cover:SetFrameLevel(self.frame:GetFrameLevel() + 1)
 		self.button_cover = button_cover
 		button_cover.obj = self
 		button_cover:SetPoint("TOPLEFT",self.frame,"BOTTOMLEFT",0,25)

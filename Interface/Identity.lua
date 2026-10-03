@@ -55,7 +55,7 @@ GL.Interface.Identity = {
             local Identity = GL.Interface.Identity.default;
 
             ---@type Frame
-            local Window = CreateFrame("Frame", nil, UIParent, "BackdropTemplate");
+            local Window = CreateFrame("Frame", nil, UIParent, GL.BackdropTemplate);
             Window:SetSize(110, 110);
             Window:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
             Interface:addTooltip(Window, Identity.tooltip);
@@ -99,7 +99,7 @@ GL.Interface.Identity = {
             Window:SetSize(92, 98);
 
             local Texture = Window:CreateTexture(nil, "BACKGROUND");
-            Texture:SetColorTexture(0, 0, 0, .6);
+            Texture:SetTexture(0, 0, 0, .6);
             Texture:SetPoint("TOPLEFT", Window, "TOPLEFT", 0, -2);
             Texture:SetPoint("TOPRIGHT", Window, "TOPRIGHT", 0, -2);
             Texture:SetPoint("BOTTOMLEFT", Window, "BOTTOMLEFT");
@@ -151,7 +151,7 @@ GL.Interface.Identity = {
             Window:SetSize(48, 48);
 
             local Texture = Window:CreateTexture(nil, "BACKGROUND");
-            Texture:SetColorTexture(0, 0, 0, .6);
+            Texture:SetTexture(0, 0, 0, .6);
             Texture:SetAllPoints(Window);
 
             ---@type Texture
@@ -229,7 +229,7 @@ GL.Interface.Identity = {
             local Identity = GL.Interface.Identity["54402906-2451533554"];
 
             ---@type Frame
-            local Window = CreateFrame("Frame", nil, UIParent, "BackdropTemplate");
+            local Window = CreateFrame("Frame", nil, UIParent, GL.BackdropTemplate);
             Window:SetSize(110, 110);
             Window:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
             Interface:addTooltip(Window, Identity.tooltip);
@@ -267,7 +267,7 @@ GL.Interface.Identity = {
             Window:SetSize(92, 98);
 
             local Texture = Window:CreateTexture(nil, "BACKGROUND");
-            Texture:SetColorTexture(0, 0, 0, .6);
+            Texture:SetTexture(0, 0, 0, .6);
             Texture:SetPoint("TOPLEFT", Window, "TOPLEFT", 0, -2);
             Texture:SetPoint("TOPRIGHT", Window, "TOPRIGHT", 0, -2);
             Texture:SetPoint("BOTTOMLEFT", Window, "BOTTOMLEFT");
@@ -309,7 +309,7 @@ GL.Interface.Identity = {
             Window:SetSize(48, 48);
 
             local Texture = Window:CreateTexture(nil, "BACKGROUND");
-            Texture:SetColorTexture(0, 0, 0, .6);
+            Texture:SetTexture(0, 0, 0, .6);
             Texture:SetAllPoints(Window);
 
             ---@type Texture
@@ -384,7 +384,7 @@ GL.Interface.Identity = {
             local Identity = GL.Interface.Identity["2118133100-1868759167"];
 
             ---@type Frame
-            local Window = CreateFrame("Frame", nil, UIParent, "BackdropTemplate");
+            local Window = CreateFrame("Frame", nil, UIParent, GL.BackdropTemplate);
             Window:SetSize(110, 110);
             Window:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
             Interface:addTooltip(Window, Identity.tooltip);
@@ -507,7 +507,7 @@ GL.Interface.Identity = {
             local Identity = GL.Interface.Identity["4120152845-1402702386"];
 
             ---@type Frame
-            local Window = CreateFrame("Frame", nil, UIParent, "BackdropTemplate");
+            local Window = CreateFrame("Frame", nil, UIParent, GL.BackdropTemplate);
             Window:SetSize(110, 110);
             Window:SetBackdrop(_G.BACKDROP_DARK_DIALOG_32_32);
             Interface:addTooltip(Window, Identity.tooltip);
@@ -545,7 +545,7 @@ GL.Interface.Identity = {
             Window:SetSize(92, 98);
 
             local Texture = Window:CreateTexture(nil, "BACKGROUND");
-            Texture:SetColorTexture(0, 0, 0, .6);
+            Texture:SetTexture(0, 0, 0, .6);
             Texture:SetPoint("TOPLEFT", Window, "TOPLEFT", 0, -2);
             Texture:SetPoint("TOPRIGHT", Window, "TOPRIGHT", 0, -2);
             Texture:SetPoint("BOTTOMLEFT", Window, "BOTTOMLEFT");
@@ -587,7 +587,7 @@ GL.Interface.Identity = {
             Window:SetSize(48, 48);
 
             local Texture = Window:CreateTexture(nil, "BACKGROUND");
-            Texture:SetColorTexture(0, 0, 0, .6);
+            Texture:SetTexture(0, 0, 0, .6);
             Texture:SetAllPoints(Window);
 
             ---@type Texture

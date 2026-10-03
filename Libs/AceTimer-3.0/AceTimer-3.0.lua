@@ -17,21 +17,67 @@
 -- @name AceTimer-3.0
 -- @release $Id: AceTimer-3.0.lua 1342 2024-05-26 11:49:35Z nevcairiel $
 
-local MAJOR, MINOR = "AceTimer-3.0", 17 -- Bump minor on changes
+local MAJOR, MINOR = "AceTimer-3.0", 1018 -- Bump minor on changes
 local AceTimer, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceTimer then return end -- No upgrade needed
+AceTimer.frame = AceTimer.frame or CreateFrame("Frame", "AceTimer30Frame")
 AceTimer.activeTimers = AceTimer.activeTimers or {} -- Active timer list
 local activeTimers = AceTimer.activeTimers -- Upvalue our private data
 
 -- Lua APIs
+local assert, loadstring, rawset, tconcat = assert, loadstring, rawset, table.concat
 local type, unpack, next, error, select = type, unpack, next, error, select
 -- WoW APIs
-local GetTime, C_TimerAfter = GetTime, C_Timer.After
+local GetTime = GetTime
+
+--[[
+	 xpcall safecall implementation
+]]
+local xpcall = xpcall
+
+local function errorhandler(err)
+	return geterrorhandler()(err)
+end
+
+local function CreateDispatcher(argCount)
+	local code = [[
+		local xpcall, eh = ...
+		local method, ARGS
+		local function call() return method(ARGS) end
+
+		local function dispatch(func, ...)
+			method = func
+			if not method then return end
+			ARGS = ...
+			return xpcall(call, eh)
+		end
+
+		return dispatch
+	]]
+
+	local ARGS = {}
+	for i = 1, argCount do ARGS[i] = "arg"..i end
+	code = code:gsub("ARGS", tconcat(ARGS, ", "))
+	return assert(loadstring(code, "safecall Dispatcher["..argCount.."]"))(xpcall, errorhandler)
+end
+
+local Dispatchers = setmetatable({}, {__index=function(self, argCount)
+	local dispatcher = CreateDispatcher(argCount)
+	rawset(self, argCount, dispatcher)
+	return dispatcher
+end})
+Dispatchers[0] = function(func)
+	return xpcall(func, errorhandler)
+end
+
+local function safecall(func, ...)
+	return Dispatchers[select("#", ...)](func, ...)
+end
 
 local function new(self, loop, func, delay, ...)
 	if delay < 0.01 then
-		delay = 0.01 -- Restrict to the lowest time that the C_Timer API allows us
+		delay = 0.01 -- Restrict to the lowest time
 	end
 
 	local timer = {
@@ -40,39 +86,14 @@ local function new(self, loop, func, delay, ...)
 		looping = loop,
 		argsCount = select("#", ...),
 		delay = delay,
+		timeleft = delay,
 		ends = GetTime() + delay,
 		...
 	}
 
 	activeTimers[timer] = timer
+	AceTimer.frame:Show()
 
-	-- Create new timer closure to wrap the "timer" object
-	timer.callback = function()
-		if not timer.cancelled then
-			if type(timer.func) == "string" then
-				-- We manually set the unpack count to prevent issues with an arg set that contains nil and ends with nil
-				-- e.g. local t = {1, 2, nil, 3, nil} print(#t) will result in 2, instead of 5. This fixes said issue.
-				timer.object[timer.func](timer.object, unpack(timer, 1, timer.argsCount))
-			else
-				timer.func(unpack(timer, 1, timer.argsCount))
-			end
-
-			if timer.looping and not timer.cancelled then
-				-- Compensate delay to get a perfect average delay, even if individual times don't match up perfectly
-				-- due to fps differences
-				local time = GetTime()
-				local ndelay = timer.delay - (time - timer.ends)
-				-- Ensure the delay doesn't go below the threshold
-				if ndelay < 0.01 then ndelay = 0.01 end
-				C_TimerAfter(ndelay, timer.callback)
-				timer.ends = time + ndelay
-			else
-				activeTimers[timer.handle or timer] = nil
-			end
-		end
-	end
-
-	C_TimerAfter(delay, timer.callback)
 	return timer
 end
 
@@ -152,6 +173,9 @@ function AceTimer:CancelTimer(id)
 	else
 		timer.cancelled = true
 		activeTimers[id] = nil
+		if not next(activeTimers) then
+			AceTimer.frame:Hide()
+		end
 		return true
 	end
 end
@@ -182,7 +206,7 @@ end
 -- ---------------------------------------------------------------------
 -- Upgrading
 
--- Upgrade from old hash-bucket based timers to C_Timer.After timers.
+-- Upgrade from old hash-bucket based timers to OnUpdate timers.
 if oldminor and oldminor < 10 then
 	-- disable old timer logic
 	AceTimer.frame:SetScript("OnUpdate", nil)
@@ -209,9 +233,8 @@ if oldminor and oldminor < 10 then
 	AceTimer.hash = nil
 	AceTimer.debug = nil
 elseif oldminor and oldminor < 17 then
-	-- Upgrade from old animation based timers to C_Timer.After timers.
+	-- Upgrade from old animation based timers to OnUpdate timers.
 	AceTimer.inactiveTimers = nil
-	AceTimer.frame = nil
 	local oldTimers = AceTimer.activeTimers
 	-- Clear old timer table and update upvalue
 	AceTimer.activeTimers = {}
@@ -275,4 +298,66 @@ end
 
 for addon in next, AceTimer.embeds do
 	AceTimer:Embed(addon)
+end
+
+local pendingTimers = {}
+local pendingHandles = {}
+
+AceTimer.frame:SetScript("OnUpdate", function(self, elapsed)
+	local pendingCount = 0
+
+	-- Collect expired timers first, so callbacks can safely add or cancel
+	-- timers without modifying the table being traversed.
+	for handle, timer in next, activeTimers do
+		if not timer.cancelled then
+			if timer.timeleft > elapsed then
+				timer.timeleft = timer.timeleft - elapsed
+			else
+				pendingCount = pendingCount + 1
+				pendingTimers[pendingCount] = timer
+				pendingHandles[pendingCount] = handle
+			end
+		end
+	end
+
+	for i = 1, pendingCount do
+		local timer = pendingTimers[i]
+		local handle = pendingHandles[i]
+		pendingTimers[i] = nil
+		pendingHandles[i] = nil
+
+		-- Another timer callback may have cancelled this timer already.
+		if activeTimers[handle] == timer and not timer.cancelled then
+			if type(timer.func) == "string" then
+				-- We manually set the unpack count to prevent issues with an arg set that contains nil and ends with nil
+				-- e.g. local t = {1, 2, nil, 3, nil} print(#t) will result in 2, instead of 5. This fixes said issue.
+				safecall(timer.object[timer.func], timer.object, unpack(timer, 1, timer.argsCount))
+			else
+				safecall(timer.func, unpack(timer, 1, timer.argsCount))
+			end
+
+			if timer.looping and not timer.cancelled and activeTimers[handle] == timer then
+				-- Compensate delay to get a perfect average delay, even if individual times don't match up perfectly
+				-- due to fps differences
+				local time = GetTime()
+				local delay = timer.delay - (time - timer.ends)
+				-- Ensure the delay doesn't go below the threshold
+				if delay < 0.01 then delay = 0.01 end
+				timer.ends = time + delay
+				timer.timeleft = delay
+			else
+				activeTimers[handle] = nil
+			end
+		end
+	end
+
+	if not next(activeTimers) then
+		self:Hide()
+	end
+end)
+
+if next(activeTimers) then
+	AceTimer.frame:Show()
+else
+	AceTimer.frame:Hide()
 end

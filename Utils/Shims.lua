@@ -72,6 +72,48 @@ end;
 if (not GL.isLegacy) then
     GL.BackdropTemplate = BackdropTemplateMixin and "BackdropTemplate" or nil;
 end
+GL.LibDD = GL.LibDD or LibStub:GetLibrary("LibUIDropDownMenu-4.0", true);
+
+-- Widget helpers for methods missing on 3.3.5a (we deliberately don't rely on methods injected by other addons)
+
+---@param Widget table
+---@param enabled boolean
+GL.setEnabled = function (Widget, enabled)
+    if (enabled) then
+        Widget:Enable();
+    else
+        Widget:Disable();
+    end
+end;
+
+---@param Widget table
+---@param shown boolean
+GL.setShown = function (Widget, shown)
+    if (shown) then
+        Widget:Show();
+    else
+        Widget:Hide();
+    end
+end;
+
+---@param FontString table
+---@return number
+GL.unboundedStringWidth = function (FontString)
+    if (not GL.isLegacy and FontString.GetUnboundedStringWidth) then
+        return FontString:GetUnboundedStringWidth();
+    end
+
+    return FontString:GetStringWidth();
+end;
+
+--- Child clipping doesn't exist on 3.3.5a, children simply won't be clipped there
+---@param Frame table
+---@param clip boolean
+GL.setClipsChildren = function (Frame, clip)
+    if (not GL.isLegacy and Frame.SetClipsChildren) then
+        Frame:SetClipsChildren(clip);
+    end
+end;
 GL.SOUNDKIT = GL.SOUNDKIT or SOUNDKIT;
 GL.PlaySound = GL.PlaySound or PlaySound;
 GL.FlashClientIcon = GL.FlashClientIcon or FlashClientIcon;

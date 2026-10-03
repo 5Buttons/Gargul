@@ -236,7 +236,7 @@ function Overview:draw(section, onCloseCallback)
 
         local HighlightTex = Row:CreateTexture(nil, "HIGHLIGHT");
         HighlightTex:SetAllPoints();
-        HighlightTex:SetColorTexture(1, 1, 1, .06);
+        HighlightTex:SetTexture(1, 1, 1, .06);
 
         local Logo = Row:CreateTexture(nil, "ARTWORK");
         Logo:SetSize(20, 20);

@@ -101,7 +101,7 @@ function Bidder:draw(time, itemLink, itemIcon, bth)
     self.Window = Window;
 
     local Texture = Window:CreateTexture(nil,"BACKGROUND");
-    Texture:SetColorTexture(0, 0, 0, .6);
+    Texture:SetTexture(0, 0, 0, .6);
     Texture:SetAllPoints(Window)
     Window.texture = Texture;
 

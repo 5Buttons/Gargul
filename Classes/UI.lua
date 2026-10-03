@@ -25,7 +25,7 @@ function UI:createSettingsButton(ParentFrame, settingsSection, width, height, om
     -- Create the cogwheel that links to the announcement settings
     local Cogwheel = CreateFrame("Button", "SettingsButton" .. GL:uuid(), ParentFrame, Frame);
     Cogwheel:Show();
-    Cogwheel:SetClipsChildren(true);
+    GL.setClipsChildren(Cogwheel, true);
     Cogwheel:SetSize(width, height);
 
     if (not omitPosition) then

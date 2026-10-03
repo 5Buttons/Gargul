@@ -479,7 +479,7 @@ function MailCuts:disableSendButton()
         return;
     end
 
-    _G.SendMailMailButton:SetEnabled(false);
+    GL.setEnabled(_G.SendMailMailButton, false);
 end
 
 ---@return nil
@@ -488,5 +488,5 @@ function MailCuts:enableSendButton()
         return;
     end
 
-    _G.SendMailMailButton:SetEnabled(true);
+    GL.setEnabled(_G.SendMailMailButton, true);
 end

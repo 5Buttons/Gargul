@@ -17,7 +17,7 @@ local CreateFrame, UIParent = CreateFrame, UIParent
 ]]
 do
 	local Type = "Window"
-	local Version = 8
+	local Version = 10
 
 	local function frameOnShow(this)
 		this.obj:Fire("OnShow")
@@ -28,7 +28,7 @@ do
 	end
 
 	local function closeOnClick(this)
-		PlaySound(799) -- SOUNDKIT.GS_TITLE_OPTION_EXIT
+		PlaySound("gsTitleOptionExit")
 		this.obj:Hide()
 	end
 
@@ -151,7 +151,7 @@ do
 	end
 
 	local function Constructor()
-		local frame = CreateFrame("Frame",nil,UIParent)
+		local frame = CreateFrame("Frame", string.format("%s%d", Type, AceGUI:GetNextWidgetNum(Type)), UIParent)
 		local self = {}
 		self.type = "Window"
 
@@ -174,11 +174,12 @@ do
 		frame:SetWidth(700)
 		frame:SetHeight(500)
 		frame:SetPoint("CENTER",UIParent,"CENTER",0,0)
-		frame:EnableMouse()
+		frame:EnableMouse(false)
 		frame:SetMovable(true)
 		frame:SetResizable(true)
 		frame:SetFrameStrata("FULLSCREEN_DIALOG")
 		frame:SetScript("OnMouseDown", frameOnMouseDown)
+		frame:EnableMouse(true)
 
 		frame:SetScript("OnShow",frameOnShow)
 		frame:SetScript("OnHide",frameOnClose)
@@ -190,73 +191,74 @@ do
 		frame:SetToplevel(true)
 
 		local titlebg = frame:CreateTexture(nil, "BACKGROUND")
-		titlebg:SetTexture(251966) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Title-Background
+		titlebg:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-Title-Background]])
 		titlebg:SetPoint("TOPLEFT", 9, -6)
 		titlebg:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -28, -24)
 
 		local dialogbg = frame:CreateTexture(nil, "BACKGROUND")
-		dialogbg:SetTexture(137056) -- Interface\\Tooltips\\UI-Tooltip-Background
+		dialogbg:SetTexture([[Interface\Tooltips\UI-Tooltip-Background]])
 		dialogbg:SetPoint("TOPLEFT", 8, -24)
 		dialogbg:SetPoint("BOTTOMRIGHT", -6, 8)
 		dialogbg:SetVertexColor(0, 0, 0, .75)
 
 		local topleft = frame:CreateTexture(nil, "BORDER")
-		topleft:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+		topleft:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-Border]])
 		topleft:SetWidth(64)
 		topleft:SetHeight(64)
 		topleft:SetPoint("TOPLEFT")
 		topleft:SetTexCoord(0.501953125, 0.625, 0, 1)
 
 		local topright = frame:CreateTexture(nil, "BORDER")
-		topright:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+		topright:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-Border]])
 		topright:SetWidth(64)
 		topright:SetHeight(64)
 		topright:SetPoint("TOPRIGHT")
 		topright:SetTexCoord(0.625, 0.75, 0, 1)
 
 		local top = frame:CreateTexture(nil, "BORDER")
-		top:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+		top:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-Border]])
 		top:SetHeight(64)
 		top:SetPoint("TOPLEFT", topleft, "TOPRIGHT")
 		top:SetPoint("TOPRIGHT", topright, "TOPLEFT")
 		top:SetTexCoord(0.25, 0.369140625, 0, 1)
 
 		local bottomleft = frame:CreateTexture(nil, "BORDER")
-		bottomleft:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+		bottomleft:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-Border]])
 		bottomleft:SetWidth(64)
 		bottomleft:SetHeight(64)
 		bottomleft:SetPoint("BOTTOMLEFT")
 		bottomleft:SetTexCoord(0.751953125, 0.875, 0, 1)
 
 		local bottomright = frame:CreateTexture(nil, "BORDER")
-		bottomright:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+		bottomright:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-Border]])
 		bottomright:SetWidth(64)
 		bottomright:SetHeight(64)
 		bottomright:SetPoint("BOTTOMRIGHT")
 		bottomright:SetTexCoord(0.875, 1, 0, 1)
 
 		local bottom = frame:CreateTexture(nil, "BORDER")
-		bottom:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+		bottom:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-Border]])
 		bottom:SetHeight(64)
 		bottom:SetPoint("BOTTOMLEFT", bottomleft, "BOTTOMRIGHT")
 		bottom:SetPoint("BOTTOMRIGHT", bottomright, "BOTTOMLEFT")
 		bottom:SetTexCoord(0.376953125, 0.498046875, 0, 1)
 
 		local left = frame:CreateTexture(nil, "BORDER")
-		left:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+		left:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-Border]])
 		left:SetWidth(64)
 		left:SetPoint("TOPLEFT", topleft, "BOTTOMLEFT")
 		left:SetPoint("BOTTOMLEFT", bottomleft, "TOPLEFT")
 		left:SetTexCoord(0.001953125, 0.125, 0, 1)
 
 		local right = frame:CreateTexture(nil, "BORDER")
-		right:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+		right:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-Border]])
 		right:SetWidth(64)
 		right:SetPoint("TOPRIGHT", topright, "BOTTOMRIGHT")
 		right:SetPoint("BOTTOMRIGHT", bottomright, "TOPRIGHT")
 		right:SetTexCoord(0.1171875, 0.2421875, 0, 1)
 
 		local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+		close:SetFrameLevel(frame:GetFrameLevel() + 1)
 		close:SetPoint("TOPRIGHT", 2, 1)
 		close:SetScript("OnClick", closeOnClick)
 		self.closebutton = close
@@ -269,20 +271,24 @@ do
 		self.titletext = titletext
 
 		local title = CreateFrame("Button", nil, frame)
+		title:SetFrameLevel(frame:GetFrameLevel() + 1)
 		title:SetPoint("TOPLEFT", titlebg)
 		title:SetPoint("BOTTOMRIGHT", titlebg)
-		title:EnableMouse()
+		title:EnableMouse(false)
 		title:SetScript("OnMouseDown",titleOnMouseDown)
 		title:SetScript("OnMouseUp", frameOnMouseUp)
+		title:EnableMouse(true)
 		self.title = title
 
 		local sizer_se = CreateFrame("Frame",nil,frame)
+		sizer_se:SetFrameLevel(frame:GetFrameLevel() + 1)
 		sizer_se:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT",0,0)
 		sizer_se:SetWidth(25)
 		sizer_se:SetHeight(25)
-		sizer_se:EnableMouse()
+		sizer_se:EnableMouse(false)
 		sizer_se:SetScript("OnMouseDown",sizerseOnMouseDown)
 		sizer_se:SetScript("OnMouseUp", sizerOnMouseUp)
+		sizer_se:EnableMouse(true)
 		self.sizer_se = sizer_se
 
 		local line1 = sizer_se:CreateTexture(nil, "BACKGROUND")
@@ -290,7 +296,7 @@ do
 		line1:SetWidth(14)
 		line1:SetHeight(14)
 		line1:SetPoint("BOTTOMRIGHT", -8, 8)
-		line1:SetTexture(137057) -- Interface\\Tooltips\\UI-Tooltip-Border
+		line1:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
 		local x = 0.1 * 14/17
 		line1:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
 
@@ -299,30 +305,35 @@ do
 		line2:SetWidth(8)
 		line2:SetHeight(8)
 		line2:SetPoint("BOTTOMRIGHT", -8, 8)
-		line2:SetTexture(137057) -- Interface\\Tooltips\\UI-Tooltip-Border
+		line2:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
 		x = 0.1 * 8/17
 		line2:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
 
 		local sizer_s = CreateFrame("Frame",nil,frame)
+		sizer_s:SetFrameLevel(frame:GetFrameLevel() + 1)
 		sizer_s:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT",-25,0)
 		sizer_s:SetPoint("BOTTOMLEFT",frame,"BOTTOMLEFT",0,0)
 		sizer_s:SetHeight(25)
-		sizer_s:EnableMouse()
+		sizer_s:EnableMouse(false)
 		sizer_s:SetScript("OnMouseDown",sizersOnMouseDown)
 		sizer_s:SetScript("OnMouseUp", sizerOnMouseUp)
+		sizer_s:EnableMouse(true)
 		self.sizer_s = sizer_s
 
 		local sizer_e = CreateFrame("Frame",nil,frame)
+		sizer_e:SetFrameLevel(frame:GetFrameLevel() + 1)
 		sizer_e:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT",0,25)
 		sizer_e:SetPoint("TOPRIGHT",frame,"TOPRIGHT",0,0)
 		sizer_e:SetWidth(25)
-		sizer_e:EnableMouse()
+		sizer_e:EnableMouse(false)
 		sizer_e:SetScript("OnMouseDown",sizereOnMouseDown)
 		sizer_e:SetScript("OnMouseUp", sizerOnMouseUp)
+		sizer_e:EnableMouse(true)
 		self.sizer_e = sizer_e
 
 		--Container Support
 		local content = CreateFrame("Frame",nil,frame)
+		content:SetFrameLevel(frame:GetFrameLevel() + 1)
 		self.content = content
 		content.obj = self
 		content:SetPoint("TOPLEFT",frame,"TOPLEFT",12,-32)

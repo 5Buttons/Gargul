@@ -173,7 +173,7 @@ function GearOverview:getRow(Window, index)
 
     Row.Highlight = Row:CreateTexture(nil, "BACKGROUND");
     Row.Highlight:SetAllPoints(Row);
-    Row.Highlight:SetColorTexture(1, 1, 1, .05);
+    Row.Highlight:SetTexture(1, 1, 1, .05);
     Row.Highlight:Hide();
 
     Row.Name = Row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall");
@@ -218,7 +218,7 @@ function GearOverview:getIcon(Row, index)
     end
 
     ---@type Button
-    Icon = CreateFrame("Button", nil, Row, "BackdropTemplate");
+    Icon = CreateFrame("Button", nil, Row, GL.BackdropTemplate);
     Icon:SetSize(ICON_SIZE, ICON_SIZE);
     Icon:SetPoint("LEFT", Row, "LEFT", 4 + NAME_WIDTH + AGE_WIDTH + ((index - 1) * ICON_PITCH), 0);
     Icon:SetBackdrop({ edgeFile = "Interface/Buttons/WHITE8X8", edgeSize = 1, });

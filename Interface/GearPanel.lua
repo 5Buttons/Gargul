@@ -61,7 +61,7 @@ function GearPanel:show(playerKey, AnchorFrame, AnchorArgs)
 
     local Panel = self.Panel;
     if (not Panel) then
-        Panel = CreateFrame("Frame", "GARGUL_GEAR_PANEL", UIParent, "BackdropTemplate");
+        Panel = CreateFrame("Frame", "GARGUL_GEAR_PANEL", UIParent, GL.BackdropTemplate);
         Panel:SetBackdrop({
             bgFile = "Interface/DialogFrame/UI-DialogBox-Background",
             edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
@@ -153,7 +153,7 @@ function GearPanel:show(playerKey, AnchorFrame, AnchorArgs)
             Row:SetSize(180, rowHeight);
             Row:EnableMouse(true);
 
-            Row.IconBorder = CreateFrame("Frame", nil, Row, "BackdropTemplate");
+            Row.IconBorder = CreateFrame("Frame", nil, Row, GL.BackdropTemplate);
             Row.IconBorder:SetSize(18, 18);
             Row.IconBorder:SetPoint("LEFT", Row, "LEFT", 0, 0);
             Row.IconBorder:SetBackdrop({ edgeFile = "Interface/Buttons/WHITE8X8", edgeSize = 1, });

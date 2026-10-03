@@ -1,8 +1,9 @@
 local L = Gargul_L;
-local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0");
 
 ---@type GL
 local _, GL = ...;
+
+local LibDD = GL.LibDD;
 
 ---@class Interface
 GL.Interface = GL.Interface or {
@@ -137,8 +138,8 @@ function Interface:dynamicPanelButton(Parent, text, template)
         end
 
         Text:SetText(...);
-        local textWidth = Text:GetUnboundedStringWidth();
-        Button:SetSize((Text:GetUnboundedStringWidth() + math.max(minOffset, textWidth * .44)) * scale, 21 * scale);
+        local textWidth = GL.unboundedStringWidth(Text);
+        Button:SetSize((GL.unboundedStringWidth(Text) + math.max(minOffset, textWidth * .44)) * scale, 21 * scale);
     end
 
     Button:SetText(text or "");
@@ -328,7 +329,7 @@ function Interface:textArea(Parent, name, width, height)
         ScrollFrame:SetWidth(height or 200);
     end
 
-    local Background = CreateFrame("Frame", nil, Parent, "BackdropTemplate");
+    local Background = CreateFrame("Frame", nil, Parent, GL.BackdropTemplate);
     Background:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
@@ -536,7 +537,7 @@ function Interface:addMinimizeButton(Element, title)
     local minimizedName = Element:GetName() .. ".Minimized";
 
     ---@type Frame
-    local MinimizedWindow = CreateFrame("Frame", minimizedName, UIParent, "BackdropTemplate");
+    local MinimizedWindow = CreateFrame("Frame", minimizedName, UIParent, GL.BackdropTemplate);
     MinimizedWindow:SetMovable(true);
     MinimizedWindow:SetClampedToScreen(true);
     MinimizedWindow:SetSize(200, 50);
@@ -742,7 +743,7 @@ function Interface:createWindow(
     closeWithEscape = closeWithEscape ~= false;
 
     ---@type Frame
-    local Window = CreateFrame("Frame", name, Parent, template == false and Frame or "BackdropTemplate");
+    local Window = CreateFrame("Frame", name, Parent, template == false and Frame or GL.BackdropTemplate);
     Window:SetSize(width or 200, height or 200);
 
     if (not predefinedParent) then
@@ -954,12 +955,12 @@ function Interface:createSlider(Parent, name, min, max, step, value, callback, w
     };
 
     ---@type Slider
-    local Slider = CreateFrame("Slider", name, Parent, "BackdropTemplate");
+    local Slider = CreateFrame("Slider", name, Parent, GL.BackdropTemplate);
     Slider:SetSize(width, height);
     Slider:SetHitRectInsets(0, 0, -10, 0);
     Slider:SetOrientation("HORIZONTAL");
     Slider:SetMinMaxValues(min, max);
-    Slider:SetObeyStepOnDrag(true);
+    if (not GL.isLegacy) then Slider:SetObeyStepOnDrag(true); end
     Slider:SetValue(1);
     Slider:SetValueStep(step);
     Slider:SetBackdrop(SliderBackdrop)
@@ -974,7 +975,7 @@ function Interface:createSlider(Parent, name, min, max, step, value, callback, w
     HighText:SetPoint("TOPRIGHT", Slider, "BOTTOMRIGHT", -2, 3);
 
     ---@type EditBox
-    local Input = CreateFrame("EditBox", nil, Slider, "BackdropTemplate")
+    local Input = CreateFrame("EditBox", nil, Slider, GL.BackdropTemplate)
     Input:SetAutoFocus(false);
     Input:SetPoint("TOP", Slider, "BOTTOM");
     Input:SetHeight(14);
@@ -1961,7 +1962,7 @@ function Interface:createButton(Parent, Details)
     end
 
     Button:SetParent(Parent);
-    Button:SetEnabled(true);
+    GL.setEnabled(Button, true);
     Button:ClearAllPoints();
     Button:SetSize(width, height);
     Button.updateOn = updateOn;

@@ -164,7 +164,7 @@ local function constructor()
     end
 
     local frameName = "GargulIncomingPlusOneDataDialog";
-    Frame = CreateFrame("Frame", frameName, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil);
+    Frame = CreateFrame("Frame", frameName, UIParent, GL.BackdropTemplate);
     Frame:Hide();
 
     Frame:EnableMouse(true);

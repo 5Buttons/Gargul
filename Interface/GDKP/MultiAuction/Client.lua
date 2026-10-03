@@ -1083,18 +1083,18 @@ function ClientInterface:build()
 
             lockRow = function ()
                 lastBid = GetTime();
-                BidButton:SetEnabled(false);
-                BidMinimumButton:SetEnabled(false);
-                AutoBidButton:SetEnabled(false);
+                GL.setEnabled(BidButton, false);
+                GL.setEnabled(BidMinimumButton, false);
+                GL.setEnabled(AutoBidButton, false);
                 BidInput:Clear();
                 BidInput:ClearFocus();
             end;
 
             unlockRow = function ()
                 lastBid = GetTime(),
-                BidButton:SetEnabled(true);
-                BidMinimumButton:SetEnabled(true);
-                AutoBidButton:SetEnabled(true);
+                GL.setEnabled(BidButton, true);
+                GL.setEnabled(BidMinimumButton, true);
+                GL.setEnabled(AutoBidButton, true);
             end;
 
             --[[ AUCTION STATUS HOLDER ]]

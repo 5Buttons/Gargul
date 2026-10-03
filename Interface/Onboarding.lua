@@ -66,7 +66,7 @@ function Onboarding:showSlide(index)
     Window.currentSlide = index;
 
     for i, frame in ipairs(Window.Slides) do
-        frame:SetShown(i == index);
+        GL.setShown(frame, i == index);
     end
 
     if (Window.BackButton) then
@@ -92,7 +92,7 @@ end
 ---@param height number
 ---@return Frame
 local function createMockupFrame(Parent, height)
-    local Frame = CreateFrame("Frame", nil, Parent, "BackdropTemplate");
+    local Frame = CreateFrame("Frame", nil, Parent, GL.BackdropTemplate);
     Frame:SetHeight(height);
     Frame:SetBackdrop({
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
@@ -122,7 +122,7 @@ local function createColorSwatch(Parent, hexColor, size)
 
     local Swatch = Parent:CreateTexture(nil, "ARTWORK");
     Swatch:SetSize(size, size);
-    Swatch:SetColorTexture(r, g, b, 1);
+    Swatch:SetTexture(r, g, b, 1);
 
     return Swatch;
 end
@@ -450,7 +450,7 @@ local function buildSponsorMockup(Parent)
 
         local HighlightTex = Row:CreateTexture(nil, "HIGHLIGHT");
         HighlightTex:SetAllPoints();
-        HighlightTex:SetColorTexture(1, 1, 1, .06);
+        HighlightTex:SetTexture(1, 1, 1, .06);
 
         local Logo = Row:CreateTexture(nil, "ARTWORK");
         Logo:SetSize(20, 20);
