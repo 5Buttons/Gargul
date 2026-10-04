@@ -731,7 +731,7 @@ function GL:onItemLoadDo(Items, callback, haltOnError, sorter)
         end
 
         if (
-            (not itemType and not GL.isLegacy) -- The item doesn't actually exist in this client (3.3.5a: or isn't cached yet)
+            (not itemType and not GL.isLegacy) -- The item doesn't actually exist in this client
             or ItemResult:IsItemEmpty() -- This is Blizzard's way of saying: this item don't exist fool
             or not ItemResult:GetItemID() -- The item could exist, but not in this client version
         ) then
@@ -780,7 +780,7 @@ function GL:onItemLoadDo(Items, callback, haltOnError, sorter)
             lastError = "Timed out loading item with identifier " .. itemIdentifier;
 
             tryCallback();
-        end, GL.isLegacy and 3 or .5); -- 3.3.5a server item queries are slower
+        end, GL.isLegacy and 3 or .5);
     end
 
     ---@param itemLinkOrID string|number
@@ -807,7 +807,7 @@ end
 --- Use return false; in your func if you want to break the loop early
 ---
 ---@param func function
----@test /script _G.Gargul:forEachItemInBags(function (Location) print(_G.Gargul.C_Item.GetItemID(Location)); end);
+---@test /script _G.Gargul:forEachItemInBags(function (Location) print(C_Item.GetItemID(Location)); end);
 function GL:forEachItemInBags(func)
     -- Used to break out of our double loop
     local finished = false;

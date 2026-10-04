@@ -378,7 +378,6 @@ function SoftRes:materializeData()
 
             for _, itemID in pairs(SoftResEntry.Items or {}) do
                 if (GL:higherThanZero(itemID)) then
-                    -- 3.3.5a only knows the item type of cached items, existence is checked when loading them in draw()
                     local _, itemType = GL.GetItemInfoInstant(itemID);
                     if (not itemType and not GL.isLegacy) then
                         self:clearCorrupted();
@@ -476,12 +475,10 @@ function SoftRes:draw()
                     return self:clearCorrupted();
                 end
 
-                -- 3.3.5a: item queries go to the server and can be slow, give them another go
                 if (attempts < 3) then
                     return loadItemsAndDraw();
                 end
 
-                -- Better an overview with a few unknown items than no SoftRes at all
                 GL:warning(error);
                 GL.Interface.SoftRes.Overview:draw();
             end
@@ -1069,7 +1066,7 @@ function SoftRes:confirmNameFixes(Proposals, callback)
     end
 
     -- classHexColor is used over formatPlayerName's colorize, which runs the class
-    -- through GL.GetClassColor and would choke on softres.it's "death knight"
+    -- through GetClassColor and would choke on softres.it's "death knight"
     local colorized = function (name, class)
         return ("|c00%s%s|r"):format(GL:classHexColor(class), GL:formatPlayerName(name));
     end
@@ -1942,7 +1939,6 @@ function SoftRes:exportSession()
     local checksum = ("%08x"):format(LibDeflate:Adler32(table.concat(CanonicalRows, "\n")));
     local PlayerMap = DB:get("SoftRes.MetaData.playerMap", {});
 
-    -- 3.3.5a: no C_EncodingUtil, use our own JSON, LibDeflate and Base64 implementations instead
     local serializeSucceeded, json = pcall(function ()
         local Payload = {
             ID = softresID,

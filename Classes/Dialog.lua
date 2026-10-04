@@ -300,8 +300,6 @@ function Dialog:show(Details, callback)
         self.text = self.text .. strrep("\n", self.paddingBottom);
     end
 
-    -- 3.3.5a's StaticPopup has no ButtonContainer/ItemFrame/inserted frames and no selectCallbackByIndex,
-    -- show our own (AceGUI) popup instead: button 1 = yes, button 2 = no, button 3 = cancel
     if (GL.isLegacy) then
         GL.Interface.Dialogs.PopupDialog:open({
             question = strtrim(self.text or ""),

@@ -93,8 +93,6 @@ end
 ---
 ---@return boolean success
 function ItemDataManager:load()
-    -- 3.3.5a can't check whether an item exists without querying the server, populating
-    -- the item database would mean hundreds of thousands of item queries
     if (GL.isLegacy) then
         return false;
     end
@@ -121,7 +119,6 @@ end
 ---
 ---@return nil
 function ItemDataManager:promptSetup()
-    -- 3.3.5a: the item database can't be built (see ItemDataManager:load), don't offer it
     if (GL.isLegacy) then
         GL:notice("Searching items by name is not available on this client, shift-click an item to add it instead");
         return;

@@ -31,8 +31,7 @@ lib.barPrototype = lib.barPrototype or setmetatable({}, lib.barFrameMT)
 lib.barPrototype_mt = lib.barPrototype_mt or {__index = lib.barPrototype}
 lib.barCache = lib.barCache or {}
 
--- Gargul (3.3.5a): C_Timer and BackdropTemplate don't exist on 3.3.5a
-local backdropTemplate = nil -- native backdrops, not an emulated BackdropTemplate
+local backdropTemplate = nil
 local function NewTimer(duration, callback)
 	local timer = CreateFrame("Frame")
 	local elapsed = 0

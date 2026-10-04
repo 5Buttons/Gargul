@@ -96,7 +96,7 @@ function Overview:draw()
     ]]
     local HardReserveFrame = AceGUI:Create("InlineGroup");
     HardReserveFrame:SetLayout("FILL")
-    HardReserveFrame:SetAutoAdjustHeight(false); -- Fixed height: Fill + auto height grows forever on 3.3.5a
+    HardReserveFrame:SetAutoAdjustHeight(false);
     HardReserveFrame:SetHeight(50);
     HardReserveFrame:SetWidth(250);
     FirstColumn:AddChild(HardReserveFrame);
@@ -124,7 +124,7 @@ function Overview:draw()
     ]]
     local SecondColumn = AceGUI:Create("InlineGroup");
     SecondColumn:SetLayout("FILL")
-    SecondColumn:SetAutoAdjustHeight(false); -- Fixed height: Fill + auto height grows forever on 3.3.5a
+    SecondColumn:SetAutoAdjustHeight(false);
     SecondColumn:SetWidth(300);
     SecondColumn:SetHeight(350);
     GL.Interface:set(self, "SecondColumn", SecondColumn);
@@ -350,7 +350,6 @@ function Overview:refreshDetailsFrame()
         local Item = GL:getCachedItem(itemID);
 
         -- This should never be possible, but you never know what those weirdos are up to nowadays
-        -- 3.3.5a: SoftRes:draw() continues when the server didn't answer an item query in time
         if (not Item and GL.isLegacy) then
             Item = {
                 icon = "Interface\\Icons\\INV_Misc_QuestionMark",

@@ -229,9 +229,6 @@ function DroppedLoot:hookClickEvents()
         return "default";
     end)();
 
-    --- 3.3.5a: ElvUI's loot frame calls a local copy of HandleModifiedItemClick, taken before Gargul loaded.
-    --- Our HandleModifiedItemClick hook (bootstrap.lua) never sees those clicks, so hook ElvUI's slots directly.
-    --- ElvUI creates slots on demand and shows all of them, hence no 4 button limit here
     if (buttonProvider == "ElvUI" and GL.isLegacy) then
         self.ButtonsHooked.ElvUI = self.ButtonsHooked.ElvUI or {};
 

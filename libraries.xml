@@ -111,11 +111,4 @@
     This library will convert a fully-formatted text string to its original arguments given a format string
     -->
     <Include file="Libs\LibDeformat-3.0\lib.xml"/>
-
-    <!--
-    Taint-preventing dropdown alternative
-
-    3.3.5a: LibUIDropDownMenu-4.0 requires modern APIs, GL.LibDD (Utils/Legacy.lua) forwards to the native dropdowns
-    <Include file="Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
-    -->
 </Ui>

@@ -1,11 +1,6 @@
 ---@type GL
 local _, GL = ...;
 
---[[
-    3.3.5a: the modern AlertFrame system (AlertFrame:AddQueuedAlertFrameSubSystem, ContainedAlertFrame, mixins)
-    doesn't exist, so we render our own toasts: fade in, stay ~4 seconds (longer while hovered), fade out
-]]
-
 local FADE_IN = .2;
 local HOLD = 4.05;
 local FADE_OUT = 1.5;
@@ -21,7 +16,6 @@ GL.Interface.Alerts = {
 
 local Alerts = GL.Interface.Alerts;
 
---- Reposition the visible alerts, stacking upwards
 function Alerts:layout()
     local offset = 0;
 
@@ -50,7 +44,6 @@ function Alerts:release(Alert)
     tinsert(self.Pool, Alert);
     self:layout();
 
-    -- Show the next queued alert, if any
     local Next = tremove(self.Queue, 1);
     if (Next) then
         self:show(unpack(Next));
@@ -92,7 +85,6 @@ function Alerts:acquire()
     return Alert;
 end
 
---- Render an alert, or queue it when the screen is already busy
 ---@param frameType string
 function Alerts:show(frameType, ...)
     if (#self.Active >= MAX_VISIBLE) then
@@ -133,7 +125,6 @@ function Alerts:show(frameType, ...)
             Alert:SetWidth(249 + (longestLength * 3));
         end);
     else
-        -- Override the defaults with whatever the user wants to show
         local Details = GL:tableMerge({
             message = "",
             icon = "Interface/AddOns/Gargul/Assets/Icons/gargul",
@@ -156,7 +147,6 @@ function Alerts:show(frameType, ...)
         Alert:SetScript("OnLeave", function () Alert.hovered = false; end);
     end
 
-    -- Fade in, hold (paused while hovered), fade out
     local elapsed = 0;
     Alert.hovered = false;
     Alert:SetAlpha(0);

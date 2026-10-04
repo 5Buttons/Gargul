@@ -657,7 +657,7 @@ do
 	function lib:CreateST(cols, numRows, rowHeight, highlight, parent, multiselection)
 		local st = {};
 		self.framecount = self.framecount or 1;
-		local f = CreateFrame("Frame", "ScrollTable" .. self.framecount, parent or UIParent); -- Gargul (3.3.5a): native backdrops, not an emulated BackdropTemplate
+		local f = CreateFrame("Frame", "ScrollTable" .. self.framecount, parent or UIParent);
 		self.framecount = self.framecount + 1;
 		st.showing = true;
 		st.frame = f;

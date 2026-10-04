@@ -1,29 +1,17 @@
 ---@type GL
 local _, GL = ...;
 
---[[
-    3.3.5a (WotLK, interface 30300) compatibility layer
-
-    Everything in here only runs on the 3.3.5a client. Implementations live in the GL namespace only,
-    we never touch globals: other compatibility addons (like !!!ClassicAPI) define globals with
-    different semantics (e.g. GetServerTime = GetTime) which we don't want to inherit.
-
-    Utils/Shims.lua falls back to the modern client APIs for everything not defined here.
-]]
-
 GL.isLegacy = select(4, GetBuildInfo()) < 30400;
 
 if (not GL.isLegacy) then
     return;
 end
 
--- Capture the native implementations before anything else can wrap them
 local nativeGetItemInfo = GetItemInfo;
 local nativeUnitClass = UnitClass;
 
 --[[ ENUMS ]]
 
---- Modern enum values used throughout the codebase. !!!ClassicAPI's Enum uses auction house numbering, hence our own copy
 GL.Enum = {
     BagIndex = {
         Backpack = 0,
@@ -98,12 +86,10 @@ GL.Enum = {
 
 --[[ TIME ]]
 
---- GetServerTime doesn't exist on 3.3.5a, time() is the closest thing to a shared epoch timestamp
 GL.GetServerTime = time;
 
 --[[ ADDONS ]]
 
---- 3.3.5a has no enable state API, derive it from GetAddOnInfo (modern signature: character, addon)
 ---@return number 0 = disabled, 2 = enabled
 GL.GetAddOnEnableState = function (character, addon)
     if (addon == nil) then
@@ -134,7 +120,6 @@ GL.GetNumGroupMembers = function ()
     return partyMembers > 0 and partyMembers + 1 or 0;
 end;
 
---- Returns the raid rank of the given unit (2 = leader, 1 = assistant, 0 = member), nil when not in a raid
 ---@param unit string
 ---@return number|nil
 local function raidRank(unit)
@@ -161,7 +146,6 @@ GL.UnitIsGroupAssistant = function (unit)
     return GetNumRaidMembers() > 0 and raidRank(unit) == 1;
 end;
 
---- Is the given party unit ("player", "party1".."party4") the master looter?
 ---@param unit string
 ---@return boolean
 local function partyUnitIsMasterLooter(unit)
@@ -176,8 +160,6 @@ end
 
 local nativeGetRaidRosterInfo = GetRaidRosterInfo;
 
---- Modern clients return party members through GetRaidRosterInfo as well, 3.3.5a only does so in raids
---- Party index 1 is the player, 2 through 5 are party1 through party4
 ---@param index number
 ---@return string|nil, number, number, number, string, string, string, boolean, boolean, string, boolean
 GL.GetRaidRosterInfo = function (index)
@@ -189,7 +171,6 @@ GL.GetRaidRosterInfo = function (index)
         return;
     end
 
-    -- Without a party there's no roster at all
     if (GetNumPartyMembers() < 1) then
         return;
     end
@@ -220,7 +201,6 @@ GL.GetRaidRosterInfo = function (index)
         partyUnitIsMasterLooter(unit);
 end;
 
---- IsMasterLooter doesn't exist on 3.3.5a
 ---@return boolean
 GL.IsMasterLooter = function ()
     local method, partyMaster, raidMaster = GetLootMethod();
@@ -229,7 +209,6 @@ GL.IsMasterLooter = function ()
         return false;
     end
 
-    -- In raids, comparing names is the only reliable way across subgroups
     if (raidMaster) then
         return nativeGetRaidRosterInfo(raidMaster) == UnitName("player");
     end
@@ -237,7 +216,6 @@ GL.IsMasterLooter = function ()
     return partyMaster == 0;
 end;
 
---- 3.3.5a returns 1/nil
 ---@return boolean
 GL.CanEditOfficerNote = function ()
     return CanEditOfficerNote() and true or false;
@@ -249,8 +227,6 @@ GL.LOOT_SLOT_ITEM = 1;
 GL.LOOT_SLOT_MONEY = 2;
 GL.LOOT_SLOT_CURRENCY = 3;
 
---- Modern return order: icon, name, quantity, currencyID, quality, locked, isQuestItem, questID, isActive
---- 3.3.5a returns: icon, name, quantity, quality, locked
 ---@param slot number
 GL.GetLootSlotInfo = function (slot)
     local icon, name, quantity, quality, locked = _G.GetLootSlotInfo(slot);
@@ -272,8 +248,6 @@ GL.GetLootSlotType = function (slot)
     return 0;
 end;
 
---- 3.3.5a can't tell where loot came from. We use the GUID of the dead unit we're targeting, or a
---- unique ID per loot window otherwise. It's remembered until the loot window closes
 local currentLootSourceGUID;
 local LootSourceResetFrame = CreateFrame("Frame");
 LootSourceResetFrame:RegisterEvent("LOOT_CLOSED");
@@ -294,7 +268,6 @@ GL.GetLootSourceInfo = function ()
     return currentLootSourceGUID;
 end;
 
---- The modern API takes a loot slot as well, 3.3.5a only takes the candidate index
 ---@param _ number slot
 ---@param index number
 ---@return string|nil
@@ -302,8 +275,6 @@ GL.GetMasterLootCandidate = function (_, index)
     return _G.GetMasterLootCandidate(index);
 end;
 
---- 3.3.5a difficulty indexes: dungeons 1 = normal, 2 = heroic. Raids 1/2 = 10/25 normal, 3/4 = 10/25 heroic.
---- Dynamic raids (ICC/RS) keep their size index and report heroic through dynamicDifficulty instead
 ---@return boolean
 GL.isInHeroicInstance = function ()
     local _, instanceType, difficultyIndex, _, _, dynamicDifficulty, isDynamic = GetInstanceInfo();
@@ -338,7 +309,6 @@ local ClassFileToID = {
     DRUID = 11,
 };
 
---- 3.3.5a's UnitClassBase returns (localizedClass, classFile), the modern one returns (classFile, classID)
 ---@param unit string
 ---@return string|nil, number|nil
 GL.UnitClassBase = function (unit)
@@ -351,7 +321,6 @@ GL.UnitClassBase = function (unit)
     return classFile, ClassFileToID[classFile];
 end;
 
---- Modern signature: classFile → r, g, b, hexColor ("ffrrggbb")
 ---@param classFile string
 ---@return number, number, number, string
 GL.GetClassColor = function (classFile)
@@ -364,7 +333,6 @@ GL.GetClassColor = function (classFile)
     return Color.r, Color.g, Color.b, ("ff%02x%02x%02x"):format(Color.r * 255, Color.g * 255, Color.b * 255);
 end;
 
---- 3.3.5a GUIDs look like 0x0000000000123456. The low three bits of the 3rd hex digit hold the unit type (0 = player)
 ---@param GUID string
 ---@return boolean
 GL.isPlayerGUID = function (GUID)
@@ -375,7 +343,6 @@ GL.isPlayerGUID = function (GUID)
     return bit.band(tonumber(GUID:sub(1, 5)) or -1, 0x007) == 0;
 end;
 
---- Extract the creature/NPC ID from a 3.3.5a GUID
 ---@param GUID string
 ---@return number|nil
 GL.npcIDFromGUID = function (GUID)
@@ -385,7 +352,6 @@ GL.npcIDFromGUID = function (GUID)
 
     local unitType = bit.band(tonumber(GUID:sub(1, 5)) or -1, 0x007);
 
-    -- 3 = creature, 5 = vehicle
     if (unitType ~= 3 and unitType ~= 5) then
         return;
     end
@@ -395,17 +361,14 @@ end;
 
 --[[ ITEMS ]]
 
---- Modern classID per (3.3.5a) auction house class index, see GetAuctionItemClasses()
 local AuctionClassIndexToClassID = { 2, 4, 1, 0, 16, 7, 6, 11, 9, 3, 15, 12 };
 
---- Modern subclassIDs per auction house subclass index, where they differ from index - 1
 local AuctionSubClassIndexToSubClassID = {
     [2] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 13, 14, 15, 16, 18, 19, 20 }, -- Weapon
     [4] = { 0, 1, 2, 3, 4, 6, 7, 8, 9, 10 }, -- Armor
     [0] = { 5, 1, 2, 3, 7, 6, 4, 8 }, -- Consumable
 };
 
---- Localized type => classID and "classID.localizedSubType" => subClassID, built lazily
 local ItemTypeToClassID, ItemSubTypeToSubClassID;
 
 local function buildItemClassLookup()
@@ -427,7 +390,6 @@ local function buildItemClassLookup()
     end
 end
 
---- Translate GetItemInfo's localized type/subtype into modern class and subclass IDs
 ---@param itemType string
 ---@param itemSubType string
 ---@return number|nil, number|nil
@@ -447,7 +409,6 @@ end;
 
 local ScanTooltip;
 
---- Get a hidden tooltip for reading item details the 3.3.5a API doesn't expose
 ---@return table
 GL.getScanTooltip = function ()
     if (not ScanTooltip) then
@@ -462,7 +423,6 @@ end;
 
 local BindTypeByItemID = {};
 
---- 3.3.5a GetItemInfo has no bindType return, read it from the tooltip instead (requires a cached item)
 ---@param itemLink string
 ---@return number|nil
 GL.getItemBindType = function (itemLink)
@@ -481,7 +441,6 @@ GL.getItemBindType = function (itemLink)
 
     local numLines = Tooltip:NumLines();
 
-    -- The item is not cached yet, don't remember anything
     if (numLines < 1) then
         return;
     end
@@ -518,7 +477,6 @@ GL.getItemBindType = function (itemLink)
     return bindType;
 end;
 
---- Modern-shaped GetItemInfo: appends classID, subClassID, bindType, expansionID, setID and isCraftingReagent
 ---@return ...
 GL.GetItemInfo = function (item)
     if (item == nil) then
@@ -537,7 +495,6 @@ GL.GetItemInfo = function (item)
         texture, sellPrice, classID, subClassID, GL.getItemBindType(link), 2, nil, false;
 end;
 
---- 3.3.5a has no way to get item info without the item being cached. When it's not cached we only return the ID
 ---@return number|nil, string|nil, string|nil, string|nil, string|nil, number|nil, number|nil
 GL.GetItemInfoInstant = function (item)
     if (item == nil) then
@@ -546,7 +503,6 @@ GL.GetItemInfoInstant = function (item)
 
     local itemID = tonumber(item) or tonumber(tostring(item):match("item:(%-?%d+)"));
 
-    -- An item name was provided, that only works for cached items
     if (not itemID) then
         local link = select(2, nativeGetItemInfo(item));
         itemID = link and tonumber(link:match("item:(%d+)"));
@@ -567,7 +523,7 @@ GL.GetItemInfoInstant = function (item)
     return itemID, itemType, itemSubType, equipLoc, texture, classID, subClassID;
 end;
 
---[[ ITEM LOCATIONS (bags only) ]]
+--[[ ITEM LOCATIONS ]]
 
 GL.ItemLocation = {
     CreateFromBagAndSlot = function (_, bag, slot)
@@ -585,8 +541,6 @@ local function locationLink(Location)
     return GetContainerItemLink(Location.bagID, Location.slotIndex);
 end
 
---- C_Item stand-in for the location based functions we use. Item GUIDs don't exist on 3.3.5a, we use
---- "Legacy-bag-slot-itemID" instead: unique at any given time but no longer valid once the item moves
 GL.C_Item = {
     DoesItemExist = function (Location)
         return locationLink(Location) ~= nil;
@@ -620,7 +574,7 @@ GL.C_Item = {
     end,
 };
 
---[[ ITEM OBJECTS (stand-in for Blizzard's ItemMixin) ]]
+--[[ ITEM OBJECTS ]]
 
 local ItemObject = {};
 ItemObject.__index = ItemObject;
@@ -657,13 +611,11 @@ function ItemObject:IsItemDataCached()
     return self.itemID ~= nil and nativeGetItemInfo(self.itemID) ~= nil;
 end
 
---- Items waiting for server data: itemID => { callbacks }
 local PendingItems = {};
 local PendingSince = {};
 local ITEM_LOAD_TIMEOUT = 10;
 local ItemLoader;
 
---- Ask the server for item data, 3.3.5a does this when a tooltip shows an uncached item
 ---@param itemID number
 local function requestItem(itemID)
     local Tooltip = GL.getScanTooltip();
@@ -680,7 +632,6 @@ local function checkPendingItems()
             PendingItems[itemID] = nil;
             PendingSince[itemID] = nil;
 
-            -- Like ContinueOnItemLoad, callbacks only fire for items that actually loaded
             if (cached) then
                 for _, callback in ipairs(Callbacks) do
                     pcall(callback);
@@ -736,7 +687,6 @@ GL.Item = {
     CreateFromItemLink = function (_, itemLink)
         local itemID = tonumber(tostring(itemLink):match("item:(%-?%d+)"));
 
-        -- Callers sometimes pass an item ID as a string (e.g. "45470" from SoftRes data)
         if (not itemID) then
             return setmetatable({ itemID = tonumber(itemLink), }, ItemObject);
         end
@@ -752,10 +702,8 @@ GL.Item = {
 
 --[[ UI ]]
 
---- Frames have SetBackdrop natively on 3.3.5a, there's no BackdropTemplate
 GL.BackdropTemplate = nil;
 
---- 3.3.5a sounds are played by name
 GL.SOUNDKIT = {
     GS_TITLE_OPTION_EXIT = "gsTitleOptionExit",
     IG_MAINMENU_OPTION_CHECKBOX_OFF = "igMainMenuOptionCheckBoxOff",
@@ -781,18 +729,13 @@ GL.PlaySound = function (sound, ...)
     return PlaySound(sound, ...);
 end;
 
---- Not available on 3.3.5a
 GL.FlashClientIcon = function () end;
 
---- LibUIDropDownMenu-4.0 doesn't load on 3.3.5a. This stand-in mimics its method-style API
---- (LibDD:UIDropDownMenu_SetWidth(...) etc.) by forwarding to the native UIDropDownMenu functions
 GL.LibDD = setmetatable({
     Create_UIDropDownMenu = function (_, name, parent)
-        -- The 3.3.5a dropdown functions concatenate the frame name, it must have one
         name = name or GL.uniqueFrameName("DropDown");
         local DropDown = CreateFrame("Frame", name, parent, "UIDropDownMenuTemplate");
 
-        -- 3.3.5a's template only names its children ($parentText etc.), modern code expects parentKeys
         for _, key in pairs({ "Text", "Button", "Icon", "Left", "Middle", "Right", }) do
             DropDown[key] = DropDown[key] or _G[name .. key];
         end

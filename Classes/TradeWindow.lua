@@ -362,7 +362,6 @@ function TradeWindow:handleEvents(event, ...)
     if (event == "UI_INFO_MESSAGE") then
         local _, message = ...;
 
-        -- 3.3.5a only passes the message
         if (GL.isLegacy) then
             message = ...;
         end
@@ -412,7 +411,6 @@ function TradeWindow:handleEvents(event, ...)
         local moneyBefore = 0;
         local previousCursorType = GL.Enum.UICursorType.Default;
         Events:register(CURSOR_CHANGED_LISTENER_ID, "CURSOR_CHANGED", function (_, _, newCursorType, oldCursorType)
-            -- 3.3.5a: CURSOR_UPDATE has no arguments, determine the cursor types ourselves
             if (GL.isLegacy) then
                 oldCursorType = previousCursorType;
                 newCursorType = (GetCursorMoney() or 0) > 0 and GL.Enum.UICursorType.Money
@@ -687,10 +685,7 @@ function TradeWindow:processItemsToAdd()
         };
     end
 
-    -- 3.3.5a: "using" a (loot-tradable) soulbound item puts it in the "will not be traded" slot,
-    -- so put it in the first free tradable slot ourselves
     if (GL.isLegacy) then
-        -- Don't mess with whatever the user is holding
         if (CursorHasItem()) then
             return;
         end

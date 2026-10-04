@@ -82,7 +82,6 @@ local MENU_DIVIDER = {
     isUninteractable  = true,
     notCheckable      = true,
     iconOnly          = true,
-    -- 3.3.5a has neither this texture nor icon-only entries: the divider becomes an empty spacer row
     icon              = not GL.isLegacy and "Interface/Common/UI-TooltipDivider-Transparent" or nil,
     tCoordLeft        = 0,
     tCoordRight       = 1,
@@ -898,7 +897,7 @@ function Interface:createCheckbox(Parent, name, checked, label, tooltip, callbac
         Label:SetPoint("CENTER", Checkbox, "CENTER");
         Label:SetPoint("LEFT", Checkbox, "RIGHT", 4, 0);
 
-        -- Not available in Era at time of writing (nor on 3.3.5a, mouseRegionFor covers the label with a frame)
+        -- Not available in Era at time of writing
         local LabelMouseTarget = GL.mouseRegionFor(Label);
         if (LabelMouseTarget.EnableMouse) then
             LabelMouseTarget:EnableMouse(true);

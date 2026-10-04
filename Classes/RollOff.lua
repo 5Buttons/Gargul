@@ -1443,7 +1443,7 @@ function RollOff:receiveSharedEquippedGear(CommMessage)
         return;
     end
 
-    -- GL.GetRaidRosterInfo (used by the ML/assist checks) is raid-only, so the roll
+    -- GetRaidRosterInfo (used by the ML/assist checks) is raid-only, so the roll
     -- owner is our fallback: they're already the authority for this roll
     local senderStartedTheRoll = CommMessage.Sender.id ~= nil
         and CommMessage.Sender.id == self.CurrentRollOff.initiator;

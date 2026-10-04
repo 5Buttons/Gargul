@@ -49,10 +49,6 @@ local function AnimateTexCoords(texture, textureWidth, textureHeight, frameWidth
 end
 
 -- ===============================================================================
--- Gargul: pools are provided locally below, Pools.lua is not required
--- ===============================================================================
-
--- ===============================================================================
 -- !!! IMPORTANT: CHANGE `texturePath` BELOW TO POINT TO YOUR ADDON'S FILE LOCATION !!!
 -- DON'T FORGET THE BACKSLASH AT THE END (\)!
 -- Example: local texturePath = [[Interface\AddOns\YourAddon\Libs\]]
@@ -81,7 +77,6 @@ lib.glowList = {}
 lib.startList = {}
 lib.stopList = {}
 
--- Gargul (3.3.5a): minimal local pools so we don't depend on global pool implementations (WeakAuras, !!!ClassicAPI)
 local function CreatePool(create, resetter)
   local Pool = { inactive = {}, active = {} }
 

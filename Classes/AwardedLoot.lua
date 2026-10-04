@@ -1264,7 +1264,6 @@ function AwardedLoot:receiveAwardedItem(Award, Sender)
         return GL:warning("Couldn't process award result in AwardedLoot:receiveAwardedItem");
     end
 
-    -- 3.3.5a has no LootWonAlertFrame, use our own item alert instead
     if (GL.isLegacy and GL:iEquals(Award.awardedTo, GL.User.name)) then
         GL:hydrateItemLink(Award.itemLink, function (itemLink)
             if (itemLink) then

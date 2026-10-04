@@ -5,7 +5,6 @@ local _, GL = ...;
 ---@param slot number
 ---@return any
 function GL:getContainerItemInfo(bagID, slot)
-    -- 3.3.5a returns the first 7 values only, the itemID can be derived from the link
     if (GL.isLegacy) then
         local icon, count, locked, quality, readable, lootable, link = GetContainerItemInfo(bagID, slot);
 

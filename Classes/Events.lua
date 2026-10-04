@@ -22,7 +22,6 @@ local Events = {
 ---@type Events
 GL.Events = Events;
 
---- 3.3.5a: modern events and the native events that stand in for them (false = no equivalent, never fires)
 local LegacyEventSources = GL.isLegacy and {
     BAG_UPDATE_DELAYED = { "BAG_UPDATE" },
     CURSOR_CHANGED = { "CURSOR_UPDATE" },
@@ -34,12 +33,10 @@ local LegacyEventSources = GL.isLegacy and {
     SECURE_TRANSFER_CONFIRM_TRADE_ACCEPT = false,
 } or {};
 
---- Stand-in events that should only fire once after a burst of their native counterpart
 local DebouncedLegacyEvents = {
     BAG_UPDATE_DELAYED = true,
 };
 
---- Native event => modern events it stands in for
 local LegacyEventTargets = {};
 for modernEvent, Sources in pairs(LegacyEventSources) do
     for _, nativeEvent in ipairs(Sources or {}) do
@@ -48,10 +45,8 @@ for modernEvent, Sources in pairs(LegacyEventSources) do
     end
 end
 
---- Number of registered events (modern or native) relying on a native frame event
 local FrameEventUsage = {};
 
---- Register an event on our frame, or the native events standing in for it on 3.3.5a
 ---@param event string
 function Events:registerFrameEvent(event)
     local Sources = LegacyEventSources[event];
@@ -223,7 +218,6 @@ end
 function Events:listen(event, ...)
     local args = {...};
 
-    -- 3.3.5a: fire the modern events this native event stands in for first (e.g. LOOT_READY precedes LOOT_OPENED)
     for _, modernEvent in ipairs(LegacyEventTargets[event] or {}) do
         if (GL.Events.Registry.EventListeners[modernEvent]) then
             if (DebouncedLegacyEvents[modernEvent]) then

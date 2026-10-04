@@ -1,8 +1,6 @@
 ---@type GL
 local _, GL = ...;
 
--- Anything already defined in GL at this point comes from Utils/Legacy.lua (3.3.5a client)
-
 -- AddOns
 GL.GetAddOnEnableState = GL.GetAddOnEnableState or GetAddOnEnableState or C_AddOns.GetAddOnEnableState;
 GL.GetAddOnInfo = GetAddOnInfo or C_AddOns.GetAddOnInfo;
@@ -48,7 +46,6 @@ GL.GetLootSlotType = GL.GetLootSlotType or function (...) return GetLootSlotType
 GL.GetLootSourceInfo = GL.GetLootSourceInfo or function (...) return GetLootSourceInfo(...); end;
 GL.GetMasterLootCandidate = GL.GetMasterLootCandidate or function (...) return GetMasterLootCandidate(...); end;
 
---- More info about difficultyIDs: https://wowpedia.fandom.com/wiki/DifficultyID
 ---@return boolean
 GL.isInHeroicInstance = GL.isInHeroicInstance or function ()
     local _, _, difficultyID = GetInstanceInfo();
@@ -80,7 +77,7 @@ GL.npcIDFromGUID = GL.npcIDFromGUID or function (GUID)
     return tonumber((select(6, strsplit("-", GUID))));
 end;
 
--- Timers (C_Timer doesn't exist on 3.3.5a, AceTimer works everywhere)
+-- Timers
 ---@param seconds number
 ---@param func function
 GL.timerAfter = function (seconds, func)
@@ -93,7 +90,6 @@ if (not GL.isLegacy) then
 end
 GL.LibDD = GL.LibDD or LibStub:GetLibrary("LibUIDropDownMenu-4.0", true);
 
---- 3.3.5a doesn't accept same-realm "Name-Realm" targets for whispers (chat or addon), strip our own realm
 ---@param name string
 ---@return string
 GL.nameForAPI = function (name)
@@ -111,7 +107,6 @@ GL.nameForAPI = function (name)
     return nameOnly;
 end;
 
---- The frame showing master loot candidates. 3.3.5a uses a dropdown (GroupLootDropDown) instead of MasterLooterFrame
 ---@return table
 GL.getMasterLooterFrame = function ()
     if (GL.isLegacy) then
@@ -121,7 +116,6 @@ GL.getMasterLooterFrame = function ()
     return _G.MasterLooterFrame;
 end;
 
---- BACKDROP_* constants don't exist on 3.3.5a
 GL.BACKDROP_DARK_DIALOG_32_32 = _G.BACKDROP_DARK_DIALOG_32_32 or {
     bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
     edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
@@ -131,8 +125,6 @@ GL.BACKDROP_DARK_DIALOG_32_32 = _G.BACKDROP_DARK_DIALOG_32_32 or {
     insets = { left = 11, right = 12, top = 12, bottom = 11, },
 };
 
---- MaximizeMinimizeButtonFrameTemplate doesn't exist on 3.3.5a, build the same structure:
---- a container with a .MinimizeButton and a .MaximizeButton child
 ---@param name string
 ---@param Parent table
 ---@return table
@@ -163,8 +155,6 @@ end;
 
 local frameNameCount = 0;
 
---- 3.3.5a templates build their children from the frame name ($parentScrollBar, $parentMiddle etc.)
---- and error when the frame has none. Use this to give such frames a unique name
 ---@param prefix string
 ---@return string
 GL.uniqueFrameName = function (prefix)
@@ -172,8 +162,6 @@ GL.uniqueFrameName = function (prefix)
     return ("Gargul%s%d"):format(prefix, frameNameCount);
 end;
 
---- 3.3.5a's UIPanelScrollFrameTemplate errors in its OnLoad without a frame name.
---- Give it a unique name and expose the modern parentKey
 ---@param Parent table
 ---@return table
 GL.createScrollFrame = function (Parent)
@@ -185,8 +173,6 @@ GL.createScrollFrame = function (Parent)
     return ScrollFrame;
 end;
 
---- FontStrings and Textures can't receive mouse events on 3.3.5a (no EnableMouse/HookScript).
---- Returns the region itself when it can, or an invisible mouse-enabled frame covering it otherwise
 ---@param Region table
 ---@return table
 GL.mouseRegionFor = function (Region)
@@ -203,8 +189,6 @@ GL.mouseRegionFor = function (Region)
 
     return Region._mouseFrame;
 end;
-
--- Widget helpers for methods missing on 3.3.5a (we deliberately don't rely on methods injected by other addons)
 
 ---@param Widget table
 ---@param enabled boolean
@@ -236,7 +220,6 @@ GL.unboundedStringWidth = function (FontString)
     return FontString:GetStringWidth();
 end;
 
---- Child clipping doesn't exist on 3.3.5a, children simply won't be clipped there
 ---@param Frame table
 ---@param clip boolean
 GL.setClipsChildren = function (Frame, clip)

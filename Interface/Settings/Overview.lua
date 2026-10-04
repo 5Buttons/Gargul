@@ -158,7 +158,7 @@ function Overview:draw(section, onCloseCallback)
 
     local ScrollFrameHolder = AceGUI:Create("InlineGroup");
     ScrollFrameHolder:SetLayout("FILL")
-    ScrollFrameHolder:SetAutoAdjustHeight(false); -- Fixed height: Fill + auto height grows forever on 3.3.5a
+    ScrollFrameHolder:SetAutoAdjustHeight(false);
     ScrollFrameHolder:SetWidth(556);
     ScrollFrameHolder:SetHeight(480);
     SecondColumn:AddChild(ScrollFrameHolder);
@@ -289,7 +289,7 @@ function Overview:close(onCloseCallback)
     if (Window) then
         GL.Interface:storePosition(Window, "Settings");
         Window:Hide();
-        GL.PlaySound(799) -- GL.SOUNDKIT.GS_TITLE_OPTION_EXIT
+        GL.PlaySound(799) -- SOUNDKIT.GS_TITLE_OPTION_EXIT
     end
 end
 

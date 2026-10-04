@@ -741,7 +741,7 @@ end
 
 -- Move people recursively based on a list of migrations. The reason
 -- we do this is because it turns out that the client (or server?) starts
--- throttling SetRaidSubgroup/GL.GetRaidRosterInfo when there's too many
+-- throttling SetRaidSubgroup/GetRaidRosterInfo when there's too many
 -- in rapid succession. The raider index also changes after moving a player
 -- which is why we have to keep fetching the current index all the time
 function RaidGroups:processMigrations(Migrations, numberOfMigrations, index)
