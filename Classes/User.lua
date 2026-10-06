@@ -45,6 +45,11 @@ function User:_init()
 
     self._initialized = true;
 
+    self.id = self.id or UnitGUID("player");
+    GL.Events:register("UserPlayerLoginListener", "PLAYER_LOGIN", function ()
+        self.id = UnitGUID("player") or self.id;
+    end);
+
     -- Note: GetNormalizedRealmName is not available during boot (only have player login event)
     self.realm = GetRealmName():gsub("-", "");
     self.realm = self.realm:gsub("%s+", "");
@@ -103,6 +108,8 @@ function User:refresh()
 
     -- Make sure the window doesn't popup after /reload
     userWasMasterLooter = userWasMasterLooter ~= false;
+
+    self.id = self.id or UnitGUID("player");
 
     self.level = UnitLevel("player");
     self.zone = GetRealZoneText();
