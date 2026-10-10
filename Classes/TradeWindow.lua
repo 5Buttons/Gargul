@@ -36,6 +36,9 @@ local GOLD_INSIGHT_FRAME_LEVEL = 5000;
 --- An item unlocking this soon after we added it means the game bounced it back out
 local ITEM_BOUNCE_WINDOW = .5;
 
+local LEGACY_TRADE_SLOT_PENDING = 1;
+local LegacyTradeSlotClickedAt = {};
+
 --- Timer and listener names. Spelling one of these wrong silently skips a cancel, hence the constants
 local ADD_ITEMS_TIMER_ID = "TradeWindowAddItemsInterval";
 local CURSOR_CHANGED_LISTENER_ID = "TradeWindowCursorChanged";
@@ -380,6 +383,7 @@ function TradeWindow:handleEvents(event, ...)
     -- Trade started
     if (event == "TRADE_SHOW") then
         self.ItemsToAdd, self.ItemsAdded = {}, {};
+        wipe(LegacyTradeSlotClickedAt);
 
         -- Trade window shown, show/update the announcement checkbox
         self:updateAnnouncementCheckBox();
@@ -658,6 +662,28 @@ function TradeWindow:processItemsToAdd()
     end
 
     local itemToAdd = self.ItemsToAdd[1];
+    local legacyTradeSlot;
+
+    if (GL.isLegacy) then
+        if (CursorHasItem()) then
+            return;
+        end
+
+        local now = GetTime();
+        for tradeSlot = 1, MAX_TRADABLE_ITEMS do
+            if (not GetTradePlayerItemLink(tradeSlot)
+                and now - (LegacyTradeSlotClickedAt[tradeSlot] or 0) > LEGACY_TRADE_SLOT_PENDING
+            ) then
+                legacyTradeSlot = tradeSlot;
+                break;
+            end
+        end
+
+        if (not legacyTradeSlot) then
+            return;
+        end
+    end
+
     local addItemByLink = GL:getItemIDFromLink(itemToAdd);
     local itemID = addItemByLink or itemToAdd;
     local itemLink = addItemByLink and itemToAdd or nil;
@@ -685,19 +711,10 @@ function TradeWindow:processItemsToAdd()
         };
     end
 
-    if (GL.isLegacy) then
-        if (CursorHasItem()) then
-            return;
-        end
-
-        for tradeSlot = 1, MAX_TRADABLE_ITEMS do
-            if (not GetTradePlayerItemLink(tradeSlot)) then
-                PickupContainerItem(bag, slot);
-                ClickTradeButton(tradeSlot);
-
-                return;
-            end
-        end
+    if (legacyTradeSlot) then
+        LegacyTradeSlotClickedAt[legacyTradeSlot] = GetTime();
+        PickupContainerItem(bag, slot);
+        ClickTradeButton(legacyTradeSlot);
 
         return;
     end

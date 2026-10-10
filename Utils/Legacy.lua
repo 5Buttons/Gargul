@@ -248,22 +248,80 @@ GL.GetLootSlotType = function (slot)
     return 0;
 end;
 
+local LOOT_SOURCE_MEMORY = 3600;
 local currentLootSourceGUID;
+local KnownLootSources = {};
 local LootSourceResetFrame = CreateFrame("Frame");
 LootSourceResetFrame:RegisterEvent("LOOT_CLOSED");
 LootSourceResetFrame:SetScript("OnEvent", function ()
     currentLootSourceGUID = nil;
 end);
 
+---@return table<string, number>
+local function currentLootLinkCounts()
+    local Counts = {};
+
+    for slot = 1, GetNumLootItems() do
+        local link = GetLootSlotLink(slot);
+
+        if (link) then
+            Counts[link] = (Counts[link] or 0) + 1;
+        end
+    end
+
+    return Counts;
+end
+
+---@param Counts table<string, number>
+---@param KnownCounts table<string, number>
+---@return boolean
+local function lootIsSubsetOf(Counts, KnownCounts)
+    for link, count in pairs(Counts) do
+        if ((KnownCounts[link] or 0) < count) then
+            return false;
+        end
+    end
+
+    return true;
+end
+
+---@return string
+local function resolveLootSourceGUID()
+    local now = GetTime();
+    local Counts = currentLootLinkCounts();
+    local hasItems = next(Counts) ~= nil;
+    local targetGUID = UnitExists("target") and UnitIsDead("target") and UnitGUID("target") or nil;
+
+    for guid, Known in pairs(KnownLootSources) do
+        if (now - Known.seenAt > LOOT_SOURCE_MEMORY) then
+            KnownLootSources[guid] = nil;
+        end
+    end
+
+    local TargetSource = targetGUID and KnownLootSources[targetGUID];
+    if (TargetSource and lootIsSubsetOf(Counts, TargetSource.Counts)) then
+        TargetSource.seenAt = now;
+        return targetGUID;
+    end
+
+    if (hasItems) then
+        for guid, Known in pairs(KnownLootSources) do
+            if (lootIsSubsetOf(Counts, Known.Counts)) then
+                Known.seenAt = now;
+                return guid;
+            end
+        end
+    end
+
+    local guid = (targetGUID and not TargetSource) and targetGUID or ("Legacy-Loot-%.3f"):format(now);
+    KnownLootSources[guid] = { Counts = Counts, seenAt = now, };
+
+    return guid;
+end
+
 ---@return string
 GL.GetLootSourceInfo = function ()
-    if (not currentLootSourceGUID) then
-        if (UnitExists("target") and UnitIsDead("target")) then
-            currentLootSourceGUID = UnitGUID("target");
-        end
-
-        currentLootSourceGUID = currentLootSourceGUID or ("Legacy-Loot-%.3f"):format(GetTime());
-    end
+    currentLootSourceGUID = currentLootSourceGUID or resolveLootSourceGUID();
 
     return currentLootSourceGUID;
 end;
@@ -624,24 +682,38 @@ end
 
 local function checkPendingItems()
     local now = GetTime();
+    local Ready = {};
+    local finishedItemIDs = {};
 
     for itemID, Callbacks in pairs(PendingItems) do
         local cached = nativeGetItemInfo(itemID) ~= nil;
 
         if (cached or now - PendingSince[itemID] > ITEM_LOAD_TIMEOUT) then
-            PendingItems[itemID] = nil;
-            PendingSince[itemID] = nil;
+            tinsert(finishedItemIDs, itemID);
 
             if (cached) then
                 for _, callback in ipairs(Callbacks) do
-                    pcall(callback);
+                    tinsert(Ready, callback);
                 end
             end
         end
     end
 
+    for _, itemID in ipairs(finishedItemIDs) do
+        PendingItems[itemID] = nil;
+        PendingSince[itemID] = nil;
+    end
+
     if (not next(PendingItems)) then
         ItemLoader:Hide();
+    end
+
+    for _, callback in ipairs(Ready) do
+        local success, err = pcall(callback);
+
+        if (not success) then
+            geterrorhandler()(err);
+        end
     end
 end
 
