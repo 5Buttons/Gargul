@@ -118,19 +118,15 @@ function Overview:draw(section, onCloseCallback)
     --[[
         COLUMN SPACER
     ]]
-    local ColumnSpacerOne = AceGUI:Create("SimpleGroup");
-    ColumnSpacerOne:SetLayout("FILL")
+    local ColumnSpacerOne = AceGUI:Create("Label");
     ColumnSpacerOne:SetWidth(6);
-    ColumnSpacerOne:SetHeight(400);
     Window:AddChild(ColumnSpacerOne);
 
     --[[
         FIRST COLUMN
     ]]
-    local FirstColumn = AceGUI:Create("SimpleGroup");
-    FirstColumn:SetLayout("FILL")
+    local FirstColumn = AceGUI:Create("Label");
     FirstColumn:SetWidth(180);
-    FirstColumn:SetHeight(1);
     Window:AddChild(FirstColumn);
 
     self:drawSectionsTable(Window.frame, section);
@@ -138,10 +134,8 @@ function Overview:draw(section, onCloseCallback)
     --[[
         COLUMN SPACER TWO
     ]]
-    local ColumnSpacerTwo = AceGUI:Create("SimpleGroup");
-    ColumnSpacerTwo:SetLayout("FILL")
+    local ColumnSpacerTwo = AceGUI:Create("Label");
     ColumnSpacerTwo:SetWidth(20);
-    ColumnSpacerTwo:SetHeight(400);
     Window:AddChild(ColumnSpacerTwo);
 
     local SecondColumn = AceGUI:Create("SimpleGroup");
