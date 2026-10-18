@@ -65,7 +65,7 @@ function Overview:_init()
         { "GDKPOverviewGDKPSessionLockedListener", "GL.GDKP_SESSION_LOCKED", },
         { "GDKPOverviewGDKPSessionUnlockedListener", "GL.GDKP_SESSION_UNLOCKED", },
     }, function ()
-        GL.Ace:ScheduleTimer(function ()
+        GL:after(.1, "GDKPOverviewRefreshLedger", function ()
             self:updatePot();
 
             if (not self.isVisible) then return; end
@@ -641,6 +641,7 @@ function Overview:refreshLedger()
 
     GL:onItemLoadDo(GL:tableColumn(Session.Auctions, "itemLink"), function ()
         self:clearDetailsFrame();
+        Details:PauseLayout();
         local Auctions = {};
         local RawAuctions = Session.Auctions or {};
 
@@ -862,6 +863,9 @@ function Overview:refreshLedger()
                 self.ActionButtons[Auction.ID].EditButton = Edit;
             end)();
         end
+
+        Details:ResumeLayout();
+        Details:DoLayout();
     end);
 
     Interface:get(self, "GDKPOverview"):DoLayout();

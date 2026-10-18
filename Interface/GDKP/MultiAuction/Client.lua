@@ -423,6 +423,9 @@ function ClientInterface:build()
     --[[ BID DETAILS ]]
     local BidDetails = Interface:createFontString(Window, "");
     BidDetails:SetPoint("BOTTOMRIGHT", Window, "BOTTOMRIGHT", -30, 20);
+    Interface:addTooltip(BidDetails, function ()
+        return BidDetails.tooltip;
+    end);
     self.BidDetails = BidDetails;
 
     --[[ MAIN ADMIN WINDOW (FOOTER) ]]
@@ -587,6 +590,9 @@ function ClientInterface:build()
         AdminWindowItemLink:SetPoint("CENTER", AuctionAdminWindow, "CENTER");
         AdminWindowItemLink:SetPoint("TOP", AuctionAdminWindow, "TOP", 0, -20);
         AdminWindowItemLink:SetColor("GRAY");
+        Interface:addTooltip(AdminWindowItemLink, function ()
+            return AdminWindowItemLink.link;
+        end);
         AuctionAdminWindow.AdminWindowItemLink = AdminWindowItemLink;
 
         local AdminButtonExplanation = Interface:createFontString(AuctionAdminWindow, L["Hover over any of the buttons below for more information"]);
@@ -1250,6 +1256,7 @@ function ClientInterface:resetAdminWindow()
     AuctionAdminWindow._auctionID = nil;
     AuctionAdminWindow.Explanation:Show();
     AuctionAdminWindow.AdminWindowItemLink:Hide();
+    AuctionAdminWindow.AdminWindowItemLink.link = nil;
     AuctionAdminWindow.AdminButtonExplanation:Hide();
     AuctionAdminWindow.ButtonContainer:Hide();
     AuctionAdminWindow.AdminAuctionClosedExplanation:Hide();
@@ -1341,14 +1348,14 @@ function ClientInterface:updateBidDetails()
 
     self.BidDetails:SetText((L["Items: %s  -  Total sold: %sg  -  Pledged by me: %sg"]):format(GL:count(Client.AuctionDetails.Auctions), totalSold, boughtByMe + bidByMe));
     self.BidDetails:SetColor("GRAY");
-    Interface:addTooltip(self.BidDetails, (L["Items with bids: %s/%s\nTotal sold: %s\nBought by me: %s\nTotal bid (does not include sold): %s\nBid by me (does not include sold): %s\n"]):format(
+    self.BidDetails.tooltip = (L["Items with bids: %s/%s\nTotal sold: %s\nBought by me: %s\nTotal bid (does not include sold): %s\nBid by me (does not include sold): %s\n"]):format(
         items - noBids,
         items,
         GL:goldToMoneyTexture(totalSold),
         GL:goldToMoneyTexture(boughtByMe),
         GL:goldToMoneyTexture(totalBid),
         GL:goldToMoneyTexture(bidByMe)
-    ));
+    );
 end
 
 --- Show the admin window which is used to manage individual auctions as the auctioneer
@@ -1377,7 +1384,7 @@ function ClientInterface:showAuctionAdminWindow(AuctionRow)
     AuctionAdminWindow.Explanation:Hide();
 
     AuctionAdminWindow.AdminWindowItemLink:SetText(Details.link);
-    Interface:addTooltip(AuctionAdminWindow.AdminWindowItemLink, Details.link);
+    AuctionAdminWindow.AdminWindowItemLink.link = Details.link;
     AuctionAdminWindow.AdminWindowItemLink:Show();
 
     local CurrentDetails = Client.AuctionDetails.Auctions[Details.auctionID or -1];
