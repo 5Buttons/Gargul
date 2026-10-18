@@ -380,10 +380,6 @@ end
 --- Only when loot master is enabled
 ---@test /dump GetRaidRosterInfo(select(2, _G.Gargul.GetLootMethod()));
 GL.GetLootMethod = function ()
-    if (GL.User.isMasterLooter and GL.User.raidIndex) then
-        return "master", GL.User.raidIndex;
-    end
-
     local method, masterLootPartyID, masterLooterRaidID = GetLootMethod();
 
     if (method ~= "master") then
