@@ -1,15 +1,15 @@
 ## Interface: 30300
-## Title: Gargul |c00967FD2v8.0.0|r
-## Title-deDE: Gargul |c00967FD2v8.0.0|r
-## Title-esES: Gargul |c00967FD2v8.0.0|r
-## Title-esMX: Gargul |c00967FD2v8.0.0|r
-## Title-frFR: Gargul |c00967FD2v8.0.0|r
-## Title-itIT: Gargul |c00967FD2v8.0.0|r
-## Title-koKR: Gargul |c00967FD2v8.0.0|r
-## Title-ptBR: Gargul |c00967FD2v8.0.0|r
-## Title-ruRU: Gargul |c00967FD2v8.0.0|r
-## Title-zhCN: Gargul |c00967FD2v8.0.0|r
-## Title-zhTW: Gargul |c00967FD2v8.0.0|r
+## Title: Gargul |c00967FD2v8.0.1|r
+## Title-deDE: Gargul |c00967FD2v8.0.1|r
+## Title-esES: Gargul |c00967FD2v8.0.1|r
+## Title-esMX: Gargul |c00967FD2v8.0.1|r
+## Title-frFR: Gargul |c00967FD2v8.0.1|r
+## Title-itIT: Gargul |c00967FD2v8.0.1|r
+## Title-koKR: Gargul |c00967FD2v8.0.1|r
+## Title-ptBR: Gargul |c00967FD2v8.0.1|r
+## Title-ruRU: Gargul |c00967FD2v8.0.1|r
+## Title-zhCN: Gargul |c00967FD2v8.0.1|r
+## Title-zhTW: Gargul |c00967FD2v8.0.1|r
 ## Notes: All-in-one loot addon: GDKP, Softres, auto looting & more.|n|cffBBBBBBBy Zhorax|r|n|n|TInterface/AddOns/Gargul/Assets/Icons/patreon:12:12|t |cff967FD2patreon.com/gargul|r|n|TInterface/AddOns/Gargul/Assets/Icons/kofi:12:12|t |cff967FD2ko-fi.com/gargul|r|n|TInterface/AddOns/Gargul/Assets/Icons/discord:12:12:0:-2|t |cff967FD2discord.gg/D3mDhYPVzf|r
 ## Notes-deDE: Alles-in-einem Loot-Addon: GDKP, Softres, Auto-Loot und mehr.|n|cffBBBBBBVon Zhorax|r|n|n|TInterface/AddOns/Gargul/Assets/Icons/patreon:12:12|t |cff967FD2patreon.com/gargul|r|n|TInterface/AddOns/Gargul/Assets/Icons/kofi:12:12|t |cff967FD2ko-fi.com/gargul|r|n|TInterface/AddOns/Gargul/Assets/Icons/discord:12:12:0:-2|t |cff967FD2discord.gg/D3mDhYPVzf|r
 ## Notes-esES: Addon de botín todo en uno: GDKP, Softres, auto loot y más.|n|cffBBBBBBPor Zhorax|r|n|n|TInterface/AddOns/Gargul/Assets/Icons/patreon:12:12|t |cff967FD2patreon.com/gargul|r|n|TInterface/AddOns/Gargul/Assets/Icons/kofi:12:12|t |cff967FD2ko-fi.com/gargul|r|n|TInterface/AddOns/Gargul/Assets/Icons/discord:12:12:0:-2|t |cff967FD2discord.gg/D3mDhYPVzf|r
@@ -35,7 +35,7 @@
 ## IconTexture: Interface\AddOns\Gargul\Assets\Buttons\minimap
 ## OptionalDeps: LibStub, CallbackHandler-1.0, LibSharedMedia-3.0, LibDeflate, LibSerialize, Masque, LibCustomGlow
 ## Author: Zhorax - Firemaw
-## Version: 8.0.0
+## Version: 8.0.1
 ## DefaultState: enabled
 ## SavedVariables: GargulDB
 ## X-Donate: https://www.patreon.com/gargul
