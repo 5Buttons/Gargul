@@ -1412,24 +1412,91 @@ function Interface:addItemTooltipToCursor(Owner, itemLink)
         return;
     end
 
-    local Target = Owner.frame and Owner.frame or Owner;
+    self:attachTooltip(Owner, Owner.frame and Owner.frame or Owner, {
+        Lines = itemLink,
+        isItemLink = true,
+        anchor = "CURSOR",
+    });
+end
+
+---@param Target Frame
+local function showTooltip(Target)
+    local Tooltip = Target._gargulTooltip;
+
+    if (not Tooltip
+        or (Target.GetEffectiveAlpha and Target:GetEffectiveAlpha() == 0)
+    ) then
+        return;
+    end
+
+    local Lines = Tooltip.Lines;
+    GameTooltip:SetOwner(Target, "ANCHOR_" .. Tooltip.anchor);
+
+    if (Tooltip.isItemLink) then
+        GameTooltip:SetHyperlink(Lines);
+    elseif (Tooltip.isFunction) then
+        local LineResult = Lines();
+        if (not LineResult) then
+            return;
+        end
+
+        if (type(LineResult) == "string") then
+            LineResult = { LineResult };
+        end
+
+        for _, line in pairs(LineResult) do
+            if (GL:getItemIDFromLink(line)) then
+                GameTooltip:SetHyperlink(line);
+            else
+                GameTooltip:AddLine(line);
+            end
+        end
+    else
+        for _, line in pairs(Lines) do
+            GameTooltip:AddLine(line);
+        end
+    end
+
+    GameTooltip:Show();
+end
+
+---@param Target Frame
+local function hideTooltip(Target)
+    if (Target._gargulTooltip) then
+        GameTooltip:Hide();
+    end
+end
+
+---@param Owner table AceGUI widget or frame
+---@param Target Frame
+---@param Tooltip table
+---@return nil
+function Interface:attachTooltip(Owner, Target, Tooltip)
+    if (not Target._gargulTooltipHooked) then
+        Target._gargulTooltipHooked = true;
+        Target:HookScript("OnEnter", showTooltip);
+        Target:HookScript("OnLeave", hideTooltip);
+    end
+
+    if (not Target._gargulTooltip and Target.IsMouseEnabled) then
+        Target._gargulMouseEnabled = Target:IsMouseEnabled();
+    end
+
     if (Target.EnableMouse) then
         Target:EnableMouse(true);
     end
 
-    Target:HookScript("OnEnter", function ()
-        if (Target.GetEffectiveAlpha and Target:GetEffectiveAlpha() == 0) then
-            return;
-        end
+    Target._gargulTooltip = Tooltip;
 
-        GameTooltip:SetOwner(Target, "ANCHOR_CURSOR");
-        GameTooltip:SetHyperlink(itemLink);
-        GameTooltip:Show();
-    end);
+    if (Owner.frame and Owner.SetCallback) then
+        Owner:SetCallback("OnRelease", function ()
+            Target._gargulTooltip = nil;
 
-    Target:HookScript("OnLeave", function ()
-        GameTooltip:Hide();
-    end);
+            if (Target.EnableMouse) then
+                Target:EnableMouse(Target._gargulMouseEnabled and true or false);
+            end
+        end);
+    end
 end
 
 ---@param Owner Frame
@@ -1459,53 +1526,12 @@ function Interface:addTooltip(Owner, Lines, anchor)
         end
     end
 
-    local Target = GL.mouseRegionFor(Owner.frame and Owner.frame or Owner);
-
-    -- Make sure mouse events are enabled
-    if (Target.EnableMouse) then
-        Target:EnableMouse(true);
-    end
-
-    Target:HookScript("OnEnter", function ()
-        if (Target.GetEffectiveAlpha
-            and Target:GetEffectiveAlpha() == 0
-        ) then
-            return;
-        end
-
-        GameTooltip:SetOwner(Target, "ANCHOR_" .. anchor);
-
-        if (isItemLink) then
-            GameTooltip:SetHyperlink(Lines);
-        elseif (isFunction) then
-            local LineResult = Lines();
-            if (not LineResult) then
-                return;
-            end
-
-            if (type(LineResult) == "string") then
-                LineResult = { LineResult };
-            end
-
-            for _, line in pairs(LineResult) do
-                if (GL:getItemIDFromLink(line)) then
-                    GameTooltip:SetHyperlink(line);
-                else
-                    GameTooltip:AddLine(line);
-                end
-            end
-        else
-            for _, line in pairs(Lines) do
-                GameTooltip:AddLine(line);
-            end
-        end
-
-        GameTooltip:Show();
-    end);
-
-    Target:HookScript("OnLeave", function ()
-        GameTooltip:Hide();
-    end);
+    self:attachTooltip(Owner, GL.mouseRegionFor(Owner.frame and Owner.frame or Owner), {
+        Lines = Lines,
+        isItemLink = isItemLink,
+        isFunction = isFunction,
+        anchor = anchor,
+    });
 end
 
 --- Set resize bounds of given element
@@ -1960,6 +1986,14 @@ function Interface:createButton(Parent, Details)
         Button = CreateFrame("Button", name, Parent, "UIPanelButtonTemplate");
     else
         name = Button:GetName();
+        Button._gargulPooled = nil;
+
+        for _, key in pairs({ "normalTexture", "highlightTexture", "disabledTexture", }) do
+            if (Button[key]) then
+                Button[key]:SetTexture(nil);
+                Button[key]:SetDesaturated(false);
+            end
+        end
     end
 
     Button:SetParent(Parent);
@@ -2052,7 +2086,7 @@ function Interface:createButton(Parent, Details)
         Button.update = update;
 
         for _, event in pairs(updateOn) do
-            GL.Events:register(nil, event, function () Button:update(); end);
+            GL.Events:register(name .. event .. "Listener", event, function () Button:update(); end);
         end
 
         if (fireUpdateOnCreation) then
@@ -2069,19 +2103,11 @@ end
 ---@param Button table
 ---@return nil
 function Interface:releaseButton(Button)
-    local name = Button:GetName();
+    if (type(Button) ~= "table" or Button._gargulPooled) then
+        return;
+    end
 
-    -- Make sure we can release the button unto our pool for recycling purposes
-    Button:SetMotionScriptsWhileDisabled(false);
-    Button:SetParent(UIParent);
-    Button.normalTexture = nil;
-    Button.highlightTexture = nil;
-    Button.disabledTexture = nil;
-    Button.update = nil;
-    Button.OnEnter = nil;
-    Button.OnLeave = nil;
-    Button.OnClick = nil;
-    Button:ClearAllPoints();
+    local name = Button:GetName();
 
     -- Get rid of the button's event listeners
     for _, event in pairs(Button.updateOn or {}) do
@@ -2089,10 +2115,17 @@ function Interface:releaseButton(Button)
     end
 
     Button:Hide();
-    Button = nil;
+    Button:SetMotionScriptsWhileDisabled(false);
+    Button:SetScript("OnEnter", nil);
+    Button:SetScript("OnLeave", nil);
+    Button:SetScript("OnClick", nil);
+    Button.update = nil;
+    Button.updateOn = nil;
+    Button:ClearAllPoints();
+    Button:SetParent(UIParent);
 
-    ---@todo: figure out why reusing doesn't work
-    --tinsert(self.FramePool.Buttons, Button);
+    Button._gargulPooled = true;
+    tinsert(self.FramePool.Buttons, Button);
 end
 
 --- Create a settings (cogwheel) button

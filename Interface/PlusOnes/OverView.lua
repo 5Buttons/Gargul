@@ -25,6 +25,24 @@ function Overview:draw()
 
     self.isVisible = true;
 
+    if (not self.Window) then
+        self:build();
+    end
+
+    self.Window:Show();
+    self:refresh();
+    self:updateShareButton();
+
+    GL.Events:register("PlusOnesOverViewChangeListener", "GL.PLUSONES_CHANGED", function () self:update(); end);
+    GL.Events:register("PlusOnesOverViewRosterUpdatedListener","GL.GROUP_ROSTER_UPDATE_THROTTLED", function () self:update(); end);
+    GL.Events:register("PlusOnesOverViewUserJoinedGroupListener", "GL.USER_JOINED_GROUP", function () self:update(); end);
+    GL.Events:register("PlusOnesShareButtonRosterUpdatedListener", "GROUP_ROSTER_UPDATE", function () self:updateShareButton(); end);
+    GL.Events:register("PlusOnesBroadcastStartedListener", "GL.PLUSONES_BROADCAST_STARTED", function () self:updateShareButton(); end);
+    GL.Events:register("PlusOnesBroadcastEndedListener", "GL.PLUSONES_BROADCAST_ENDED", function () self:updateShareButton(); end);
+end
+
+---@return nil
+function Overview:build()
     -- Create a container/parent frame
     local Window = AceGUI:Create("Frame");
     self.Window = Window
@@ -39,14 +57,6 @@ function Overview:draw()
     end);
     GL.Interface:set(self, "Window", Window);
     Window:SetPoint(GL.Interface:getPosition("PlusOnesOverview"));
-    local importedAt = GL:tableGet(DB.PlusOnes, "MetaData.importedAt", GL.GetServerTime());
-    local updatedAt = GL:tableGet(DB.PlusOnes, "MetaData.updatedAt", GL.GetServerTime());
-        Window:SetStatusText((L["Imported on |c00A79EFF%s at |c00A79EFF%s, Updated on |c00A79EFF%s at |c00A79EFF%s"]):format(
-            date(L["%Y-%m-%d"], importedAt),
-            date(L["%H:%M"], importedAt),
-            date(L["%Y-%m-%d"], updatedAt),
-            date(L["%H:%M"], updatedAt)
-        ));
 
     -- Make sure the window can be closed by pressing the escape button
     _G.GARGUL_PLUSONES_OVERVIEW_WINDOW = Window.frame;
@@ -93,7 +103,7 @@ function Overview:draw()
     ShowRaidOnly:SetCallback("OnValueChanged", function (widget)
         GL.Settings:set("UI.PlusOnes.showRaidOnly", GL:toboolean(widget:GetValue()));
 
-        self:update();
+        self:refresh();
     end);
     ShowRaidOnly:SetFullWidth(true);
     Window:AddChild(ShowRaidOnly);
@@ -113,6 +123,7 @@ function Overview:draw()
     local ScrollFrame = AceGUI:Create("ScrollFrame");
     ScrollFrame:SetLayout("Flow");
     ScrollFrameParent:AddChild(ScrollFrame);
+    self.ScrollFrame = ScrollFrame;
 
     HorizontalSpacer = AceGUI:Create("SimpleGroup");
     HorizontalSpacer:SetLayout("FILL");
@@ -174,18 +185,29 @@ function Overview:draw()
     HorizontalSpacer:SetFullWidth(true);
     HorizontalSpacer:SetHeight(6);
     Window:AddChild(HorizontalSpacer);
+end
 
+---@return nil
+function Overview:refresh()
+    if (not self.isVisible or not self.Window) then
+        return;
+    end
+
+    local importedAt = GL:tableGet(DB.PlusOnes, "MetaData.importedAt", GL.GetServerTime());
+    local updatedAt = GL:tableGet(DB.PlusOnes, "MetaData.updatedAt", GL.GetServerTime());
+    self.Window:SetStatusText((L["Imported on |c00A79EFF%s at |c00A79EFF%s, Updated on |c00A79EFF%s at |c00A79EFF%s"]):format(
+        date(L["%Y-%m-%d"], importedAt),
+        date(L["%H:%M"], importedAt),
+        date(L["%Y-%m-%d"], updatedAt),
+        date(L["%H:%M"], updatedAt)
+    ));
+
+    local ScrollFrame = self.ScrollFrame;
+    ScrollFrame:ReleaseChildren();
+    ScrollFrame:PauseLayout();
     self:addPlayerPlusOneEntries(ScrollFrame);
-
-    self:updateShareButton();
-
-    GL.Events:register("PlusOnesOverViewChangeListener", "GL.PLUSONES_CHANGED", function () self:update(); end);
-    GL.Events:register("PlusOnesOverViewRosterUpdatedListener","GL.GROUP_ROSTER_UPDATE_THROTTLED", function () self:close(); self:draw(); end);
-    GL.Events:register("PlusOnesOverViewUserJoinedGroupListener", "GL.USER_JOINED_GROUP", function () self:update(); end);
-    GL.Events:register("PlusOnesShareButtonRosterUpdatedListener", "GROUP_ROSTER_UPDATE", function () self:updateShareButton(); end);
-    GL.Events:register("PlusOnesBroadcastStartedListener", "GL.PLUSONES_BROADCAST_STARTED", function () self:updateShareButton(); end);
-    GL.Events:register("PlusOnesBroadcastEndedListener", "GL.PLUSONES_BROADCAST_ENDED", function () self:updateShareButton(); end);
-
+    ScrollFrame:ResumeLayout();
+    ScrollFrame:DoLayout();
 end
 
 --- Update the share button when the group setup changes
@@ -277,7 +299,6 @@ function Overview:addPlayerPlusOneEntries(Parent)
         PlusOneStatus:SetWidth(30);
         PlusOneStatus:SetJustifyH("CENTER");
         Row:AddChild(PlusOneStatus);
-        GL.Interface:set(self, "PlusOnesOf_" .. Entry.name, PlusOneStatus);
 
         local AddButton = AceGUI:Create("Button");
         AddButton:SetText(L[">"]);
@@ -326,15 +347,7 @@ end
 
 --- Update all PlusOne values in the plusone overview
 function Overview:update()
-    local importedAt = GL:tableGet(DB.PlusOnes, "MetaData.importedAt", GL.GetServerTime());
-    local updatedAt = GL:tableGet(DB.PlusOnes, "MetaData.updatedAt", GL.GetServerTime());
-        self.Window:SetStatusText((L["Imported on |c00A79EFF%s at |c00A79EFF%s, Updated on |c00A79EFF%s at |c00A79EFF%s"]):format(
-            date(L["%Y-%m-%d"], importedAt),
-            date(L["%H:%M"], importedAt),
-            date(L["%Y-%m-%d"], updatedAt),
-            date(L["%H:%M"], updatedAt)
-        ));
-
-    self:close();
-    return self:draw();
+    GL:after(.05, "PlusOnesOverviewRefresh", function ()
+        self:refresh();
+    end);
 end

@@ -25,7 +25,32 @@ function PlayerSelector:draw(description, PlayerNames, callback)
     end
 
     self.isVisible = true;
+    self.callback = callback;
 
+    if (not GL.Interface:get(self, "Window")) then
+        self:build();
+    end
+
+    if (type(PlayerNames) ~= "table") then
+        PlayerNames = { PlayerNames };
+    end
+
+    self.Description:SetText("\n" .. description);
+
+    local PlayerNameBox = GL.Interface:get(self, "EditBox.PlayerName");
+    PlayerNameBox:SetText("");
+
+    local PlayersTable = GL.Interface:get(self, "Table.Players");
+    PlayersTable:ClearSelection();
+    PlayersTable:SetData(self:playersTableData(PlayerNames));
+    PlayersTable:Show();
+
+    GL.Interface:get(self, "Window"):Show();
+    PlayerNameBox:SetFocus();
+end
+
+---@return nil
+function PlayerSelector:build()
     -- Create a container/parent frame
     local Window = AceGUI:Create("Frame");
     Window:SetTitle((L["Gargul v%s"]):format(GL.version));
@@ -54,8 +79,8 @@ function PlayerSelector:draw(description, PlayerNames, callback)
     Description:SetFontObject(_G.GameFontNormal);
     Description:SetFullWidth(true);
     Description:SetJustifyH("CENTER");
-    Description:SetText("\n" .. description);
     DescriptionFrame:AddChild(Description);
+    self.Description = Description;
 
     --[[
         SECOND ROW (player name box)
@@ -87,10 +112,9 @@ function PlayerSelector:draw(description, PlayerNames, callback)
         local player = PlayerNameBox:GetText();
 
         if (not GL:empty(player)) then
-            callback(player);
+            self.callback(player);
         end
     end); -- Award
-    PlayerNameBox:SetFocus();
     SecondRow:AddChild(PlayerNameBox);
     GL.Interface:set(self, "PlayerName", PlayerNameBox);
 
@@ -126,16 +150,12 @@ function PlayerSelector:draw(description, PlayerNames, callback)
 
         local player = selected.cols[1].value;
 
-        callback(player);
+        self.callback(player);
     end);
 
     Window:AddChild(ConfirmButton);
 
-    if (type(PlayerNames) ~= "table") then
-        PlayerNames = { PlayerNames };
-    end
-
-    self:drawPlayersTable(TableFrame.frame, PlayerNames);
+    self:drawPlayersTable(TableFrame.frame);
 end
 
 ---@return nil
@@ -156,27 +176,9 @@ function PlayerSelector:close()
     self.isVisible = false;
 end
 
----@param Parent table
 ---@param PlayerNames table
----@return nil
-function PlayerSelector:drawPlayersTable(Parent, PlayerNames)
-    -- Combined width of all colums should be 340
-    local columns = {
-        {
-            name = "",
-            width = 340,
-            align = "LEFT",
-            color = {
-                r = 0.5,
-                g = 0.5,
-                b = 1.0,
-                a = 1.0
-            },
-            colorargs = nil,
-            sort = GL.Data.Constants.ScrollingTable.ascending,
-        },
-    };
-
+---@return table
+function PlayerSelector:playersTableData(PlayerNames)
     local TableRows = {};
     for _, Player in pairs(GL.User:groupMembers()) do
         local realmlessMemberName = GL:stripRealm(Player.name);
@@ -197,10 +199,32 @@ function PlayerSelector:drawPlayersTable(Parent, PlayerNames)
         end
     end
 
+    return TableRows;
+end
+
+---@param Parent table
+---@return nil
+function PlayerSelector:drawPlayersTable(Parent)
+    -- Combined width of all colums should be 340
+    local columns = {
+        {
+            name = "",
+            width = 340,
+            align = "LEFT",
+            color = {
+                r = 0.5,
+                g = 0.5,
+                b = 1.0,
+                a = 1.0
+            },
+            colorargs = nil,
+            sort = GL.Data.Constants.ScrollingTable.ascending,
+        },
+    };
+
     local Table = ScrollingTable:CreateST(columns, 8, 15, nil, Parent);
     Table:EnableSelection(true);
     Table.frame:SetPoint("BOTTOM", Parent, "BOTTOM", 0, 10);
-    Table:SetData(TableRows);
     GL.Interface:set(self, "Players", Table);
 
     Table:RegisterEvents({

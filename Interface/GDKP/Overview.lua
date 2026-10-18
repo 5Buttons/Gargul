@@ -3,7 +3,7 @@ local L = Gargul_L;
 ---@type GL
 local _, GL = ...;
 
-local AceGUI = LibStub("AceGUI-3.0");
+local AceGUI = GL.AceGUI;
 
 ---@type Data
 local Constants = GL.Data.Constants;
@@ -975,7 +975,7 @@ function Overview:clearDetailsFrame()
 
     local ScrollFrame = Interface:get(self, "ScrollFrame.SessionDetails");
     if (ScrollFrame) then
-        GL.Interface:releaseChildren(ScrollFrame);
+        ScrollFrame:ReleaseChildren();
     end
 end
 

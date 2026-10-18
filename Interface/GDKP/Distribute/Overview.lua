@@ -3,7 +3,7 @@ local L = Gargul_L;
 ---@type GL
 local _, GL = ...;
 
-local AceGUI = LibStub("AceGUI-3.0");
+local AceGUI = GL.AceGUI;
 
 ---@type Interface
 local Interface = GL.Interface;
@@ -331,9 +331,9 @@ function Overview:refresh()
 
     self.CutHolders = {};
     self:releaseActionButtons();
-    Interface:releaseChildren(MutatorsFrame);
-    Interface:releaseChildren(RaidersFrame);
-    Interface:releaseChildren(RaidersTableHeader);
+    MutatorsFrame:ReleaseChildren();
+    RaidersFrame:ReleaseChildren();
+    RaidersTableHeader:ReleaseChildren();
 
     local question;
     local LockToggler = Interface:get(self, "Button.LockToggler");
@@ -556,7 +556,7 @@ function Overview:refresh()
     local RaiderHolder;
 
     ---@type AceGUILabel
-    local FillerLabel = AceGUI:Create("Label");
+    local FillerLabel;
 
     local function addPlayer(player, playerIsInMyGroup)
         local PlayerPotDetails = Session.Pot.DistributionDetails[player];
@@ -583,6 +583,7 @@ function Overview:refresh()
         });
         AdjustGoldTradesButton:SetPoint("CENTER", RaiderHolder.frame, "CENTER");
         AdjustGoldTradesButton:SetPoint("LEFT", RaiderHolder.frame, "LEFT", -2, -1);
+        tinsert(self.RaiderActionButtons, AdjustGoldTradesButton);
 
         local nameText;
         local nameFormatted = GL:disambiguateName(player);

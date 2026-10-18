@@ -51,6 +51,28 @@ GL.loadedOn = 32503680000; -- Year 3000
 -- Register our addon with the Ace framework
 GL.Ace = LibStub("AceAddon-3.0"):NewAddon(GL.name, "AceConsole-3.0", "AceComm-3.0", "AceTimer-3.0");
 
+local AceGUILib = LibStub("AceGUI-3.0");
+GL.AceGUI = setmetatable({
+    Create = function (_, widgetType, ...)
+        local Widget = AceGUILib:Create(widgetType, ...);
+
+        if (widgetType == "SimpleGroup" and Widget and Widget.frame.template) then
+            local Frame = Widget.frame;
+            Frame:SetBackdrop(nil);
+
+            if (Frame.iborder) then
+                Frame.iborder:Hide();
+            end
+
+            if (Frame.oborder) then
+                Frame.oborder:Hide();
+            end
+        end
+
+        return Widget;
+    end,
+}, { __index = AceGUILib });
+
 -- Bootstrap the addon
 ---@return nil
 function GL:bootstrap(_, _, addonName)

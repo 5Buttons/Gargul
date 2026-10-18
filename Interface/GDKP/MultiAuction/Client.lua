@@ -1231,9 +1231,14 @@ function ClientInterface:build()
             end
 
             AuctionRow.addCountDownBar(time);
+            AuctionRow:Hide();
 
             self.AuctionRows[auctionID] = AuctionRow;
             AuctionRow.updateStatus();
+
+            GL:after(.1, "GDKP_MULTI_AUCTION_CLIENT_ROW_ADDED", function ()
+                self:filterAndSort();
+            end);
         end);
     end;
 
@@ -1449,11 +1454,7 @@ function ClientInterface:filterAndSort()
 
     ---@param ItemRow Frame
     for auctionID, ItemRow in pairs(self.AuctionRows or {}) do
-        ItemRow:SetAlpha(0);
-        ItemRow:SetHeight(1);
-        ItemRow.Icon:SetSize(1, 1);
-        ItemRow:ClearAllPoints();
-        ItemRow:SetPoint("BOTTOMRIGHT", AuctionHolder, "BOTTOMRIGHT");
+        ItemRow:Hide();
 
         (function ()
             -- Make sure we have all the required data and the auction is still active
@@ -1558,6 +1559,7 @@ function ClientInterface:filterAndSort()
     ---@param ItemRow Frame
     for _, ItemRow in pairs(RowsToShow or {}) do
         ItemRow:ClearAllPoints();
+        ItemRow:Show();
         ItemRow:SetAlpha(1);
         ItemRow:SetHeight(ITEM_ROW_HEIGHT);
         ItemRow.Icon:SetSize(ITEM_ROW_HEIGHT, ITEM_ROW_HEIGHT);

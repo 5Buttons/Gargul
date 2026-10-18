@@ -43,20 +43,10 @@ function RollerUI:show(time, itemLink, itemIcon, note, SupportedRolls, bth, boos
     return true;
 end
 
---- Note: we're not using AceGUI here since getting a SimpleGroup to move properly is a friggin nightmare
----
----@param time number The duration of the RollOff
----@param itemLink string
----@param itemIcon string
----@param note string
----@param bth table|nil
----@param boostedRollIdentifier string|nil Identifier of the boosted roll button (e.g. "BR")
----@return boolean
-function RollerUI:draw(time, itemLink, itemIcon, note, SupportedRolls, userCanUseItem, bth, boostedRollIdentifier)
-    local Window = CreateFrame("Frame", "GargulUI_RollerUI_Window", UIParent, Frame);
-    Window:SetSize(350, 48);
-    Window:SetPoint(GL.Interface:getPosition("Roller"));
-
+---@return Frame
+function RollerUI:buildWindow()
+    local Window = CreateFrame("Frame", "GargulUI_RollerUI_Window", UIParent);
+    Window:Hide();
     Window:SetMovable(true);
     Window:EnableMouse(true);
     Window:SetClampedToScreen(true);
@@ -67,16 +57,6 @@ function RollerUI:draw(time, itemLink, itemIcon, note, SupportedRolls, userCanUs
         Window:StopMovingOrSizing();
         GL.Interface:storePosition(Window, "Roller");
     end);
-    Window:SetScript("OnMouseDown", function (_, button)
-        -- Close the roll window on right-click
-        if (button == "RightButton") then
-            self:hide();
-            return;
-        end
-
-        HandleModifiedItemClick(itemLink, button);
-    end);
-
     Window:SetScript("OnEnter", function ()
         GameTooltip:SetOwner(Window, "ANCHOR_TOP");
         GameTooltip:SetText(L["Right click to close"]);
@@ -87,15 +67,67 @@ function RollerUI:draw(time, itemLink, itemIcon, note, SupportedRolls, userCanUs
             GameTooltip:Hide();
         end
     end);
-    Window:SetScale(GL.Settings:get("Rolling.scale", 1));
     Window.ownedByGargul = true; -- We used this in the tooltip check later
-    self.Window = Window;
-    self.rollOffEnded = false;
 
     local Texture = Window:CreateTexture(nil,"BACKGROUND");
     Texture:SetTexture(0, 0, 0, .6);
     Texture:SetAllPoints(Window)
     Window.texture = Texture;
+
+    local AutoRollHint = Window:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
+    AutoRollHint:SetText(("|c00%s%s: |c00FFFFFF/gl autoroll|r"):format(GL.Data.Constants.addonHexColor, L["Auto Roll"]));
+    AutoRollHint:SetPoint("RIGHT", Window, "TOPRIGHT", -58, -11);
+    Window.AutoRollHint = AutoRollHint;
+
+    local PassButton = CreateFrame("Button", "GargulUI_RollerUI_Pass", Window, "GameMenuButtonTemplate");
+    PassButton:SetPoint("TOPRIGHT", Window, "TOPRIGHT", -3, -1);
+    PassButton:SetNormalFontObject("GameFontNormal");
+    PassButton:SetHighlightFontObject("GameFontNormal");
+    PassButton:SetScript("OnClick", function ()
+        self:hide();
+    end);
+    Window.PassButton = PassButton;
+
+    self.Frame = Window;
+    self.RollButtonPool = {};
+    self.IdentityWindows = {};
+
+    return Window;
+end
+
+--- Note: we're not using AceGUI here since getting a SimpleGroup to move properly is a friggin nightmare
+---
+---@param time number The duration of the RollOff
+---@param itemLink string
+---@param itemIcon string
+---@param note string
+---@param bth table|nil
+---@param boostedRollIdentifier string|nil Identifier of the boosted roll button (e.g. "BR")
+---@return boolean
+function RollerUI:draw(time, itemLink, itemIcon, note, SupportedRolls, userCanUseItem, bth, boostedRollIdentifier)
+    local Window = self.Frame or self:buildWindow();
+    Window:ClearAllPoints();
+    Window:SetSize(350, 48);
+    Window:SetPoint(GL.Interface:getPosition("Roller"));
+
+    Window:SetScript("OnMouseDown", function (_, button)
+        -- Close the roll window on right-click
+        if (button == "RightButton") then
+            self:hide();
+            return;
+        end
+
+        HandleModifiedItemClick(itemLink, button);
+    end);
+
+    Window:SetScale(GL.Settings:get("Rolling.scale", 1));
+    Window:Show();
+    self.Window = Window;
+    self.rollOffEnded = false;
+
+    for _, PooledButton in pairs(self.RollButtonPool) do
+        PooledButton:Hide();
+    end
 
     local RollButtons = {};
     local numberOfButtons = #SupportedRolls;
@@ -114,10 +146,21 @@ function RollerUI:draw(time, itemLink, itemIcon, note, SupportedRolls, userCanUs
         end
 
         -- Roll button
-        local Button = CreateFrame("Button", nil, Window, "GameMenuButtonTemplate");
+        local Button = self.RollButtonPool[i];
+        if (not Button) then
+            Button = CreateFrame("Button", nil, Window, "GameMenuButtonTemplate");
+            Button:SetNormalFontObject("GameFontNormal");
+            Button:SetHighlightFontObject("GameFontNormal");
+            self.RollButtonPool[i] = Button;
+        end
+
+        Button:Enable();
+        Button:SetMotionScriptsWhileDisabled(false);
+        Button:SetScript("OnEnter", nil);
+        Button:SetScript("OnLeave", nil);
+        Button:ClearAllPoints();
+        Button:Show();
         Button:SetText(identifier);
-        Button:SetNormalFontObject("GameFontNormal");
-        Button:SetHighlightFontObject("GameFontNormal");
 
         -- Base the width on the actual rendered text width rather than byte length
         local FontString = Button:GetFontString();
@@ -185,29 +228,31 @@ function RollerUI:draw(time, itemLink, itemIcon, note, SupportedRolls, userCanUs
     self.RollButtons = RollButtons;
 
     -- Auto roll discovery hint: show only for simple MS/OS roll (2 buttons), not when BR or other buttons are present
-    if (not GL.AutoRoll:hasAnyRulesInAnyProfile() and numberOfButtons == 2) then
-        local AutoRollHint = Window:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
-        AutoRollHint:SetText(("|c00%s%s: |c00FFFFFF/gl autoroll|r"):format(GL.Data.Constants.addonHexColor, L["Auto Roll"]));
-        AutoRollHint:SetPoint("RIGHT", Window, "TOPRIGHT", -58, -11);
-    end
+    GL.setShown(Window.AutoRollHint, not GL.AutoRoll:hasAnyRulesInAnyProfile() and numberOfButtons == 2);
 
-    local PassButton = CreateFrame("Button", "GargulUI_RollerUI_Pass", Window, "GameMenuButtonTemplate");
-    PassButton:SetPoint("TOPRIGHT", Window, "TOPRIGHT", -3, -1);
+    local PassButton = Window.PassButton;
     PassButton:SetSize(50, 20);
     PassButton:SetText(L["Pass"]);
-    PassButton:SetNormalFontObject("GameFontNormal");
-    PassButton:SetHighlightFontObject("GameFontNormal");
-    PassButton:SetScript("OnClick", function ()
-        self:hide();
-    end);
     self.PassButton = PassButton;
 
     rollerUIWidth = math.max(rollerUIWidth + 54, 350);
     Window:SetWidth(rollerUIWidth);
 
+    for _, Cached in pairs(self.IdentityWindows) do
+        Cached[1]:Hide();
+    end
+
+    local identityKey = type(bth) == "string" and bth or "default";
+    if (not self.IdentityWindows[identityKey]) then
+        local BuiltIdentityWindow, builtPosition = GL.Interface.Identity:buildForRoller(bth);
+        BuiltIdentityWindow:SetParent(Window);
+        self.IdentityWindows[identityKey] = { BuiltIdentityWindow, builtPosition, };
+    end
+
     ---@type Frame
-    local IdentityWindow, position = GL.Interface.Identity:buildForRoller(bth);
-    IdentityWindow:SetParent(Window);
+    local IdentityWindow, position = self.IdentityWindows[identityKey][1], self.IdentityWindows[identityKey][2];
+    IdentityWindow:ClearAllPoints();
+    IdentityWindow:Show();
 
     if (type(position) ~= "function") then
         IdentityWindow:SetPoint("TOPLEFT", Window, "TOPRIGHT", 0, 0);
@@ -525,13 +570,65 @@ function RollerUI:drawRollTracker(width)
         return;
     end
 
+    if (self.Frame.RollTracker) then
+        self.Frame.RollTracker:Hide();
+    end
+
     if (not GL.Settings:get("Rolling.showRollTracker")) then
         return;
     end
 
     self.rollTrackerScrollOffset = 0;
 
-    local Window = self.Window;
+    local Tracker = self.Frame.RollTracker or self:buildRollTracker();
+    Tracker:SetSize(width, ROLL_TRACKER_ROW_HEIGHT);
+    Tracker.TopRow:SetSize(width, ROLL_TRACKER_ROW_HEIGHT);
+    Tracker.ExpandedFrame:SetWidth(width);
+    Tracker.ExpandedFrame:SetHeight(1);
+    Tracker.ExpandedFrame:Hide();
+    Tracker.Separator:SetSize(width - 8, 1);
+    Tracker.ScrollTrack:Hide();
+
+    for _, Row in pairs(Tracker.Rows) do
+        Row:SetSize(width, ROLL_TRACKER_ROW_HEIGHT);
+        Row:Hide();
+    end
+
+    self.RollTrackerFrame = Tracker;
+    self.RollTrackerTopRow = Tracker.TopRow;
+    self.RollTrackerControls = Tracker.Controls;
+    self.RollTrackerExpandedFrame = Tracker.ExpandedFrame;
+    self.RollTrackerRows = Tracker.Rows;
+    self.RollTrackerScrollTrack = Tracker.ScrollTrack;
+    self.RollTrackerScrollThumb = Tracker.ScrollThumb;
+
+    GL.Events:register("RollerUIRollAcceptedListener", "GL.ROLLOFF_ROLL_ACCEPTED", function ()
+        GL:after(.05, "RollerUIRollTrackerRefresh", function ()
+            self:refreshRollTracker();
+        end);
+    end);
+
+    GL.Events:register("RollerUIGearReceivedListener", "GL.ROLLOFF_GEAR_RECEIVED", function ()
+        GL:after(.05, "RollerUIRollTrackerRefresh", function ()
+            self:refreshRollTracker();
+        end);
+    end);
+
+    -- If the user previously expanded the tracker, restore that state
+    if (self.rollTrackerExpanded) then
+        self.RollTrackerExpandedFrame:Show();
+    end
+
+    self:positionRollTrackerControls();
+
+    -- Catch up with any rolls that arrived before the listener was registered
+    self:refreshRollTracker();
+end
+
+---@return Frame
+function RollerUI:buildRollTracker()
+    local width = 350;
+    local Window = self.Frame;
     local Tracker = CreateFrame("Frame", nil, Window);
     Tracker:SetSize(width, ROLL_TRACKER_ROW_HEIGHT);
     Tracker:SetPoint("TOPLEFT", Window, "BOTTOMLEFT", 0, 0);
@@ -551,7 +648,7 @@ function RollerUI:drawRollTracker(width)
     TrackerBG:SetTexture(0, 0, 0, .5);
     TrackerBG:SetAllPoints(Tracker);
 
-    self.RollTrackerFrame = Tracker;
+    Window.RollTracker = Tracker;
 
     -- Top row: shows the #1 roll, clickable to expand
     local TopRow = CreateFrame("Button", nil, Tracker);
@@ -586,7 +683,7 @@ function RollerUI:drawRollTracker(width)
     local Controls = CreateFrame("Frame", nil, Tracker);
     Controls:SetSize(12, ROLL_TRACKER_ROW_HEIGHT);
     Controls:SetFrameLevel(Tracker:GetFrameLevel() + 10);
-    self.RollTrackerControls = Controls;
+    Tracker.Controls = Controls;
 
     ---@type Button
     local ToggleButton = CreateFrame("Button", nil, Controls);
@@ -640,7 +737,7 @@ function RollerUI:drawRollTracker(width)
     TopRow.PlusOneText = PlusOneText;
     TopRow.TypeText = TypeText;
     TopRow.ToggleButton = ToggleButton;
-    self.RollTrackerTopRow = TopRow;
+    Tracker.TopRow = TopRow;
 
     TopRow:SetScript("OnClick", function ()
         self:toggleRollTracker();
@@ -661,8 +758,9 @@ function RollerUI:drawRollTracker(width)
     Separator:SetTexture(.5, .5, .5, .3);
     Separator:SetSize(width - 8, 1);
     Separator:SetPoint("TOPLEFT", ExpandedFrame, "TOPLEFT", 4, 0);
+    Tracker.Separator = Separator;
 
-    self.RollTrackerExpandedFrame = ExpandedFrame;
+    Tracker.ExpandedFrame = ExpandedFrame;
 
     -- Pre-create row frames for the expanded view
     local Rows = {};
@@ -676,7 +774,7 @@ function RollerUI:drawRollTracker(width)
         Row:Hide();
         table.insert(Rows, Row);
     end
-    self.RollTrackerRows = Rows;
+    Tracker.Rows = Rows;
 
     -- Scroll indicator (thin track on the right, shown when scrollable)
     local ScrollTrack = CreateFrame("Frame", nil, ExpandedFrame);
@@ -693,8 +791,8 @@ function RollerUI:drawRollTracker(width)
     ScrollThumb:SetTexture(1, 1, 1, .3);
     ScrollThumb:SetWidth(3);
 
-    self.RollTrackerScrollTrack = ScrollTrack;
-    self.RollTrackerScrollThumb = ScrollThumb;
+    Tracker.ScrollTrack = ScrollTrack;
+    Tracker.ScrollThumb = ScrollThumb;
 
     -- Mousewheel on expanded area
     ExpandedFrame:EnableMouseWheel(true);
@@ -710,27 +808,7 @@ function RollerUI:drawRollTracker(width)
         end
     end);
 
-    GL.Events:register("RollerUIRollAcceptedListener", "GL.ROLLOFF_ROLL_ACCEPTED", function ()
-        GL:after(.05, "RollerUIRollTrackerRefresh", function ()
-            self:refreshRollTracker();
-        end);
-    end);
-
-    GL.Events:register("RollerUIGearReceivedListener", "GL.ROLLOFF_GEAR_RECEIVED", function ()
-        GL:after(.05, "RollerUIRollTrackerRefresh", function ()
-            self:refreshRollTracker();
-        end);
-    end);
-
-    -- If the user previously expanded the tracker, restore that state
-    if (self.rollTrackerExpanded) then
-        self.RollTrackerExpandedFrame:Show();
-    end
-
-    self:positionRollTrackerControls();
-
-    -- Catch up with any rolls that arrived before the listener was registered
-    self:refreshRollTracker();
+    return Tracker;
 end
 
 --- Anchor the toggle/info icons to the last visible row and keep the gear widgets clear of them
@@ -1116,6 +1194,6 @@ function RollerUI:hide()
     self.rollTrackerSortedData = nil;
     self.rollTrackerScrollOffset = 0;
 
-    GL.Interface:release(self.Window);
+    self.Window:Hide();
     self.Window = nil;
 end
