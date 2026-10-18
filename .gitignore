@@ -5,3 +5,4 @@ Data/APIAvailability/dumps/*
 .idea
 .vscode
 .agents/plans
+.claude/settings.local.json
