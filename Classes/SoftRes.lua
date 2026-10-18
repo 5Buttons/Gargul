@@ -66,7 +66,7 @@ function SoftRes:_init()
             _G.LootReserve:PromptListener("RESERVES", GL.name)
         else
             GL:error(L["Failed to connect to LootReserve, contact support (include message below)"]);
-            DevTools_Dump{ success, result };
+            GL:xd({ success, result });
         end
     end, 5);
 

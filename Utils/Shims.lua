@@ -380,43 +380,23 @@ end
 --- Only when loot master is enabled
 ---@test /dump GetRaidRosterInfo(select(2, _G.Gargul.GetLootMethod()));
 GL.GetLootMethod = function ()
-    local method, masterLootPartyID, masterLooterRaidID;
-
-    if (GL.User.isMasterLooter) then
+    if (GL.User.isMasterLooter and GL.User.raidIndex) then
         return "master", GL.User.raidIndex;
     end
 
-    if (GetLootMethod) then
-        method, masterLootPartyID, masterLooterRaidID = GetLootMethod();
-    else
-        local Methods = {
-            [0] = "freeforall",
-            [1] = "roundrobin",
-            [2] = "master",
-            [3] = "group",
-            [4] = "needbeforegreed",
-            [5] = "personalloot",
-        };
-
-        method, masterLootPartyID, masterLooterRaidID = C_PartyInfo.GetLootMethod();
-        method = Methods[method];
-    end
-
-    local masterLooterIndex = masterLootPartyID or masterLooterRaidID;
+    local method, masterLootPartyID, masterLooterRaidID = GetLootMethod();
 
     if (method ~= "master") then
         return method;
     end
 
-    if (GL.User.isInRaid) then
-        return method, GL.isLegacy and masterLooterRaidID or masterLooterIndex;
+    if (masterLooterRaidID) then
+        return method, masterLooterRaidID;
     end
 
-    for index = 1, _G.MEMBERS_PER_RAID_GROUP do
-        local isMasterLooter = select(11, GL.GetRaidRosterInfo(index));
-
-        if (isMasterLooter) then
-            return method, index;
-        end
+    if (masterLootPartyID) then
+        return method, masterLootPartyID + 1;
     end
+
+    return method;
 end;

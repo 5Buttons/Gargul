@@ -270,7 +270,7 @@ function Overview:build()
     ---@type Frame
     local MultiAuctionFrame = MultiAuctionIcon.frame;
 
-    MultiAuctionIcon:SetImage("Interface/icons/ACHIEVEMENT_Guildperk_Everybodysfriend");
+    MultiAuctionIcon:SetImage("Interface/AddOns/Gargul/Assets/Icons/achievement_guildperk_everybodysfriend");
     MultiAuctionIcon:SetImageSize(26, 26);
     MultiAuctionIcon:SetWidth(26);
     MultiAuctionIcon:SetHeight(26);

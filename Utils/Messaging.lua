@@ -132,6 +132,9 @@ function GL:xd(mixed)
     local header = ("\n|c00967FD2%s|r ================"):format(date("%H:%M:%S"));
 
     print(header);
+    if (not DevTools_Dump) then
+        LoadAddOn("Blizzard_DebugTools");
+    end
     DevTools_Dump(mixed);
 
     GL.XDOutputBuffer = GL.XDOutputBuffer or {};

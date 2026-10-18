@@ -763,7 +763,7 @@ function ClientInterface:build()
             ---@type Texture
             local FavoriteImage = Favorite:CreateTexture(nil, "BACKGROUND")
             FavoriteImage:SetAllPoints(Favorite);
-            FavoriteImage:SetTexture("Interface/common/friendship-heart");
+            FavoriteImage:SetTexture("Interface/AddOns/Gargul/Assets/Icons/friendship-heart");
             FavoriteImage:SetVertexColor(.9, .9, .9, .25);
 
             AuctionRow.toggleFavorite = function (favorite, bubble)
