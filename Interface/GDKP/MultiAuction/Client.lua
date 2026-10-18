@@ -763,7 +763,7 @@ function ClientInterface:build()
             ---@type Texture
             local FavoriteImage = Favorite:CreateTexture(nil, "BACKGROUND")
             FavoriteImage:SetAllPoints(Favorite);
-            FavoriteImage:SetTexture("Interface/common/friendship-heart");
+            FavoriteImage:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Icons\\friendship-heart");
             FavoriteImage:SetVertexColor(.9, .9, .9, .25);
 
             AuctionRow.toggleFavorite = function (favorite, bubble)
@@ -849,9 +849,9 @@ function ClientInterface:build()
                 --[[ ACTION BUTTON ]]
                 ---@type Button
                 AdminButton = CreateFrame("Button", nil, AuctionRow);
-                AdminButton:SetNormalTexture("Interface/AddOns/Gargul/Assets/Buttons/panel-cogwheel-up");
+                AdminButton:SetNormalTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\panel-cogwheel-up");
                 AdminButton:SetHighlightTexture("Interface/BUTTONS/UI-Panel-MinimizeButton-Highlight", "ADD");
-                AdminButton:SetPushedTexture("Interface/AddOns/Gargul/Assets/Buttons/panel-cogwheel-down");
+                AdminButton:SetPushedTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\panel-cogwheel-down");
                 AdminButton:SetSize(27, 27);
                 AdminButton:SetPoint("CENTER", AuctionRow, "CENTER");
                 AdminButton:SetPoint("RIGHT", AuctionRow, "RIGHT");
@@ -1186,7 +1186,7 @@ function ClientInterface:build()
 
             AuctionRow.addCountDownBar = function (time)
                 local CountDownBar = LibStub("LibCandyBarGargul-3.0"):New(
-                    "Interface/AddOns/Gargul/Assets/Textures/timer-bar",
+                    "Interface\\AddOns\\Gargul\\Assets\\Textures\\timer-bar",
                     AuctionRow:GetWidth(),
                     ITEM_ROW_HEIGHT
                 );

@@ -44,29 +44,13 @@ function MailCuts:_init()
     self.cutMailSubject = Identity.cutMailSubject or L["Gargul GDKP: %sg"];
     self.cutMailBody = Identity.cutMailBody or L.CHAT["Hi ${player}, your ${cut} cut has arrived! - Gargul"];
 
-    -- Era uses MAIL_SHOW/CLOSED; other clients use PLAYER_INTERACTION_MANAGER_FRAME_* (type 17).
-    -- Don't register both or the mailer opens twice.
-    if (not GL.isEra) then
-        Events:register("MailCutsPlayerInteractionShow", "PLAYER_INTERACTION_MANAGER_FRAME_SHOW", function (_, type)
-            if (type == 17) then
-                self:openIfCutsToMail();
-            end
-        end);
+    Events:register("MailCutsMailShowListener", "MAIL_SHOW", function ()
+        self:openIfCutsToMail();
+    end);
 
-        Events:register("MailCutsPlayerInteractionHide", "PLAYER_INTERACTION_MANAGER_FRAME_HIDE", function (_, type)
-            if (type == 17) then
-                self:close();
-            end
-        end);
-    else
-        Events:register("MailCutsMailShowListener", "MAIL_SHOW", function ()
-            self:openIfCutsToMail();
-        end);
-
-        Events:register("MailCutsMailClosedListener", "MAIL_CLOSED", function ()
-            self:close();
-        end);
-    end
+    Events:register("MailCutsMailClosedListener", "MAIL_CLOSED", function ()
+        self:close();
+    end);
 end
 
 ---@return nil
@@ -264,7 +248,7 @@ function MailCuts:refreshPlayerCuts()
             Interface:addTooltip(PlayerRow, Lines);
 
             --[[ WARNING SIGN ]]
-            local texturePath = "interface/encounterjournal/ui-ej-warningtexticon.blp";
+            local texturePath = "Interface\\AddOns\\Gargul\\Assets\\Icons\\ui-ej-warningtexticon";
 
             ---@type Frame
             local Icon = CreateFrame("Frame",nil, PlayerRow);
@@ -475,7 +459,7 @@ end
 
 ---@return nil
 function MailCuts:disableSendButton()
-    if (not _G.SendMailMailButton or not _G.SendMailMailButton.SetEnabled) then
+    if (not _G.SendMailMailButton) then
         return;
     end
 
@@ -484,7 +468,7 @@ end
 
 ---@return nil
 function MailCuts:enableSendButton()
-    if (not _G.SendMailMailButton or not _G.SendMailMailButton.SetEnabled) then
+    if (not _G.SendMailMailButton) then
         return;
     end
 

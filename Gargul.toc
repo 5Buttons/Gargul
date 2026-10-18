@@ -69,7 +69,6 @@ Data\Constants.lua
 Data\DefaultSettings.lua
 Data\ItemLinks.lua
 Data\NormalModeHardModeLinks.lua
-Data\ArtTextureID.lua
 
 # Helpers
 Utils\PlayerNames.lua

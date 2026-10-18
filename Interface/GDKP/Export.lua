@@ -369,23 +369,12 @@ function Export:exportAuctionsToCustomFormat(Session, Auctions)
                 ItemDetails.quality = ItemDetails.quality or 1;
             end
 
-            local wowheadLink, iconLink;
-            local icon = ItemDetails.icon and GL.Data.IconTexturePaths:byID(ItemDetails.icon) or nil;
-
-            if (GL.isEra) then
-                wowheadLink = ("https://classic.wowhead.com/item=%s"):format(Auction.itemID);
-            elseif (GL.isRetail) then
-                wowheadLink = ("https://www.wowhead.com/item=%s"):format(Auction.itemID);
-            else
-                wowheadLink = ("https://www.wowhead.com/mop/item=%s"):format(Auction.itemID);
-            end
+            local wowheadLink = ("https://www.wowhead.com/wotlk/item=%s"):format(Auction.itemID);
+            local iconLink;
+            local icon = type(ItemDetails.icon) == "string" and strmatch(ItemDetails.icon, "([^/\\]+)$");
 
             if (icon) then
-                local lastForwardSlash = strfind(icon, "/[^/]*$");
-                icon = strsub(icon, lastForwardSlash or 1);
-                iconLink = "https://wow.zamimg.com/images/wow/icons/large" .. strlower(icon) .. ".jpg";
-            else
-                icon = "";
+                iconLink = "https://wow.zamimg.com/images/wow/icons/large/" .. strlower(icon) .. ".jpg";
             end
 
             if (not GL:empty(ItemDetails)) then

@@ -23,6 +23,16 @@ local GDKPSession = GL.GDKP.Session;
 ---@type GDKPPot
 local GDKPPot = GL.GDKP.Pot;
 
+---@param Window Frame
+---@param Anchor FontString
+local function underline(Window, Anchor)
+    local Line = Window:CreateTexture(nil, "ARTWORK");
+    Line:SetTexture(.6, .5, .82, 1);
+    Line:SetHeight(2);
+    Line:SetPoint("TOPLEFT", Anchor, "BOTTOMLEFT", 0, -3);
+    Line:SetPoint("TOPRIGHT", Anchor, "BOTTOMRIGHT", 0, -3);
+end
+
 ---@class GDKPLedgerList
 GL.Interface.GDKP.LedgerList = {
     isVisible = false,
@@ -248,19 +258,7 @@ function LedgerList:build()
     ));
     Paid:SetPoint("BOTTOMLEFT", PlayersTable.frame, "TOPLEFT", 0, 40);
 
-    do
-        local Line = Window:CreateLine();
-        Line:SetThickness(2);
-        Line:SetTexture(.6, .5, .82, 1);
-        Line:SetStartPoint("BOTTOMLEFT", Paid, 0, -4);
-        Line:SetEndPoint("BOTTOMRIGHT", Paid, 0, -4);
-
-        Line = Window:CreateLine();
-        Line:SetThickness(1);
-        Line:SetTexture(.6, .5, .82, 1);
-        Line:SetStartPoint("CENTER", Paid, 0, -10);
-        Line:SetEndPoint("TOPLEFT", PlayersTable.head.cols[2], 0, 0);
-    end
+    underline(Window, Paid);
 
     ---@type FontString
     local Received = Interface:createFontString(Window, (L["Gold received from %s"]):format(
@@ -268,19 +266,7 @@ function LedgerList:build()
     ));
     Received:SetPoint("TOPLEFT", Paid, "TOPRIGHT", 20, 0);
 
-    do
-        local Line = Window:CreateLine();
-        Line:SetThickness(2);
-        Line:SetTexture(.6, .5, .82, 1);
-        Line:SetStartPoint("BOTTOMLEFT", Received, 0, -4);
-        Line:SetEndPoint("BOTTOMRIGHT", Received, 0, -4);
-
-        Line = Window:CreateLine();
-        Line:SetThickness(1);
-        Line:SetTexture(.6, .5, .82, 1);
-        Line:SetStartPoint("CENTER", Received, 0, -10);
-        Line:SetEndPoint("TOPLEFT", PlayersTable.head.cols[4], 10, 0);
-    end
+    underline(Window, Received);
 
     ---@type FontString
     local Mailed = Interface:createFontString(Window, (L["Gold mailed to you by %s"]):format(
@@ -288,19 +274,7 @@ function LedgerList:build()
     ));
     Mailed:SetPoint("TOPLEFT", Received, "TOPRIGHT", 20, 0);
 
-    do
-        local Line = Window:CreateLine();
-        Line:SetThickness(2);
-        Line:SetTexture(.6, .5, .82, 1);
-        Line:SetStartPoint("BOTTOMLEFT", Mailed, 0, -4);
-        Line:SetEndPoint("BOTTOMRIGHT", Mailed, 0, -4);
-
-        Line = Window:CreateLine();
-        Line:SetThickness(1);
-        Line:SetTexture(.6, .5, .82, 1);
-        Line:SetStartPoint("CENTER", Mailed, 0, -10);
-        Line:SetEndPoint("TOPLEFT", PlayersTable.head.cols[5], 20, 0);
-    end
+    underline(Window, Mailed);
 
     ---@type FontString
     local Balance = Interface:createFontString(Window, (L["Balance:   |c0092FF000 ? You're square!  |  |c00BE333330 ? you owe %s 30g  |  |c00F7922E50 ? %s owes you 50g"]):format(
@@ -309,26 +283,7 @@ function LedgerList:build()
     ));
     Balance:SetPoint("TOPLEFT", Mailed, "TOPRIGHT", 20, 0);
 
-    do
-        local Line = Window:CreateLine();
-        Line:SetThickness(2);
-        Line:SetTexture(.6, .5, .82, 1);
-        Line:SetStartPoint("BOTTOMLEFT", Balance, 0, -4);
-        Line:SetEndPoint("BOTTOMRIGHT", Balance, 0, -4);
-
-        Line = Window:CreateLine();
-        Line:SetThickness(1);
-        Line:SetTexture(.6, .5, .82, 1);
-        Line:SetStartPoint("BOTTOMRIGHT", PlayersTable.head.cols[6], 0, 8);
-        Line:SetEndPoint("BOTTOMRIGHT", PlayersTable.head.cols[6], 200, 8);
-        local PreviousLine = Line;
-
-        Line = Window:CreateLine();
-        Line:SetThickness(1);
-        Line:SetTexture(.6, .5, .82, 1);
-        Line:SetStartPoint("RIGHT", PreviousLine, 0, 0);
-        Line:SetEndPoint("BOTTOM", Balance, 0, -4);
-    end
+    underline(Window, Balance);
 
     local LastPlayerTable = self.PlayersTables[numPlayerCols];
     local PlayerOverflow = Interface:createFontString(Window, "");

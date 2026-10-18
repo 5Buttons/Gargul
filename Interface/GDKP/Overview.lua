@@ -220,7 +220,7 @@ function Overview:build()
     ---@type Frame
     local PotIconFrame = PotIcon.frame;
 
-    PotIcon:SetImage("Interface/AddOns/Gargul/Assets/Icons/achievement_guildperk_cashflow");
+    PotIcon:SetImage("Interface\\AddOns\\Gargul\\Assets\\Icons\\achievement_guildperk_cashflow");
     PotIcon:SetImageSize(26, 26);
     PotIcon:SetWidth(26);
     PotIcon:SetHeight(26);
@@ -270,7 +270,7 @@ function Overview:build()
     ---@type Frame
     local MultiAuctionFrame = MultiAuctionIcon.frame;
 
-    MultiAuctionIcon:SetImage("Interface/icons/ACHIEVEMENT_Guildperk_Everybodysfriend");
+    MultiAuctionIcon:SetImage("Interface\\AddOns\\Gargul\\Assets\\Icons\\achievement_guildperk_everybodysfriend");
     MultiAuctionIcon:SetImageSize(26, 26);
     MultiAuctionIcon:SetWidth(26);
     MultiAuctionIcon:SetHeight(26);
@@ -292,8 +292,8 @@ function Overview:build()
     ---@type Frame
     local LockIconFrame = LockIcon.frame;
 
-    LockIcon:SetImage("Interface/AddOns/Gargul/Assets/Icons/unlocked");
-    LockIcon:SetImage("Interface/AddOns/Gargul/Assets/Icons/locked");
+    LockIcon:SetImage("Interface\\AddOns\\Gargul\\Assets\\Icons\\unlocked");
+    LockIcon:SetImage("Interface\\AddOns\\Gargul\\Assets\\Icons\\locked");
     LockIcon:SetImageSize(26, 26);
     LockIcon:SetWidth(26);
     LockIcon:SetHeight(26);
@@ -353,7 +353,7 @@ function Overview:build()
         end,
         tooltip = L["Add/Remove gold"],
         disabledTooltip = L["\nYou need lead or master loot to adjust gold.\nYou can't adjust gold on locked/deleted sessions"],
-        normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/bag",
+        normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\bag",
         update = function (self)
             local SelectedSession = Overview:getSelectedSession();
 
@@ -379,7 +379,7 @@ function Overview:build()
             GL.Interface.GDKP.LedgerList:open(self.selectedSession);
         end,
         tooltip = L["\nShow a full overview of the ledger,\nideal for screenshotting purposes!"],
-        normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/award",
+        normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\award",
         updateOn = { "GL.GDKP_OVERVIEW_SESSION_CHANGED", "GL.GDKP_OVERVIEW_SESSION_CHANGED", "GL.GDKP_OVERVIEW_SESSIONS_REFRESHED", "GL.GDKP_AUCTION_CHANGED", },
         update = function (self)
             GL.setEnabled(self, not GL:empty(GL:tableGet(Overview:getSelectedSession() or {}, "Auctions")));
@@ -394,7 +394,7 @@ function Overview:build()
             if (self.phrase) then
                 self.phrase = nil;
                 self:refreshLedger();
-                SearchButton.normalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/eye");
+                SearchButton.normalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\eye");
                 Interface:addTooltip(SearchButton, "Search by item or player name");
 
                 return;
@@ -410,13 +410,13 @@ function Overview:build()
                     self.phrase = phrase;
                     self:refreshLedger();
 
-                    SearchButton.normalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/restore");
+                    SearchButton.normalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\restore");
                     Interface:addTooltip(SearchButton, "Clear search");
                 end,
                 focus = true,
             });
         end,
-        normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/eye",
+        normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\eye",
         updateOn = { "GL.GDKP_OVERVIEW_SESSION_CHANGED", "GL.GDKP_OVERVIEW_SESSION_CHANGED", "GL.GDKP_OVERVIEW_SESSIONS_REFRESHED" },
         update = function (Button)
             GL.setEnabled(Button, not GL:empty(GL:tableGet(Overview:getSelectedSession() or {}, "Auctions")));
@@ -589,10 +589,10 @@ function Overview:refreshLedger()
 
     local question;
     if (Session.lockedAt) then
-        LockIcon:SetImage("Interface/AddOns/Gargul/Assets/Icons/locked");
+        LockIcon:SetImage("Interface\\AddOns\\Gargul\\Assets\\Icons\\locked");
         question = L["Unlocking and changing the pot or cuts can get really messy, especially if you've already done payouts. Are you sure?"];
     else
-        LockIcon:SetImage("Interface/AddOns/Gargul/Assets/Icons/unlocked");
+        LockIcon:SetImage("Interface\\AddOns\\Gargul\\Assets\\Icons\\unlocked");
         question = L["Locking a session means you can't auction items or otherwise change anything until you unlock it, are you sure?"];
     end
     LockIcon:SetCallback("OnClick", function ()
@@ -695,7 +695,7 @@ function Overview:refreshLedger()
                 local itemLabel;
 
                 if (concernsManualAdjustment) then
-                    iconPath = "Interface/AddOns/Gargul/Assets/Icons/achievement_guildperk_cashflow";
+                    iconPath = "Interface\\AddOns\\Gargul\\Assets\\Icons\\achievement_guildperk_cashflow";
                 end
 
                 local ItemRow = AceGUI:Create("SimpleGroup");
@@ -795,7 +795,7 @@ function Overview:refreshLedger()
                         Interface.GDKP.AuctionDetails:toggle(Session.ID, Auction.checksum);
                     end,
                     tooltip = L["Details"],
-                    normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/eye",
+                    normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\eye",
                 });
                 Eye:SetPoint("CENTER", ItemRow.frame, "CENTER");
                 Eye:SetPoint("RIGHT", ItemRow.frame, "RIGHT", 0, 0);
@@ -821,7 +821,7 @@ function Overview:refreshLedger()
                         end,
                         tooltip = L["Delete. Hold shift to bypass note"],
                         disabledTooltip = L["\nYou need lead or master loot to delete entries.\nYou can't delete entries on locked/deleted sessions"],
-                        normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/delete",
+                        normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete",
                         update = function (self)
                             GL.setEnabled(self, not auctionWasDeleted and not Session.deletedAt and not Session.lockedAt);
                         end,
@@ -836,7 +836,7 @@ function Overview:refreshLedger()
                         onClick = function () GDKPAuction:restore(Session.ID, Auction.ID); end,
                         tooltip = L["Restore"],
                         disabledTooltip = L["\nYou need lead or master loot to restore entries.\nYou can't restore entries of locked/deleted sessions"],
-                        normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/restore",
+                        normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\restore",
                         update = function (self)
                             GL.setEnabled(self, not Session.deletedAt and not Session.lockedAt);
                         end,
@@ -853,7 +853,7 @@ function Overview:refreshLedger()
                     end,
                     tooltip = L["Edit"],
                     disabledTooltip = L["\nYou need lead or master loot to edit entries.\nYou can't edit deleted entries or entries on locked/deleted sessions"],
-                    normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/edit",
+                    normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\edit",
                     update = function (self)
                         GL.setEnabled(self, not auctionWasDeleted and not Session.deletedAt and not Session.lockedAt);
                     end,
@@ -916,7 +916,7 @@ function Overview:showTutorial()
     -- Add placeholders for all the item icons and labels
     for order, Step in pairs(Steps) do
         local step = Step[2];
-        local iconPath = "Interface/AddOns/Gargul/Assets/Icons/" .. order;
+        local iconPath = "Interface\\AddOns\\Gargul\\Assets\\Icons\\" .. order;
 
         local ItemRow = AceGUI:Create("SimpleGroup");
         ItemRow:SetLayout("FLOW")

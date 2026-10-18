@@ -484,7 +484,7 @@ function Auction:storeCurrent(winner, bid, awardChecksum)
 
     -- Make sure the item is valid
     if (not GL:higherThanZero(itemID)
-        or not GL:higherThanZero(GetItemInfoInstant(GL.GDKP.Auction.Current.itemLink))
+        or not GL:higherThanZero(GL.GetItemInfoInstant(GL.GDKP.Auction.Current.itemLink))
     ) then
         GL:warning((L["Unknown itemID in Auction:create: %s"]):format(tostring(itemID)));
         return false;
@@ -541,7 +541,7 @@ function Auction:sanitize(Instance)
         or GL:empty(Instance.CreatedBy.name)
         or type (Instance.CreatedBy.race) ~= "string"
         or type (Instance.CreatedBy.uuid) ~= "string"
-        or not strmatch(Instance.CreatedBy.uuid, "^Player%-[0-9]+%-[A-Z0-9]+$")
+        or not strmatch(Instance.CreatedBy.uuid, "^0x%x+$")
         or type (Instance.CreatedBy.realm) ~= "string"
         or GL:empty(Instance.CreatedBy.realm)
     ) then
@@ -608,7 +608,7 @@ function Auction:sanitize(Instance)
                 or GL:empty(Bidder.name)
                 or type (Bidder.race) ~= "string"
                 or type (Bidder.uuid) ~= "string"
-                or not strmatch(Bidder.uuid, "^Player%-[0-9]+%-[A-Z0-9]+$")
+                or not strmatch(Bidder.uuid, "^0x%x+$")
                 or type (Bidder.realm) ~= "string"
                 or GL:empty(Bidder.realm)
             ) then
@@ -661,7 +661,7 @@ function Auction:sanitize(Instance)
             ))
             or (not GL:empty(Winner.uuid) and (
                 type(Winner.uuid) ~= "string"
-                or not strmatch(Winner.uuid, "^Player%-[0-9]+%-[A-Z0-9]+$")
+                or not strmatch(Winner.uuid, "^0x%x+$")
             ))
             or (not GL:empty(Winner.realm) and
                 type(Winner.realm) ~= "string"
