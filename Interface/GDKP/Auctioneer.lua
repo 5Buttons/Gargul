@@ -391,7 +391,7 @@ function AuctioneerUI:build()
         PotImage:SetWidth(12)
         PotImage:SetHeight(12)
         PotImage:SetPoint("TOP", 0, 0);
-        PotImage:SetTexture("Interface/AddOns/Gargul/Assets/Icons/achievement_guildperk_cashflow");
+        PotImage:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Icons\\achievement_guildperk_cashflow");
 
         --[[ TEXT ]]
         ---@type FontString
@@ -925,13 +925,13 @@ function AuctioneerUI:buildQueue(Window)
 
             ---@type Texture
             local NormalTexture = DeleteButton.normalTexture or DeleteButton:CreateTexture();
-            NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/delete");
+            NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete");
             NormalTexture:SetAllPoints(DeleteButton);
             DeleteButton:SetNormalTexture(NormalTexture);
 
             ---@type Texture
             local HighlightTexture = DeleteButton:CreateTexture();
-            HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/delete");
+            HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete");
             NormalTexture:SetAllPoints(DeleteButton);
             DeleteButton:SetHighlightTexture(HighlightTexture);
 

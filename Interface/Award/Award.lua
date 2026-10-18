@@ -288,12 +288,12 @@ function Award:draw(itemLink, callback)
     AwardHistoryButton:SetMotionScriptsWhileDisabled(true); -- Make sure tooltip still shows even when button is disabled
 
     local AwardHistoryButtonHighlight = AwardHistoryButton:CreateTexture();
-    AwardHistoryButtonHighlight:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/award");
+    AwardHistoryButtonHighlight:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\award");
     AwardHistoryButtonHighlight:SetPoint("CENTER", AwardHistoryButton, "CENTER", 0, 0);
     AwardHistoryButtonHighlight:SetSize(22, 20);
 
-    AwardHistoryButton:SetNormalTexture("Interface/AddOns/Gargul/Assets/Buttons/award");
-    AwardHistoryButton:SetDisabledTexture("Interface/AddOns/Gargul/Assets/Buttons/award-disabled");
+    AwardHistoryButton:SetNormalTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\award");
+    AwardHistoryButton:SetDisabledTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\award-disabled");
     AwardHistoryButton:SetHighlightTexture(AwardHistoryButtonHighlight);
 
     AwardHistoryButton:SetScript("OnEnter", function ()

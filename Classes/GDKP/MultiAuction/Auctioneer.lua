@@ -580,7 +580,7 @@ function Auctioneer:announceStart(ItemDetails, duration, antiSnipe, precision)
     self.waitingForAuctionStart = serverTime;
 
     ProgressBar = LibStub("LibCandyBarGargul-3.0"):New(
-        "Interface/AddOns/Gargul/Assets/Textures/timer-bar",
+        "Interface\\AddOns\\Gargul\\Assets\\Textures\\timer-bar",
         max(UIParent:GetWidth() / 4, 250),
         30
     );

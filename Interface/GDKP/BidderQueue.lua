@@ -198,13 +198,13 @@ function BidderQueue:build()
 
         ---@type Texture
         local NormalTexture = ActionButtons.BidButton:CreateTexture();
-        NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/bag");
+        NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\bag");
         NormalTexture:SetAllPoints(ActionButtons.BidButton);
         ActionButtons.BidButton:SetNormalTexture(NormalTexture);
 
         ---@type Texture
         local HighlightTexture = ActionButtons.BidButton:CreateTexture();
-        HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/bag");
+        HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\bag");
         NormalTexture:SetAllPoints(ActionButtons.BidButton);
         ActionButtons.BidButton:SetHighlightTexture(HighlightTexture);
 
@@ -218,13 +218,13 @@ function BidderQueue:build()
 
         ---@type Texture
         NormalTexture = ActionButtons.RemoveBidButton:CreateTexture();
-        NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/bag");
+        NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\bag");
         NormalTexture:SetAllPoints(ActionButtons.RemoveBidButton);
         ActionButtons.RemoveBidButton:SetNormalTexture(NormalTexture);
 
         ---@type Texture
         HighlightTexture = ActionButtons.RemoveBidButton:CreateTexture();
-        HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/bag");
+        HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\bag");
         NormalTexture:SetAllPoints(ActionButtons.RemoveBidButton);
         ActionButtons.RemoveBidButton:SetHighlightTexture(HighlightTexture);
 
@@ -238,13 +238,13 @@ function BidderQueue:build()
 
         ---@type Texture
         NormalTexture = ActionButtons.DeleteButton:CreateTexture();
-        NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/delete");
+        NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete");
         NormalTexture:SetAllPoints(ActionButtons.DeleteButton);
         ActionButtons.DeleteButton:SetNormalTexture(NormalTexture);
 
         ---@type Texture
         HighlightTexture = ActionButtons.DeleteButton:CreateTexture();
-        HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/delete");
+        HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete");
         NormalTexture:SetAllPoints(ActionButtons.DeleteButton);
         ActionButtons.DeleteButton:SetHighlightTexture(HighlightTexture);
 

@@ -225,7 +225,7 @@ function Changelog:draw()
         local SantaHat = GL.AceGUI:Create("Icon");
         SantaHat:SetWidth(83);
         SantaHat:SetHeight(81);
-        SantaHat:SetImage("Interface/AddOns/Gargul/Assets/Icons/santa_hat");
+        SantaHat:SetImage("Interface\\AddOns\\Gargul\\Assets\\Icons\\santa_hat");
         SantaHat.frame:SetParent(Window.frame);
         SantaHat.frame:SetPoint("TOPLEFT", Window.frame, "TOPLEFT", -26, 36);
         SantaHat.frame:Show();

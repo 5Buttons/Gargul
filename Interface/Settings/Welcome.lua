@@ -71,7 +71,7 @@ function Welcome:draw(Parent)
     local DiscordLogo = DiscordRow:CreateTexture(nil, "ARTWORK");
     DiscordLogo:SetSize(20, 20);
     DiscordLogo:SetPoint("LEFT", DiscordRow, "LEFT", 0, 0);
-    DiscordLogo:SetTexture("Interface/AddOns/Gargul/Assets/Icons/discord");
+    DiscordLogo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Icons\\discord");
 
     local DiscordURLText = GL.Interface:createFontString(DiscordRow, ("|c00%sdiscord.gg/D3mDhYPVzf|r"):format(Constants.addonHexColor));
     DiscordURLText:SetPoint("LEFT", DiscordLogo, "RIGHT", 8, 0);

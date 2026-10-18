@@ -144,7 +144,7 @@ local function createStepRow(Parent, stepNumber, text, anchor, offsetY)
     local Icon = Row:CreateTexture(nil, "ARTWORK");
     Icon:SetSize(STEP_ICON_SIZE, STEP_ICON_SIZE);
     Icon:SetPoint("LEFT", Row, "LEFT", 0, 0);
-    Icon:SetTexture(("Interface/AddOns/Gargul/Assets/Icons/%d"):format(stepNumber));
+    Icon:SetTexture(("Interface\\AddOns\\Gargul\\Assets\\Icons\\%d"):format(stepNumber));
 
     local Text = Interface:createFontString(Row, text);
     Text:SetPoint("LEFT", Icon, "RIGHT", 6, 0);
@@ -233,7 +233,7 @@ local function buildGDKPMockup(Parent)
     local PotIcon = Parent:CreateTexture(nil, "ARTWORK");
     PotIcon:SetSize(24, 24);
     PotIcon:SetPoint("TOPLEFT", Parent, "TOPLEFT", 10, -8);
-    PotIcon:SetTexture("Interface/AddOns/Gargul/Assets/Icons/achievement_guildperk_cashflow");
+    PotIcon:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Icons\\achievement_guildperk_cashflow");
 
     local PotLabel = Interface:createFontString(Parent, ("|c00%s%s|r"):format(COLORS.YELLOW, L["Total Pot"]));
     PotLabel:SetPoint("LEFT", PotIcon, "RIGHT", 6, 0);
@@ -392,8 +392,8 @@ local function buildHotkeysMockup(Parent)
 
     local hotkeys = {
         { key = rollKey, label = L["Roll / Auction"], icon = "Interface/Buttons/UI-GroupLoot-Dice-Up", },
-        { key = awardKey, label = L["Award loot"], icon = "Interface/AddOns/Gargul/Assets/Buttons/award", },
-        { key = deKey, label = L["Disenchant"], icon = "Interface/AddOns/Gargul/Assets/Buttons/disenchant", },
+        { key = awardKey, label = L["Award loot"], icon = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\award", },
+        { key = deKey, label = L["Disenchant"], icon = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\disenchant", },
     };
 
     for i, entry in ipairs(hotkeys) do
@@ -422,17 +422,17 @@ end
 local function buildSponsorMockup(Parent)
     local platforms = {
         {
-            icon = "Interface/AddOns/Gargul/Assets/Icons/kofi",
+            icon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\kofi",
             url = "ko-fi.com/gargul",
             description = L["Thanks for considering supporting Gargul on Ko-fi!"],
         },
         {
-            icon = "Interface/AddOns/Gargul/Assets/Icons/patreon",
+            icon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\patreon",
             url = "patreon.com/gargul",
             description = L["Thanks for considering becoming a Patron of Gargul!"],
         },
         {
-            icon = "Interface/AddOns/Gargul/Assets/Icons/discord",
+            icon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\discord",
             url = "discord.gg/D3mDhYPVzf",
             description = L["Join the Gargul community on Discord!"],
         },
@@ -489,7 +489,7 @@ function Onboarding:build()
     table.insert(SlidesConfig, {
         title = L["Hotkeys"],
         subtitle = L["Use these on items in your bags or item links in chat"],
-        icon = "Interface/AddOns/Gargul/Assets/Icons/gargul",
+        icon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\gargul",
         mockupHeight = 104,
         buildMockup = buildHotkeysMockup,
         steps = {
@@ -508,7 +508,7 @@ function Onboarding:build()
         table.insert(SlidesConfig, {
             title = L["GDKP"],
             subtitle = L["Auction loot, split the gold"],
-            icon = "Interface/AddOns/Gargul/Assets/Icons/achievement_guildperk_cashflow",
+            icon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\achievement_guildperk_cashflow",
             mockupHeight = 120,
             buildMockup = buildGDKPMockup,
             steps = {
@@ -526,7 +526,7 @@ function Onboarding:build()
         table.insert(SlidesConfig, {
             title = L["Multi-Auction"],
             subtitle = L["Auction many items at once -- the fastest way to run GDKP"],
-            icon = "Interface/AddOns/Gargul/Assets/Icons/achievement_guildperk_cashflow",
+            icon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\achievement_guildperk_cashflow",
             mockupHeight = 120,
             buildMockup = buildMultiAuctionMockup,
             steps = {
@@ -545,7 +545,7 @@ function Onboarding:build()
     table.insert(SlidesConfig, {
         title = L["Soft Reserves"],
         subtitle = L["Players reserve items before the raid"],
-        icon = "Interface/AddOns/Gargul/Assets/Icons/softres",
+        icon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\softres",
         mockupHeight = 100,
         buildMockup = buildSoftResMockup,
         steps = {

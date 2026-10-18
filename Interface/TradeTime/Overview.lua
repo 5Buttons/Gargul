@@ -353,13 +353,13 @@ function Overview:build()
 
         ---@type Texture
         local NormalTexture = HideButton:CreateTexture();
-        NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/eye");
+        NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\eye");
         NormalTexture:SetAllPoints(HideButton);
         HideButton:SetNormalTexture(NormalTexture);
 
         ---@type Texture
         local HighlightTexture = HideButton:CreateTexture();
-        HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/bag");
+        HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\bag");
         NormalTexture:SetAllPoints(HideButton);
         HideButton:SetHighlightTexture(HighlightTexture);
 
@@ -555,7 +555,7 @@ function Overview:buildItemRow(Details, Window, ActionButtons)
     ItemRow:SetPoint("RIGHT", Window, "RIGHT", 0, 0);
 
     local CountDownBar = CandyBar:New(
-        "Interface/AddOns/Gargul/Assets/Textures/timer-bar",
+        "Interface\\AddOns\\Gargul\\Assets\\Textures\\timer-bar",
         240,
         ROW_HEIGHT
     );
@@ -595,10 +595,10 @@ function Overview:buildItemRow(Details, Window, ActionButtons)
 
         if (AwardDetails) then
             if (AwardDetails.awardedTo == GL.Exporter.disenchantedItemIdentifier) then
-                newIcon = "Interface/AddOns/Gargul/Assets/Icons/disenchant";
+                newIcon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\disenchant";
                 ItemRow.awarded = true;
             else
-                newIcon = "Interface/AddOns/Gargul/Assets/Icons/trophy";
+                newIcon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\trophy";
                 ItemRow.disenchanted = true;
             end
         end

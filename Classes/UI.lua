@@ -111,13 +111,13 @@ function UI:createShareButton(Parent, Details)
     end
 
     local HighlightTexture = ShareButton:CreateTexture();
-    HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/share-highlighted");
+    HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\share-highlighted");
     HighlightTexture:SetPoint("CENTER", ShareButton, "CENTER", 0, 0);
     HighlightTexture:SetSize(width, height);
 
-    ShareButton:SetNormalTexture("Interface/AddOns/Gargul/Assets/Buttons/share");
+    ShareButton:SetNormalTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\share");
     ShareButton:SetHighlightTexture(HighlightTexture);
-    ShareButton:SetDisabledTexture("Interface/AddOns/Gargul/Assets/Buttons/share-disabled");
+    ShareButton:SetDisabledTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\share-disabled");
 
     -- Show the tooltip on hover
     ShareButton:SetScript("OnEnter", function ()

@@ -528,12 +528,12 @@ function MasterLooterUI:draw(itemLink)
             AwardHistoryButton:SetMotionScriptsWhileDisabled(true); -- Make sure tooltip still shows even when button is disabled
 
             local AwardHistoryButtonHighlight = AwardHistoryButton:CreateTexture();
-            AwardHistoryButtonHighlight:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/award");
+            AwardHistoryButtonHighlight:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\award");
             AwardHistoryButtonHighlight:SetPoint("CENTER", AwardHistoryButton, "CENTER", 0, 0);
             AwardHistoryButtonHighlight:SetSize(22, 20);
 
-            AwardHistoryButton:SetNormalTexture("Interface/AddOns/Gargul/Assets/Buttons/award");
-            AwardHistoryButton:SetDisabledTexture("Interface/AddOns/Gargul/Assets/Buttons/award-disabled");
+            AwardHistoryButton:SetNormalTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\award");
+            AwardHistoryButton:SetDisabledTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\award-disabled");
             AwardHistoryButton:SetHighlightTexture(AwardHistoryButtonHighlight);
 
             AwardHistoryButton:SetScript("OnEnter", function ()
@@ -608,7 +608,7 @@ function MasterLooterUI:draw(itemLink)
         self.ShareGearButton = GL.Interface:createShareButton(FifthRow, {
             width = 18,
             height = 18,
-            disabledTexture = "Interface/AddOns/Gargul/Assets/Buttons/share-disabled",
+            disabledTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\share-disabled",
             tooltip = L["Share worn gear with the group"],
             disabledTooltip = L["No worn gear available to share"],
             onClick = function ()
@@ -772,13 +772,13 @@ function MasterLooterUI:drawReopenMasterLooterUIButton()
     PlayStopButton:SetPoint("TOPLEFT", Button, "TOPRIGHT", 2, -1);
 
     local PlayStopButtonHighlight = PlayStopButton:CreateTexture();
-    PlayStopButtonHighlight:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/play");
-    PlayStopButtonHighlight:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/stop");
+    PlayStopButtonHighlight:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\play");
+    PlayStopButtonHighlight:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\stop");
     PlayStopButtonHighlight:SetPoint("CENTER", PlayStopButton, "CENTER", 0, 0);
     PlayStopButtonHighlight:SetSize(20, 20);
 
-    PlayStopButton:SetNormalTexture("Interface/AddOns/Gargul/Assets/Buttons/play");
-    PlayStopButton:SetNormalTexture("Interface/AddOns/Gargul/Assets/Buttons/stop");
+    PlayStopButton:SetNormalTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\play");
+    PlayStopButton:SetNormalTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\stop");
     PlayStopButton:SetHighlightTexture(PlayStopButtonHighlight);
 
     GL.Interface:addTooltip(PlayStopButton, ("%s / %s"):format(L["Start"], L["Stop"]), "TOP");
@@ -804,12 +804,12 @@ function MasterLooterUI:drawReopenMasterLooterUIButton()
     DisenchantButton:SetMotionScriptsWhileDisabled(true); -- Make sure tooltip still shows even when button is disabled
 
     local DisenchantButtonHighlight = DisenchantButton:CreateTexture();
-    DisenchantButtonHighlight:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/disenchant");
+    DisenchantButtonHighlight:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\disenchant");
     DisenchantButtonHighlight:SetPoint("CENTER", DisenchantButton, "CENTER", 0, 0);
     DisenchantButtonHighlight:SetSize(20, 20);
 
-    DisenchantButton:SetNormalTexture("Interface/AddOns/Gargul/Assets/Buttons/disenchant");
-    DisenchantButton:SetDisabledTexture("Interface/AddOns/Gargul/Assets/Buttons/disenchant-disabled");
+    DisenchantButton:SetNormalTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\disenchant");
+    DisenchantButton:SetDisabledTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\disenchant-disabled");
     DisenchantButton:SetHighlightTexture(DisenchantButtonHighlight);
 
     DisenchantButton:SetScript("OnEnter", function ()
@@ -839,13 +839,13 @@ function MasterLooterUI:drawReopenMasterLooterUIButton()
         if (GL.RollOff.inProgress) then
             DisenchantButton:Disable();
 
-            PlayStopButton:SetNormalTexture("Interface/AddOns/Gargul/Assets/Buttons/stop");
-            PlayStopButtonHighlight:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/stop");
+            PlayStopButton:SetNormalTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\stop");
+            PlayStopButtonHighlight:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\stop");
         else
             DisenchantButton:Enable();
 
-            PlayStopButton:SetNormalTexture("Interface/AddOns/Gargul/Assets/Buttons/play");
-            PlayStopButtonHighlight:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/play");
+            PlayStopButton:SetNormalTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\play");
+            PlayStopButtonHighlight:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\play");
         end
     end;
     refreshWidget();

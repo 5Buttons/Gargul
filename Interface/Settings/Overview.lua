@@ -210,12 +210,12 @@ function Overview:draw(section, onCloseCallback)
 
     local sponsorPlatforms = {
         {
-            icon = "Interface/AddOns/Gargul/Assets/Icons/kofi",
+            icon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\kofi",
             url = "ko-fi.com/gargul",
             description = L["Thanks for considering supporting Gargul on Ko-fi!"],
         },
         {
-            icon = "Interface/AddOns/Gargul/Assets/Icons/patreon",
+            icon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\patreon",
             url = "patreon.com/gargul",
             description = L["Thanks for considering becoming a Patron of Gargul!"],
         },

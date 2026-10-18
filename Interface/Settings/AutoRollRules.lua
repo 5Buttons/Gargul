@@ -55,7 +55,7 @@ local AutoRollRules = {
 };
 GL.Interface.Settings.AutoRollRules = AutoRollRules;
 
-local PROFILE_ICON_PATH = "Interface/AddOns/Gargul/Assets/Buttons/";
+local PROFILE_ICON_PATH = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\";
 
 -- Hook HandleModifiedItemClick so shift-click works when Auto Roll Rules item box is the target.
 -- ChatEdit_InsertLink is only called when chat is "active"; HandleModifiedItemClick is called for all bag shift-clicks.
@@ -648,7 +648,7 @@ function AutoRollRules:updatePopulateProgress(progress, label)
         local bar = CreateFrame("StatusBar", nil, frame);
         bar:SetPoint("TOPLEFT", 1, -1);
         bar:SetPoint("BOTTOMRIGHT", -1, 1);
-        bar:SetStatusBarTexture("Interface/AddOns/Gargul/Assets/Textures/timer-bar");
+        bar:SetStatusBarTexture("Interface\\AddOns\\Gargul\\Assets\\Textures\\timer-bar");
         bar:SetStatusBarColor(.3, .6, 1, .9);
         bar:SetMinMaxValues(0, 100);
         bar:SetValue(0);

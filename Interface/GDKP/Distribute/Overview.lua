@@ -426,7 +426,7 @@ function Overview:refresh()
                     Interface.GDKP.Distribute.EditMutator:open(self.sessionID, Mutator.name);
                 end,
                 tooltip = L["Edit mutator"],
-                normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/edit",
+                normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\edit",
             });
             Edit:SetPoint("TOPLEFT", MutatorFlatBox.frame, "TOPRIGHT", 20, 0);
             tinsert(self.MutatorActionButtons, Edit);
@@ -454,7 +454,7 @@ function Overview:refresh()
                     });
                 end,
                 tooltip = L["Delete. Hold shift to bypass confirmation"],
-                normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/delete",
+                normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete",
             });
             Delete:SetPoint("TOPLEFT", Edit, "TOPRIGHT", 2);
             tinsert(self.MutatorActionButtons, Delete);
@@ -579,7 +579,7 @@ function Overview:refresh()
                 GL.Interface.GDKP.GoldTrades.Overview:open(Session.ID, player);
             end,
             tooltip = L["Manage gold trades"],
-            normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/bag",
+            normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\bag",
         });
         AdjustGoldTradesButton:SetPoint("CENTER", RaiderHolder.frame, "CENTER");
         AdjustGoldTradesButton:SetPoint("LEFT", RaiderHolder.frame, "LEFT", -2, -1);
@@ -707,7 +707,7 @@ function Overview:refresh()
                     Interface.GDKP.Distribute.EditRaider:open(self.sessionID, player);
                 end,
                 tooltip = L["Edit Raider"],
-                normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/edit",
+                normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\edit",
             });
             Edit:SetPoint("TOPLEFT", CutLabel.frame, "TOPRIGHT", 20, 10);
             tinsert(self.RaiderActionButtons, Edit);
@@ -719,7 +719,7 @@ function Overview:refresh()
                     self:throttledRefresh();
                 end,
                 tooltip = L["Delete Raider"],
-                normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/delete",
+                normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete",
             });
             Delete:SetPoint("TOPLEFT", Edit, "TOPRIGHT", 2);
             tinsert(self.RaiderActionButtons, Delete);

@@ -122,13 +122,13 @@ function Overview:build()
 
         ---@type Texture
         NormalTexture = ActionButtons.DeleteButton:CreateTexture();
-        NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/delete");
+        NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete");
         NormalTexture:SetAllPoints(ActionButtons.DeleteButton);
         ActionButtons.DeleteButton:SetNormalTexture(NormalTexture);
 
         ---@type Texture
         HighlightTexture = ActionButtons.DeleteButton:CreateTexture();
-        HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/delete");
+        HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete");
         NormalTexture:SetAllPoints(ActionButtons.DeleteButton);
         ActionButtons.DeleteButton:SetHighlightTexture(HighlightTexture);
 
@@ -142,13 +142,13 @@ function Overview:build()
 
         ---@type Texture
         NormalTexture = ActionButtons.RestoreButton:CreateTexture();
-        NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/restore");
+        NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\restore");
         NormalTexture:SetAllPoints(ActionButtons.RestoreButton);
         ActionButtons.RestoreButton:SetNormalTexture(NormalTexture);
 
         ---@type Texture
         HighlightTexture = ActionButtons.RestoreButton:CreateTexture();
-        HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/restore");
+        HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\restore");
         NormalTexture:SetAllPoints(ActionButtons.RestoreButton);
         ActionButtons.RestoreButton:SetHighlightTexture(HighlightTexture);
 

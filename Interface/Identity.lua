@@ -32,7 +32,7 @@ GL.Interface.Identity = {
 
             ---@type Texture
             local Logo = Window:CreateTexture();
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
             Logo:SetAllPoints();
 
             Window:SetScript("OnMouseUp", function (_, button)
@@ -64,7 +64,7 @@ GL.Interface.Identity = {
             local Logo = Window:CreateTexture();
             Logo:SetPoint("CENTER", Window, "CENTER", 0, -1);
             Logo:SetSize(74, 74);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             ---@type FontString
             local TextTop = Interface:createFontString(Window, "Gargul");
@@ -109,7 +109,7 @@ GL.Interface.Identity = {
             local Logo = Window:CreateTexture();
             Logo:SetPoint("CENTER", Window, "CENTER");
             Logo:SetSize(72, 72);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             ---@type FontString
             local TextTop = Interface:createFontString(Window, "Gargul");
@@ -158,7 +158,7 @@ GL.Interface.Identity = {
             local Logo = Window:CreateTexture();
             Logo:SetPoint("CENTER", Window, "CENTER", 0, 1);
             Logo:SetSize(54, 54);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             ---@type FontString
             local Text = Interface:createFontString(Window, "Gargul");
@@ -206,7 +206,7 @@ GL.Interface.Identity = {
 
             ---@type Texture
             local Logo = Window:CreateTexture();
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
             Logo:SetAllPoints();
 
             Window:SetScript("OnMouseUp", function (_, button)
@@ -238,7 +238,7 @@ GL.Interface.Identity = {
             local Logo = Window:CreateTexture();
             Logo:SetPoint("CENTER", Window, "CENTER");
             Logo:SetSize(74, 74);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             ---@type FontString
             local Text = Interface:createFontString(Window, "Gargul");
@@ -277,7 +277,7 @@ GL.Interface.Identity = {
             local Logo = Window:CreateTexture();
             Logo:SetPoint("CENTER", Window, "CENTER", 0, 2);
             Logo:SetSize(76, 76);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             ---@type FontString
             local Text = Interface:createFontString(Window, "Gargul");
@@ -316,7 +316,7 @@ GL.Interface.Identity = {
             local Logo = Window:CreateTexture();
             Logo:SetPoint("CENTER", Window, "CENTER");
             Logo:SetSize(44, 44);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             ---@type FontString
             local Text = Interface:createFontString(Window, "Gargul");
@@ -360,7 +360,7 @@ GL.Interface.Identity = {
 
             ---@type Texture
             local Logo = Window:CreateTexture();
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
             Logo:SetPoint("CENTER", Window, "CENTER");
             Logo:SetSize(74, 74);
 
@@ -393,7 +393,7 @@ GL.Interface.Identity = {
             local Logo = Window:CreateTexture();
             Logo:SetPoint("CENTER", Window, "CENTER");
             Logo:SetSize(75, 75);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             Window:SetScript("OnMouseUp", function (_, button)
                 if (button == "LeftButton") then
@@ -418,7 +418,7 @@ GL.Interface.Identity = {
             ---@type Texture
             local Logo = Window:CreateTexture();
             Logo:SetAllPoints(Window);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             Interface:addTooltip(Window, Identity.tooltip);
             Window:SetScript("OnMouseUp", function (_, button)
@@ -446,7 +446,7 @@ GL.Interface.Identity = {
             ---@type Texture
             local Logo = Window:CreateTexture();
             Logo:SetAllPoints(Window);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             Interface:addTooltip(Window, Identity.tooltip);
 
@@ -484,7 +484,7 @@ GL.Interface.Identity = {
 
             ---@type Texture
             local Logo = Window:CreateTexture();
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
             Logo:SetAllPoints();
 
             Window:SetScript("OnMouseUp", function (_, button)
@@ -516,7 +516,7 @@ GL.Interface.Identity = {
             local Logo = Window:CreateTexture();
             Logo:SetPoint("CENTER", Window, "CENTER");
             Logo:SetSize(74, 74);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             ---@type FontString
             local Text = Interface:createFontString(Window, "Unhinged");
@@ -555,7 +555,7 @@ GL.Interface.Identity = {
             local Logo = Window:CreateTexture();
             Logo:SetPoint("CENTER", Window, "CENTER", 0, 2);
             Logo:SetSize(76, 76);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             ---@type FontString
             local Text = Interface:createFontString(Window, "Unhinged");
@@ -594,7 +594,7 @@ GL.Interface.Identity = {
             local Logo = Window:CreateTexture();
             Logo:SetPoint("CENTER", Window, "CENTER");
             Logo:SetSize(44, 44);
-            Logo:SetTexture("Interface/AddOns/Gargul/Assets/Identities/" .. Identity.id);
+            Logo:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Identities\\" .. Identity.id);
 
             ---@type FontString
             local Text = Interface:createFontString(Window, "Unhinged");

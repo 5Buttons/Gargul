@@ -643,7 +643,7 @@ function Auctioneer:refreshBidsTable()
                     color = GL:classRGBAColor(class),
                 },
                 {
-                    value = "Interface/AddOns/Gargul/Assets/Buttons/delete", _OnClick = function ()
+                    value = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete", _OnClick = function ()
                         if (not Auction.inProgress) then
                             self:removePlayerBid(bidder, Entry.bid);
                         else

@@ -127,7 +127,7 @@ function Alerts:show(frameType, ...)
     else
         local Details = GL:tableMerge({
             message = "",
-            icon = "Interface/AddOns/Gargul/Assets/Icons/gargul",
+            icon = "Interface\\AddOns\\Gargul\\Assets\\Icons\\gargul",
             hex = "",
         }, (...) or {});
 

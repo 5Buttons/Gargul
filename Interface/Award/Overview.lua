@@ -190,13 +190,13 @@ function Overview:build()
 
         ---@type Texture
         local NormalTexture = DeleteButton.normalTexture or DeleteButton:CreateTexture();
-        NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/delete");
+        NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete");
         NormalTexture:SetAllPoints(DeleteButton);
         DeleteButton:SetNormalTexture(NormalTexture);
 
         ---@type Texture
         local HighlightTexture = DeleteButton:CreateTexture();
-        HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/delete");
+        HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\delete");
         NormalTexture:SetAllPoints(DeleteButton);
         DeleteButton:SetHighlightTexture(HighlightTexture);
 
@@ -212,13 +212,13 @@ function Overview:build()
 
         ---@type Texture
         local NormalTexture = DisenchantButton.normalTexture or DisenchantButton:CreateTexture();
-        NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/disenchant");
+        NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\disenchant");
         NormalTexture:SetAllPoints(DisenchantButton);
         DisenchantButton:SetNormalTexture(NormalTexture);
 
         ---@type Texture
         local HighlightTexture = DisenchantButton:CreateTexture();
-        HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/disenchant");
+        HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\disenchant");
         NormalTexture:SetAllPoints(DisenchantButton);
         DisenchantButton:SetHighlightTexture(HighlightTexture);
 
@@ -234,13 +234,13 @@ function Overview:build()
 
         ---@type Texture
         local NormalTexture = EditButton.normalTexture or EditButton:CreateTexture();
-        NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/edit");
+        NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\edit");
         NormalTexture:SetAllPoints(EditButton);
         EditButton:SetNormalTexture(NormalTexture);
 
         ---@type Texture
         local HighlightTexture = EditButton:CreateTexture();
-        HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/edit");
+        HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\edit");
         NormalTexture:SetAllPoints(EditButton);
         EditButton:SetHighlightTexture(HighlightTexture);
 
@@ -256,13 +256,13 @@ function Overview:build()
 
         ---@type Texture
         local NormalTexture = SoftResButton.normalTexture or SoftResButton:CreateTexture();
-        NormalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/share");
+        NormalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\share");
         NormalTexture:SetAllPoints(SoftResButton);
         SoftResButton:SetNormalTexture(NormalTexture);
 
         ---@type Texture
         local HighlightTexture = SoftResButton:CreateTexture();
-        HighlightTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/share-highlighted");
+        HighlightTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\share-highlighted");
         HighlightTexture:SetAllPoints(SoftResButton);
         SoftResButton:SetHighlightTexture(HighlightTexture);
 

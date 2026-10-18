@@ -433,14 +433,14 @@ function Interface:addMoveButton(Element)
     Move:SetSize(15, 15);
 
     Move.normalTexture = Move:CreateTexture(nil, "BACKGROUND");
-    Move.normalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/panel-move-up");
+    Move.normalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\panel-move-up");
     Move.normalTexture:SetTexCoord(0.21875, 0.75, 0.234375, 0.765625);
     Move.normalTexture:SetPoint("TOPRIGHT", Move, "TOPRIGHT", 0, -3);
     Move.normalTexture:SetSize(15, 15);
     Move:SetNormalTexture(Move.normalTexture);
 
     Move.pushedTexture = Move:CreateTexture(nil, "BACKGROUND");
-    Move.pushedTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/panel-move-down");
+    Move.pushedTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\panel-move-down");
     Move.pushedTexture:SetTexCoord(0.21875, 0.75, 0.234375, 0.765625);
     Move.pushedTexture:SetPoint("TOPRIGHT", Move, "TOPRIGHT", 0, -3);
     Move.pushedTexture:SetSize(15, 15);
@@ -485,13 +485,13 @@ function Interface:addOptionsButton(Element)
     Element.OptionsButton = Options;
 
     Options.normalTexture = Options:CreateTexture(nil, "BACKGROUND");
-    Options.normalTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/panel-cogwheel-up");
+    Options.normalTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\panel-cogwheel-up");
     Options.normalTexture:SetTexCoord(0.21875, 0.75, 0.234375, 0.765625);
     Options.normalTexture:SetAllPoints(Options);
     Options:SetNormalTexture(Options.normalTexture);
 
     Options.pushedTexture = Options:CreateTexture(nil, "BACKGROUND");
-    Options.pushedTexture:SetTexture("Interface/AddOns/Gargul/Assets/Buttons/panel-cogwheel-down");
+    Options.pushedTexture:SetTexture("Interface\\AddOns\\Gargul\\Assets\\Buttons\\panel-cogwheel-down");
     Options.pushedTexture:SetTexCoord(0.21875, 0.75, 0.234375, 0.765625);
     Options.pushedTexture:SetAllPoints(Options);
     Options:SetPushedTexture(Options.pushedTexture);
@@ -2112,8 +2112,8 @@ end
 ---@return Frame
 function Interface:createShareButton(Parent, Details)
     Details = Details or {};
-    Details.normalTexture = "Interface/AddOns/Gargul/Assets/Buttons/share";
-    Details.highlightTexture = "Interface/AddOns/Gargul/Assets/Buttons/share-highlighted";
+    Details.normalTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\share";
+    Details.highlightTexture = "Interface\\AddOns\\Gargul\\Assets\\Buttons\\share-highlighted";
 
     local Button = self:createButton(Parent, Details);
     local position = Details.position;
