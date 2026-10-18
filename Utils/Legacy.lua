@@ -163,6 +163,10 @@ local nativeGetRaidRosterInfo = GetRaidRosterInfo;
 ---@param index number
 ---@return string|nil, number, number, number, string, string, string, boolean, boolean, string, boolean
 GL.GetRaidRosterInfo = function (index)
+    if (type(index) ~= "number") then
+        return;
+    end
+
     if (GetNumRaidMembers() > 0) then
         return nativeGetRaidRosterInfo(index);
     end

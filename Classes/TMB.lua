@@ -1592,7 +1592,7 @@ function TMB:requestData()
         end
 
         -- Fetch the group leader
-        for index = 1, GL.User.isInRaid and _G.MEMBERS_PER_RAID_GROUP or _G.MAX_RAID_MEMBERS do
+        for index = 1, GL.User.isInRaid and _G.MAX_RAID_MEMBERS or _G.MEMBERS_PER_RAID_GROUP do
             local name, rank = GL.GetRaidRosterInfo(index);
 
             -- Rank 2 means leader
