@@ -147,6 +147,8 @@ end
 ---@param sender string
 ---@return nil
 function PlusOnes:handleWhisperCommand(_, message, sender)
+    message = message:gsub("^%?", "!");
+
     local validPrefixDetected = false;
     for _, prefix in pairs(GL:explode(L["!plusone|!po|!+1"], "|") or {}) do
         if (GL:strStartsWith(message, prefix)) then

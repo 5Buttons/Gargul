@@ -1130,3 +1130,12 @@ L["Gargul is free thanks to our amazing community.\nConsider joining them if you
 L["Thanks for considering supporting Gargul on Ko-fi!"] = "Thanks for considering supporting Gargul on Ko-fi!";
 L["Thanks for considering becoming a Patron of Gargul!"] = "Thanks for considering becoming a Patron of Gargul!";
 L["Join the Gargul community on Discord!"] = "Join the Gargul community on Discord!";
+L["Item %s"] = "Item %s";
+L["Item %s (loading...)"] = "Item %s (wird geladen...)";
+L["Item %s (right-click to load)"] = "Item %s (Rechtsklick zum Laden)";
+L["This item is not cached yet"] = "Dieses Item ist noch nicht im Cache";
+L["Right-click to query it from the server"] = "Rechtsklick, um es vom Server abzufragen";
+L["%s item(s) could not be loaded"] = "%s Item(s) konnten nicht geladen werden";
+L["Loading items..."] = "Lade Items...";
+L["All items loaded"] = "Alle Items geladen";
+L["Load items (%s)"] = "Items laden (%s)";

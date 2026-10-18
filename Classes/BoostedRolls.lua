@@ -1367,6 +1367,8 @@ end
 ---@param sender string
 ---@return nil
 function BoostedRolls:handleWhisperCommand(_, message, sender)
+    message = message:gsub("^%?", "!");
+
     local validPrefixDetected = false;
     for _, prefix in pairs(GL:explode(L["!bonus|!rb|!br"], "|") or {}) do
         if (GL:strStartsWith(message, prefix)) then

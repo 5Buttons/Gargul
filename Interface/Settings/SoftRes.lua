@@ -37,7 +37,7 @@ function SoftRes:draw(Parent)
         },
         {
             label = "Whisper command",
-            description = ("Players can whisper '|cff%s!sr|r' or '|cff%s!softres|r' to you to double-check their soft-reserves"):format(
+            description = ("Players can whisper '|cff%s?sr|r' or '|cff%s?softres|r' to you to double-check their soft-reserves"):format(
                 GL:classHexColor("rogue"),
                 GL:classHexColor("rogue")
             ),

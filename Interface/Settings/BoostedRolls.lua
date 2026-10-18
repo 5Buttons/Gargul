@@ -36,7 +36,7 @@ function BoostedRolls:draw(Parent)
         },
         {
             label = "Whisper command",
-            description = ("Players can whisper '|cff%s!bonus [<name>]|r' or '|cff%s!rb [<name>]|r' or '|cff%s!br [<name>]|r' to the master looter to get the current boosted roll for this name in response. If no name is given, their own name is assumed instead."):format(
+            description = ("Players can whisper '|cff%s?bonus [<name>]|r' or '|cff%s?rb [<name>]|r' or '|cff%s?br [<name>]|r' to the master looter to get the current boosted roll for this name in response. If no name is given, their own name is assumed instead."):format(
                 GL:classHexColor("rogue"),
                 GL:classHexColor("rogue"),
                 GL:classHexColor("rogue")

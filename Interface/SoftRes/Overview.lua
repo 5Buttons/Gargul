@@ -15,6 +15,9 @@ local SoftRes = GL.SoftRes; ---@type SoftRes
 GL:tableSet(GL, "Interface.SoftRes.Overview", {
     isVisible = false,
     selectedCharacter = nil,
+    showingHardReserves = false,
+    ItemBorders = {},
+    PendingItemIDs = {},
 });
 
 ---@class SoftResOverview
@@ -41,7 +44,9 @@ function Overview:draw()
 
     -- Create a container/parent frame
     local Window = AceGUI:Create("Frame");
-    GL.Interface:AceGUIDefaults(self, Window, "SoftReserveOverview", 600, 470);
+    GL.Interface:AceGUIDefaults(self, Window, "SoftReserveOverview", 740, 470);
+    Window:SetWidth(740);
+    Window:SetHeight(470);
     Window:EnableResize(false);
 
     Window:SetStatusText((L["Imported on |c00A79EFF%s at |c00A79EFF%s"]):format(
@@ -125,7 +130,7 @@ function Overview:draw()
     local SecondColumn = AceGUI:Create("InlineGroup");
     SecondColumn:SetLayout("FILL")
     SecondColumn:SetAutoAdjustHeight(false);
-    SecondColumn:SetWidth(300);
+    SecondColumn:SetWidth(420);
     SecondColumn:SetHeight(350);
     GL.Interface:set(self, "SecondColumn", SecondColumn);
     Window:AddChild(SecondColumn);
@@ -158,7 +163,7 @@ function Overview:draw()
             ITEM ICON
         ]]
         local ItemIcon = AceGUI:Create("Icon");
-        ItemIcon:SetWidth(30);
+        ItemIcon:SetWidth(40);
         ItemIcon:SetHeight(30);
         ItemIcon:SetImageSize(30, 30);
         Details:AddChild(ItemIcon);
@@ -166,21 +171,12 @@ function Overview:draw()
             GameTooltip:Hide();
         end);
 
-         --[[
-            ITEM ICON/LABEL SPACER
-        ]]
-        local ItemSpacer = AceGUI:Create("SimpleGroup");
-        ItemSpacer:SetLayout("FILL")
-        ItemSpacer:SetWidth(10);
-        ItemSpacer:SetHeight(30);
-        Details:AddChild(ItemSpacer);
-
         --[[
             ITEM LABEL
         ]]
         local ItemLabel = AceGUI:Create("Label");
         ItemLabel:SetFontObject(_G.GameFontNormalSmall);
-        ItemLabel:SetWidth(220);
+        ItemLabel:SetWidth(340);
         Details:AddChild(ItemLabel);
         ItemLabel:SetText(" \n ");
 
@@ -222,6 +218,14 @@ function Overview:draw()
     end);
     ButtonFrame:AddChild(ExportSessionButton);
 
+    local FetchItemsButton = AceGUI:Create("Button");
+    FetchItemsButton:SetWidth(150);
+    FetchItemsButton:SetCallback("OnClick", function ()
+        self:fetchItems(self:uncachedItemIDs());
+    end);
+    ButtonFrame:AddChild(FetchItemsButton);
+    GL.Interface:set(self, "FetchItems", FetchItemsButton);
+
     local ClearDataButton = AceGUI:Create("Button");
     ClearDataButton:SetText(L["Clear"]);
     ClearDataButton:SetWidth(100); -- Minimum is 102
@@ -246,6 +250,7 @@ function Overview:draw()
     ButtonFrame:AddChild(SettingsButton);
 
     self:drawCharacterTable(FirstColumn.frame);
+    self:updateFetchItemsButton();
 
     -- Add interface items to the Overview class so we can manipulate them later
     GL.Interface:set(self, "Title", Title);
@@ -306,6 +311,7 @@ end
 function Overview:refreshDetailsFrame()
     -- Clear the details frame first
     self:clearDetailsFrame();
+    self.showingHardReserves = false;
 
     if (not self.selectedCharacter) then
         return;
@@ -346,24 +352,12 @@ function Overview:refreshDetailsFrame()
             break;
         end
 
-        -- This item has to exist in our cache because we ALWAYS populate it before opening the overview
         local Item = GL:getCachedItem(itemID);
-
-        -- This should never be possible, but you never know what those weirdos are up to nowadays
-        if (not Item and GL.isLegacy) then
-            Item = {
-                icon = "Interface\\Icons\\INV_Misc_QuestionMark",
-                link = "item:" .. itemID,
-            };
-        elseif (not Item) then
-            GL:error(L["Something went wrong!"]);
-            return false;
-        end
-
         local ItemIcon = GL.Interface:get(self, "Icon.Item" .. index);
         local ItemLabel = GL.Interface:get(self, "Label.Item" .. index);
 
-        if (ItemIcon) then
+        if (ItemIcon and Item) then
+            ItemIcon.frame:RegisterForClicks("LeftButtonUp");
             ItemIcon:SetImage(Item.icon);
             ItemIcon:SetCallback("OnEnter", function ()
                 GameTooltip:SetOwner(ItemIcon.frame, "ANCHOR_CURSOR");
@@ -374,14 +368,29 @@ function Overview:refreshDetailsFrame()
                 HandleModifiedItemClick(Item.link);
             end);
             ItemIcon.frame:Show();
+        elseif (ItemIcon) then
+            ItemIcon.frame:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+            ItemIcon:SetImage("Interface\\Icons\\INV_Misc_QuestionMark");
+            ItemIcon:SetCallback("OnEnter", function ()
+                GameTooltip:SetOwner(ItemIcon.frame, "ANCHOR_CURSOR");
+                self:addUncachedItemTooltipLines(itemID);
+                GameTooltip:Show();
+            end)
+            ItemIcon:SetCallback("OnClick", function (_, _, button)
+                if (button == "RightButton") then
+                    self:fetchItems({ itemID, });
+                end
+            end);
+            ItemIcon.frame:Show();
+            self:showItemBorder(index, ItemIcon);
         end
 
         if (ItemLabel) then
-            local labelString = Item.link;
+            local labelString = Item and Item.link or self:uncachedItemLabel(itemID);
 
             -- The user reserved this item multiple times
             if (numberOfReservations > 1) then
-                labelString = (L["%s (%sx)"]):format(Item.link, numberOfReservations);
+                labelString = (L["%s (%sx)"]):format(labelString, numberOfReservations);
             end
 
             ItemLabel:SetText(labelString);
@@ -413,6 +422,7 @@ function Overview:clearDetailsFrame()
 
         if (ItemIcon) then
             ItemIcon:SetImage("");
+            ItemIcon.frame:RegisterForClicks("LeftButtonUp");
             ItemIcon.frame:Hide();
         end
 
@@ -420,6 +430,10 @@ function Overview:clearDetailsFrame()
             ItemLabel:SetText("");
             ItemLabel.frame:Hide();
         end
+    end
+
+    for _, Border in pairs(self.ItemBorders) do
+        Border:Hide();
     end
 
     -- This table only exists if the player clicked on the hard-reserve info label
@@ -432,7 +446,178 @@ end
 
 function Overview:showHardReserves()
     self:clearDetailsFrame();
+    self.showingHardReserves = true;
+
+    local HardReservesTable = GL.Interface:get(self, "Table.HardReserves");
+    if (HardReservesTable) then
+        HardReservesTable:SetData(self:hardReservesTableData());
+        HardReservesTable:Show();
+        return;
+    end
+
     self:drawHardReservesTable(GL.Interface:get(self, "Frame.SecondColumn").frame);
+end
+
+---@param index number
+---@param ItemIcon table
+---@return nil
+function Overview:showItemBorder(index, ItemIcon)
+    local Border = self.ItemBorders[index];
+
+    if (not Border) then
+        Border = CreateFrame("Frame", nil, UIParent);
+        Border:SetBackdrop({
+            edgeFile = "Interface\\Buttons\\WHITE8X8",
+            edgeSize = 2,
+        });
+        Border:SetBackdropBorderColor(1, 0, 0, 1);
+        self.ItemBorders[index] = Border;
+    end
+
+    Border:SetParent(ItemIcon.frame);
+    Border:ClearAllPoints();
+    Border:SetPoint("TOPLEFT", ItemIcon.image, "TOPLEFT", -2, 2);
+    Border:SetPoint("BOTTOMRIGHT", ItemIcon.image, "BOTTOMRIGHT", 2, -2);
+    Border:SetFrameLevel(ItemIcon.frame:GetFrameLevel() + 1);
+    Border:Show();
+end
+
+---@param itemID number|string
+---@return string
+function Overview:uncachedItemLabel(itemID)
+    if (self.PendingItemIDs[tonumber(itemID)]) then
+        return ("|cFFFFFF00%s|r"):format((L["Item %s (loading...)"]):format(itemID));
+    end
+
+    return ("|cFFFF0000%s|r"):format((L["Item %s (right-click to load)"]):format(itemID));
+end
+
+---@param itemID number|string
+---@return nil
+function Overview:addUncachedItemTooltipLines(itemID)
+    GameTooltip:AddLine((L["Item %s"]):format(itemID), 1, 0, 0);
+    GameTooltip:AddLine(L["This item is not cached yet"], 1, 1, 1);
+    GameTooltip:AddLine(L["Right-click to query it from the server"], 1, 1, 1);
+end
+
+---@return table
+function Overview:uncachedItemIDs()
+    local ItemIDs = {};
+
+    for _, idString in pairs(SoftRes.MaterializedData.ReservedItemIDs or {}) do
+        local itemID = tonumber(idString);
+
+        if (itemID and not GetItemInfo(itemID)) then
+            tinsert(ItemIDs, itemID);
+        end
+    end
+
+    return ItemIDs;
+end
+
+---@param ItemIDs table
+---@return nil
+function Overview:fetchItems(ItemIDs)
+    local Queue = {};
+
+    for _, itemID in pairs(ItemIDs or {}) do
+        itemID = tonumber(itemID);
+
+        if (itemID
+            and not self.PendingItemIDs[itemID]
+            and not GetItemInfo(itemID)
+        ) then
+            self.PendingItemIDs[itemID] = true;
+            tinsert(Queue, itemID);
+        end
+    end
+
+    if (not Queue[1]) then
+        return;
+    end
+
+    local remaining = #Queue;
+    local failed = 0;
+
+    local function finish(itemID, loaded)
+        if (not self.PendingItemIDs[itemID]) then
+            return;
+        end
+
+        self.PendingItemIDs[itemID] = nil;
+        remaining = remaining - 1;
+
+        if (not loaded) then
+            failed = failed + 1;
+        end
+
+        self:refresh();
+
+        if (remaining == 0 and failed > 0) then
+            GL:warning((L["%s item(s) could not be loaded"]):format(failed));
+        end
+    end
+
+    for index, itemID in ipairs(Queue) do
+        GL.Ace:ScheduleTimer(function ()
+            GL.Item:CreateFromItemID(itemID):ContinueOnItemLoad(function ()
+                finish(itemID, true);
+            end);
+
+            GL.Ace:ScheduleTimer(function ()
+                finish(itemID, GetItemInfo(itemID) ~= nil);
+            end, 11);
+        end, (index - 1) * .1);
+    end
+
+    self:refresh();
+end
+
+---@return nil
+function Overview:updateFetchItemsButton()
+    local FetchItemsButton = GL.Interface:get(self, "Button.FetchItems");
+
+    if (not FetchItemsButton) then
+        return;
+    end
+
+    if (next(self.PendingItemIDs)) then
+        FetchItemsButton:SetText(L["Loading items..."]);
+        FetchItemsButton:SetDisabled(true);
+        return;
+    end
+
+    local numberOfUncachedItems = #self:uncachedItemIDs();
+
+    if (numberOfUncachedItems < 1) then
+        FetchItemsButton:SetText(L["All items loaded"]);
+        FetchItemsButton:SetDisabled(true);
+        return;
+    end
+
+    FetchItemsButton:SetText((L["Load items (%s)"]):format(numberOfUncachedItems));
+    FetchItemsButton:SetDisabled(false);
+end
+
+---@return nil
+function Overview:refresh()
+    if (not self.isVisible) then
+        return;
+    end
+
+    self:updateFetchItemsButton();
+
+    if (self.showingHardReserves) then
+        local HardReservesTable = GL.Interface:get(self, "Table.HardReserves");
+
+        if (HardReservesTable) then
+            HardReservesTable:SetData(self:hardReservesTableData());
+        end
+
+        return;
+    end
+
+    self:refreshDetailsFrame();
 end
 
 function Overview:drawCharacterTable(Parent)
@@ -607,17 +792,17 @@ function Overview:drawHardReservesTable(Parent)
                 return;
             end
 
-            -- We always select the first column of the selected row because that contains the player name
-            local selected = data[realrow].cols[1].value;
-            local itemID = GL:getItemIDFromLink(selected);
-            local IDString = tostring(itemID);
-
-            if (not SoftRes.MaterializedData.HardReserveDetailsByID[IDString]) then
-                return;
-            end
+            local itemID = data[realrow].itemID;
+            local Item = GL:getCachedItem(itemID);
 
             GameTooltip:SetOwner(rowFrame, "ANCHOR_CURSOR");
-            GameTooltip:SetHyperlink(selected);
+
+            if (Item) then
+                GameTooltip:SetHyperlink(Item.link);
+            else
+                self:addUncachedItemTooltipLines(itemID);
+            end
+
             GameTooltip:Show();
         end,
 
@@ -625,7 +810,7 @@ function Overview:drawHardReservesTable(Parent)
             GameTooltip:Hide();
         end,
 
-        OnClick = function (rowFrame, _, data, _, _, realrow)
+        OnClick = function (_, _, data, _, _, realrow, _, _, button)
             -- Make sure that all data is available, better safe than lua error
             if (not GL:higherThanZero(realrow)
                 or type(data) ~= "table"
@@ -636,29 +821,43 @@ function Overview:drawHardReservesTable(Parent)
                 return;
             end
 
-            -- We always select the first column of the selected row because that contains the player name
-            local selected = data[realrow].cols[1].value;
-            HandleModifiedItemClick(selected);
+            local itemID = data[realrow].itemID;
+            local Item = GL:getCachedItem(itemID);
+
+            if (Item) then
+                HandleModifiedItemClick(Item.link);
+            elseif (button == "RightButton") then
+                self:fetchItems({ itemID, });
+            end
         end,
     });
 
-    local TableData = {};
-    for _, Entry in pairs(DB:get("SoftRes.HardReserves")) do
-        local Item = GL:getCachedItem(Entry.id);
+    Table:SetData(self:hardReservesTableData());
+    GL.Interface:set(self, "HardReserves", Table);
+end
 
-        if (Item) then
+---@return table
+function Overview:hardReservesTableData()
+    local TableData = {};
+
+    for _, Entry in pairs(DB:get("SoftRes.HardReserves", {})) do
+        local itemID = tonumber(Entry.id);
+
+        if (itemID) then
+            local Item = GL:getCachedItem(itemID);
+
             tinsert(TableData, {
+                itemID = itemID,
                 cols = {
                     {
-                        value = Item.link,
+                        value = Item and Item.link or self:uncachedItemLabel(itemID),
                     },
                 },
             });
         end
     end
 
-    Table:SetData(TableData);
-    GL.Interface:set(self, "HardReserves", Table);
+    return TableData;
 end
 
 ---@return nil
@@ -672,6 +871,21 @@ function Overview:close()
     end
 
     GL.Events:unregister("SoftResShareButtonRosterUpdatedListener");
+
+    self.showingHardReserves = false;
+
+    for _, Border in pairs(self.ItemBorders) do
+        Border:Hide();
+        Border:SetParent(UIParent);
+    end
+
+    for index = 1, SoftRes.maxNumberOfSoftReservedItems do
+        local ItemIcon = GL.Interface:get(self, "Icon.Item" .. index);
+
+        if (ItemIcon) then
+            ItemIcon.frame:RegisterForClicks("LeftButtonUp");
+        end
+    end
 
     -- Clear the frame and its widgets
     GL.Interface:release(Window);

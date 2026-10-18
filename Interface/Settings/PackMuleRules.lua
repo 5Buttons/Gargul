@@ -131,14 +131,14 @@ function PackMuleRules:drawSpecifItemRule(Frame, Rule)
     Row:SetFullWidth(true);
     Row:SetHeight(30);
     Frame:AddChild(Row);
-
-    Overview:drawSpacer(Row, 20, 1);
+    Row:PauseLayout();
 
     -- LABEL: Send loot of quality lower than
     local beforeItemLabel = GL.AceGUI:Create("Label");
     beforeItemLabel:SetText("Send");
     beforeItemLabel:SetHeight(20);
-    beforeItemLabel:SetWidth(46);
+    beforeItemLabel:SetWidth(66);
+    beforeItemLabel:SetJustifyH("CENTER");
     Row:AddChild(beforeItemLabel);
 
     -- ITEM NAME
@@ -158,14 +158,12 @@ function PackMuleRules:drawSpecifItemRule(Frame, Rule)
         end
     end);
 
-    -- Increase space between input and next label ("to")
-    Overview:drawSpacer(Row, 8, 1);
-
     -- LABEL: to
     local afterItemLabel = GL.AceGUI:Create("Label");
     afterItemLabel:SetText("to");
     afterItemLabel:SetHeight(20);
-    afterItemLabel:SetWidth(16);
+    afterItemLabel:SetWidth(24);
+    afterItemLabel:SetJustifyH("CENTER");
     Row:AddChild(afterItemLabel);
 
     local ItemTarget = GL.AceGUI:Create("EditBox");
@@ -174,6 +172,9 @@ function PackMuleRules:drawSpecifItemRule(Frame, Rule)
     ItemTarget:SetWidth(244);
     ItemTarget:SetText(Rule.target);
     Row:AddChild(ItemTarget);
+
+    Row:ResumeLayout();
+    Row:DoLayout();
 
     tinsert(self.UIComponents.Input.SpecificItemRules, {
         Name = ItemName,

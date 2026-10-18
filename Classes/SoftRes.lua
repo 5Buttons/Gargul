@@ -122,6 +122,8 @@ end
 ---@param sender string
 ---@return nil
 function SoftRes:handleWhisperCommand(_, message, sender)
+    message = message:gsub("^%?", "!");
+
     local validPrefixDetected = false;
     for _, prefix in pairs(GL:explode(L["!sr|!softres|!softreserve"], "|") or {}) do
         if (GL:strStartsWith(message, prefix)) then
@@ -453,39 +455,7 @@ function SoftRes:draw()
         return;
     end
 
-    -- No items were reserved yet (this is possible!)
-    if (GL:empty(self.MaterializedData.ReservedItemIDs)) then
-        return GL.Interface.SoftRes.Overview:draw();
-    end
-
-    -- Show the soft-reserve overview after all items are loaded
-    -- This is to ensure that all item data is available before we draw the UI
-    local attempts = 0;
-    local function loadItemsAndDraw()
-        attempts = attempts + 1;
-
-        GL:onItemLoadDo(
-            self.MaterializedData.ReservedItemIDs or {},
-            function (_, error)
-                if (not error) then
-                    return GL.Interface.SoftRes.Overview:draw();
-                end
-
-                if (not GL.isLegacy) then
-                    return self:clearCorrupted();
-                end
-
-                if (attempts < 3) then
-                    return loadItemsAndDraw();
-                end
-
-                GL:warning(error);
-                GL.Interface.SoftRes.Overview:draw();
-            end
-        );
-    end
-
-    loadItemsAndDraw();
+    GL.Interface.SoftRes.Overview:draw();
 end
 
 --- Empty values are returned as nil so callers can skip them
@@ -1013,7 +983,7 @@ function SoftRes:import(data, openOverview)
                 )
             ) then
                 GL:sendChatMessage(
-                    L.CHAT["I just imported soft-reserves into Gargul. Whisper !sr to double-check your reserves!"],
+                    L.CHAT["I just imported soft-reserves into Gargul. Whisper ?sr to double-check your reserves!"],
                     "GROUP"
                 );
             end

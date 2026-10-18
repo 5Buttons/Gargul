@@ -387,6 +387,7 @@ function Overview:showSection(section)
 
     -- Clean the ScrollFrame in case it still holds old data
     GL.Interface:releaseChildren(ScrollFrame);
+    ScrollFrame:PauseLayout();
 
     Parent:AddChild(ScrollFrame);
 
@@ -430,6 +431,9 @@ function Overview:showSection(section)
     end
 
     SectionClass:draw(ScrollFrame, GL.Interface:get(self, "Window"));
+
+    ScrollFrame:ResumeLayout();
+    ScrollFrame:DoLayout();
 
     -- Highlight the correct section in the table on the left
     -- This delay is necessary because of how lib-st handles click and selection events

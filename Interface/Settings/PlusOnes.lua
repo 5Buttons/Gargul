@@ -28,7 +28,7 @@ function PlusOnes:draw(Parent)
         },
         {
             label = "Whisper command",
-            description = ("Players can whisper '|cff%s!plusone [<name>]|r' or '|cff%s!po [<name>]|r' or '|cff%s!+1 [<name>]|r' to the master looter to get the current plus one for this name in response. If no name is given, their own name is assumed instead."):format(
+            description = ("Players can whisper '|cff%s?plusone [<name>]|r' or '|cff%s?po [<name>]|r' or '|cff%s?+1 [<name>]|r' to the master looter to get the current plus one for this name in response. If no name is given, their own name is assumed instead."):format(
                 GL:classHexColor("rogue"),
                 GL:classHexColor("rogue"),
                 GL:classHexColor("rogue")

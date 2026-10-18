@@ -71,7 +71,7 @@ L.CHAT = {
         ["%s (This item is hard-reserved!)"] = "%s (Dieser Gegenstand ist hard-reserved!)",
         ["Reserved by: %s"] = "Reserviert von: %s",
         ["Missing soft-reserves from: %s"] = "Fehlende Soft-Reserves von: %s",
-        ["I just imported soft-reserves into Gargul. Whisper !sr to double-check your reserves!"] = "Ich habe gerade die Soft-Reserves in Gargul importiert. Flüstere !sr, um deine reservierten Gegenstände noch einmal zu überprüfen!",
+        ["I just imported soft-reserves into Gargul. Whisper ?sr to double-check your reserves!"] = "Ich habe gerade die Soft-Reserves in Gargul importiert. Flüstere ?sr, um deine reservierten Gegenstände noch einmal zu überprüfen!",
 
         --[[ THATSMYBIS ]]
         ["TMB Wishlist: %s"] = "TMB-Wunschliste: %s",
@@ -191,7 +191,7 @@ L.CHAT = {
         ["%s (This item is hard-reserved!)"] = "%s（该物品是硬保留的！）",
         ["Reserved by: %s"] = "保留者：%s",
         ["Missing soft-reserves from: %s"] = "缺少软保留：%s",
-        ["I just imported soft-reserves into Gargul. Whisper !sr to double-check your reserves!"] = "我刚刚将软保留导入 Gargul。私聊输入 !sr 仔细检查您的保留！",
+        ["I just imported soft-reserves into Gargul. Whisper ?sr to double-check your reserves!"] = "我刚刚将软保留导入 Gargul。私聊输入 ?sr 仔细检查您的保留！",
 
         --[[ THATSMYBIS ]]
         ["TMB Wishlist: %s"] = "TMB 愿望清单：%s",
@@ -307,7 +307,7 @@ L.CHAT = {
         ["%s (This item is hard-reserved!)"] = "%s (¡Este artículo está reservado!)",
         ["Reserved by: %s"] = "Reservado por: %s",
         ["Missing soft-reserves from: %s"] = "Faltan reservas flexibles de: %s",
-        ["I just imported soft-reserves into Gargul. Whisper !sr to double-check your reserves!"] = "Acabo de importar reservas blandas a Gargul. ¡Susurra !sr para volver a verificar tus reservas!",
+        ["I just imported soft-reserves into Gargul. Whisper ?sr to double-check your reserves!"] = "Acabo de importar reservas blandas a Gargul. ¡Susurra ?sr para volver a verificar tus reservas!",
 
         --[[ THATSMYBIS ]]
         ["TMB Wishlist: %s"] = "Lista de deseos de TMB: %s",
@@ -426,7 +426,7 @@ L.CHAT = {
         ["%s (This item is hard-reserved!)"] = "%s (Cet objet est hard-reserved !)",
         ["Reserved by: %s"] = "Reservé par : %s",
         ["Missing soft-reserves from: %s"] = "Soft-reserves manquants pour : %s",
-        ["I just imported soft-reserves into Gargul. Whisper !sr to double-check your reserves!"] = "Je viens d'importer les soft-reserves dans Gargul. Chuchotez !sr pour revérifier vos réservations !",
+        ["I just imported soft-reserves into Gargul. Whisper ?sr to double-check your reserves!"] = "Je viens d'importer les soft-reserves dans Gargul. Chuchotez ?sr pour revérifier vos réservations !",
 
         --[[ THATSMYBIS ]]
         ["TMB Wishlist: %s"] = "List de souhaits TMB : %s",
@@ -542,7 +542,7 @@ L.CHAT = {
         ["%s (This item is hard-reserved!)"] = "%s (Questo articolo è prenotato in modo definitivo!)",
         ["Reserved by: %s"] = "Riservato da: %s",
         ["Missing soft-reserves from: %s"] = "Riserve software mancanti da: %s",
-        ["I just imported soft-reserves into Gargul. Whisper !sr to double-check your reserves!"] = "Ho appena importato le riserve software in Gargul. Sussurra!sr per ricontrollare le tue riserve!",
+        ["I just imported soft-reserves into Gargul. Whisper ?sr to double-check your reserves!"] = "Ho appena importato le riserve software in Gargul. Sussurra?sr per ricontrollare le tue riserve!",
 
         --[[ THATSMYBIS ]]
         ["TMB Wishlist: %s"] = "Lista dei desideri TMB: %s",
@@ -658,7 +658,7 @@ L.CHAT = {
         ["%s (This item is hard-reserved!)"] = "%s (이 항목은 예약되어 있습니다!)",
         ["Reserved by: %s"] = "예약자: %s",
         ["Missing soft-reserves from: %s"] = "다음에서 소프트 예약 누락: %s",
-        ["I just imported soft-reserves into Gargul. Whisper !sr to double-check your reserves!"] = "방금 Gargul로 소프트 리저브를 가져왔습니다. !sr을 통해 보유액을 다시 확인해보세요!",
+        ["I just imported soft-reserves into Gargul. Whisper ?sr to double-check your reserves!"] = "방금 Gargul로 소프트 리저브를 가져왔습니다. ?sr을 통해 보유액을 다시 확인해보세요!",
 
         --[[ THATSMYBIS ]]
         ["TMB Wishlist: %s"] = "TMB 위시리스트: %s",
@@ -774,7 +774,7 @@ L.CHAT = {
         ["%s (This item is hard-reserved!)"] = "%s (Este item é reservado!)",
         ["Reserved by: %s"] = "Reservado por: %s",
         ["Missing soft-reserves from: %s"] = "Reservas temporárias ausentes de: %s",
-        ["I just imported soft-reserves into Gargul. Whisper !sr to double-check your reserves!"] = "Acabei de importar reservas temporárias para Gargul. Sussurre !sr para verificar suas reservas!",
+        ["I just imported soft-reserves into Gargul. Whisper ?sr to double-check your reserves!"] = "Acabei de importar reservas temporárias para Gargul. Sussurre ?sr para verificar suas reservas!",
 
         --[[ THATSMYBIS ]]
         ["TMB Wishlist: %s"] = "Lista de desejos do TMB: %s",
@@ -893,7 +893,7 @@ L.CHAT = {
         ["%s (This item is hard-reserved!)"] = "%s (Этот предмет в хардрезерве!)",
         ["Reserved by: %s"] = "Софтрезерв: %s",
         ["Missing soft-reserves from: %s"] = "Отсутствуют софтрезервы от: %s",
-        ["I just imported soft-reserves into Gargul. Whisper !sr to double-check your reserves!"] = "Я только что импортировал софтрезервы в Gargul. Шепните мне !sr, чтобы перепроверить резервы!",
+        ["I just imported soft-reserves into Gargul. Whisper ?sr to double-check your reserves!"] = "Я только что импортировал софтрезервы в Gargul. Шепните мне ?sr, чтобы перепроверить резервы!",
 
         --[[ THATSMYBIS ]]
         ["TMB Wishlist: %s"] = "Список ThatsMyBis: %s",
@@ -1009,7 +1009,7 @@ L.CHAT = {
         ["%s (This item is hard-reserved!)"] = "%s（該商品是硬性保留的！）",
         ["Reserved by: %s"] = "保留者：%s",
         ["Missing soft-reserves from: %s"] = "缺少軟儲備：%s",
-        ["I just imported soft-reserves into Gargul. Whisper !sr to double-check your reserves!"] = "我剛剛將軟儲備導入 Gargul。輕聲細語 !sr 仔細檢查您的儲備！",
+        ["I just imported soft-reserves into Gargul. Whisper ?sr to double-check your reserves!"] = "我剛剛將軟儲備導入 Gargul。輕聲細語 ?sr 仔細檢查您的儲備！",
 
         --[[ THATSMYBIS ]]
         ["TMB Wishlist: %s"] = "TMB 願望清單：%s",
